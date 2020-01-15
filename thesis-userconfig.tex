@@ -1,0 +1,155 @@
+% packages
+\usepackage[utf8]{inputenc}
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+\setlength{\textfloatsep}{5pt}
+
+\date{May 28, 2019}
+
+
+% todo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\todo}[1]{{\color{red}TODO:#1}}
+\newcommand{\tocite}[1]{{\color{blue}\textbf{[[#1]]}}}
+
+
+% other ones
+\newcommand{\name}{Vignette\xspace}
+\newcommand{\nameStore}{Vignette Storage\xspace}
+\newcommand{\nameCompress}{Vignette Compression\xspace}
+\newcommand{\redout}[1]{\textcolor{red}{ #1}}
+\newcommand{\blueout}[1]{\textcolor{blue}{ #1}}
+\newcommand{\bluecomment}[1]{\textcolor{blue}{ \{$\leftarrow$ #1\}}}
+
+% text expansion macros %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\etal}{et al.}
+
+% video-related
+\newcommand{\avc}{\textsc{h.264}\xspace}
+\newcommand{\hevc}{\textsc{hevc}\xspace}
+\newcommand{\vpeight}{\textsc{vp8}\xspace}
+\newcommand{\vpnine}{\textsc{vp9}\xspace}
+\newcommand{\avone}{\textsc{av1}\xspace}
+\newcommand{\threesixty}{360$\degree$\xspace}
+\newcommand{\lightdb}{LightDB\xspace}
+
+% C++
+\newcommand\CC{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% NSP packages
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% fonts & text %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{inconsolata}              % inconsolata for fixed-width
+\usepackage{textcomp}              % symbols
+
+% figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}              % includegraphics
+
+% tables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{booktabs}              % pretty table spacing
+
+% spacing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{relsize}               % \relsize{-1} for macros
+\usepackage[export]{adjustbox}
+
+% colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage[svgnames,table]{xcolor}      % colors, with svg names available
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+
+% math %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsfonts}              % provides \mathbb and other stuff
+\usepackage{amssymb}               % lots of symbols
+
+% listings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}              % code listings
+\lstset{language=Python,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)},
+  commentstyle=\color{greencomments},
+  keywordstyle=\color{bluekeywords},
+  stringstyle=\color{redstrings},
+  basicstyle=\ttfamily
+}
+
+% *** SUBFIGURE PACKAGES ***
+
+
+\newcommand{\MITCMU}{MIT-CMU\xspace}
+\newcommand{\ATTFACES}{AT\&T Face Database\xspace}
+\newcommand{\LFW}{Labeled Faces in the Wild\xspace}
+\newcommand{\ANNA}{ANN accelerator\xspace}
+\newcommand{\fscore}{F\textsubscript{1} score\xspace}
+
+\newcommand{\nearsensor}{in-camera\xspace}
+\newcommand{\Nearsensor}{In-camera\xspace}
+\newcommand{\NearSensor}{In-Camera\xspace}
+\newcommand{\NSP}{ICP\xspace}
+
+\newcommand{\farsensor}{off-loaded\xspace}
+\newcommand{\Farsensor}{Off-loaded\xspace}
+\newcommand{\FarSensor}{Off-Loaded\xspace}
+\hyphenation{FPGA reduce FPGAs camera off-load-ing authenti-cation reduct-ion follow-ing comm-unication}
+
+
+%%%%%%%%%%%
+% HFBS macros / packages
+%%%%%%%%%%%%%%%%%%%%%%%%
+\def\lf{\left\lfloor}
+\def\rf{\right\rfloor}
+\def\lc{\left\lceil}
+\def\rc{\right\rceil}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{mathtools}
+
+\usepackage{multirow}
+\usepackage{hyphenat}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+% math %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsfonts}              % provides \mathbb and other stuff
+\usepackage{amssymb}               % lots of symbols
+\usepackage{tabularx}
+\usepackage{comment}
+
+
+% graphics %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\graphicspath{{./fig/},{./plots/},{./gfx/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.jpg,.png}
+
+\usepackage{algpseudocode,algorithm,algorithmicx}
+\makeatletter
+\def\algbackskip{\hskip\dimexpr-\algorithmicindent+\labelsep}
+\def\LState{\State \algbackskip}%
+\makeatother
+
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage[normalem]{ulem}
+
+% colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{colortbl}
+
+
+\lstdefinestyle{VRQL}{
+    language=C++,
+    basicstyle=\scriptsize\ttfamily,
+    mathescape=true,
+    xleftmargin=0.25cm,
+    columns=fullflexible,
+    morekeywords={Union,Decode,Scan,Select,Map,Partition,Encode,Subquery,Interpolate,Translate,Rotate,Discretize,Store,Update,Create,CreateIndex,DropIndex}
+ }
