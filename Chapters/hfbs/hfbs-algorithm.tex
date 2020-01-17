@@ -1,0 +1,275 @@
+\subsection{Hardware-Friendly Bilateral Solving}
+\label{sec:solver}
+
+In this section, we formulate a bilateral solver that maintains speed, scalability, and accuracy, while also being parallelizable.
+We first describe the original bilateral solver of~\cite{BarronPoole2016}, and motivate the requirements for a hardware-friendly bilateral solver. We then provide a detailed formulation of our algorithm and its advantages.
+
+\subsubsection{Bilateral-Space Optimization}
+The original bilateral solver (OBS) consists of (1) an objective and (2) optimization technique~\cite{BarronPoole2016}.
+The input to the solver is a reference RGB image, a target image that contains noisy observed quantities we wish to improve, and a confidence image.
+The goal is to recover an ``output'' vector $\mathbf{x}$, which will resemble the input target where the confidence is large while being smooth and tightly aligned to edges in the reference image.
+To achieve this, Barron and Poole construct an optimization problem of the following form:
+\begin{align}
+  \underset{\mathbf{x}}{\mathrm{minimize}} &\,\, \frac{\lambda}{2} \sum_{i, j} \hat W_{i,j} \left(x_i - x_j \right)^2  + \sum_i c_i (x_i - t_i)^2
+\label{eq:pixel_loss}
+\end{align}
+
+The first term of the loss encourages that for all pixel pairs $i$ and $j$, the overall difference between their flow values $x_i$ and $x_j$ is minimized if they are neighboring pixels in the bilateral space.
+The second term of Eq.\ref{eq:pixel_loss} encourages each pixel $x_i$ to be close to the target input $t_i$ if that pixel's confidence $c_i$ is high.
+
+The affinity matrix $\mathbf{\hat W}$ is a \emph{bistochastized} (all rows and columns sum to 1) version of a bilateral affinity matrix $\mathbf{W}$.
+Each element of the bilateral affinity matrix $W_{i, j}$ describes the affinity between pixels $i$ and $j$ in the reference image in the YUV colorspace:
+
+\begin{align}
+W_{i,j} = \exp\left( - { \frac{ \norm*{ \left[ p^x_i, p^y_i \right] - \left[ p^x_j, p^y_j \right] }^2 } { 2 \sigma_{xy}^2 } } -  { \frac{ \left( p^l_i - p^l_j \right)^2 }{ 2 \sigma_{l}^2 } } -  { \frac{\norm*{ \left[ p^u_i, p^v_i \right] - \left[p^u_j, p^v_j \right] }^2 }{ 2 \sigma_{uv}^2 }} \right)
+\label{eq:bilateral_affinity}
+\end{align}
+
+where $p_i$ is a pixel in the reference image with location $(p^x_i, p^y_i)$ and color $(p^l_i, p^u_i, p^v_i)$.
+The $\sigma_{xy}$, $\sigma_{l}$, and $\sigma_{uv}$ parameters control the support of the spatial, luminance (luma), and chrominance (chroma) components of the filter.
+Bistochastization normalizes this affinity matrix while maintaining symmetry~\cite{Barron2015A}.
+
+Bilateral operations (e.g., filtering) can be sped up by treating the filter as a ``splat/blur/slice'' procedure in the bilateral grid.
+The splat/blur/slice filtering approach corresponds to a compact factorization of $\mathbf{W}$:
+\begin{equation}
+\mathbf{W} = \mathbf{S}^\mathrm{T} {\mathbf{B}} \mathbf{S} \label{eq:factorization}
+\end{equation}
+where $\mathbf{S}$ and $\mathbf{S}^\mathrm{T}$ are splatting and slicing, and $\mathbf{B}$ is a $[1$ $2$ $1]$ blur kernel. As in ~\cite{BarronPoole2016},
+$\mathbf{S}$ defines a per-pixel mapping from a pixel to a coarse bin in the bilateral grid, where that mapping is a function of the $x$ and $y$ coordinates, $l$ luma, $u$ and $v$ chroma of that pixel.
+Multiplying by $\mathbf{S}$ is a data-dependent histogramming operation, and multiplying by $\mathbf{S}^\mathrm{T}$ is a data-dependent interpolation.
+The bilateral space optimization formulation of~\cite{Barron2015A} performs bistochastization by calculating two matrices $\mathbf{m}$ and $\mathbf{n}$ that satisfy the following:
+\begin{equation}
+\hat{\mathbf{W}} = \mathbf{S}^\mathrm{T} \operatorname{diag}\left( \mathbf{n} \over \mathbf{m} \right) \mathbf{B} \operatorname{diag}\left( \mathbf{n} \over \mathbf{m} \right) \mathbf{S} \label{eq:equiv}
+\end{equation}
+where $\hat{\mathbf{W}}$ is a bistochastic version of matrix $\mathbf{W}$.
+The vectors $\mathbf{m}$ and $\mathbf{n}$ describe a normalizing transformation required by the solver.
+
+Barron and Poole also perform a variable substitution \cite{BarronPoole2016}, transforming the high-dimensional pixel-space optimization problem into one with lower-dimensional bilateral-space vertices:
+\begin{equation}
+\mathbf{x} = \mathbf{S}^\mathrm{T} \mathbf{y} \label{eq:substitution}
+\end{equation}
+where $\mathbf{y}$ is a small vector of values for each bilateral grid vertex, and $\mathbf{x}$ is the large vector of values for each pixel.
+
+Equations~\ref{eq:factorization} and \ref{eq:substitution} allow us to reformulate the pixel-space loss function of Eq.~\ref{eq:pixel_loss} into bilateral-space in a quadratic form:
+\begin{align}
+& \underset{\mathbf{y}}{\mathrm{minimize}} \quad  {1 \over 2} \mathbf{y}^\mathrm{T} \mathbf{A} \mathbf{y} - \mathbf{b}^\mathrm{T} \mathbf{y} + c \label{eq:quad_min} \\
+&\quad \mathbf{A} = \lambda ( \operatorname{diag}(\mathbf{m}) - \operatorname{diag}(\mathbf{n}) \mathbf{B} \operatorname{diag}(\mathbf{n})) + \mathrm{diag}(\mathbf{S} \mathbf{c}) \nonumber \\
+&\quad \mathbf{b} = \mathbf{S} ( \mathbf{c} \circ \mathbf{t} ) \quad\quad c = {1 \over 2} (\mathbf{c} \circ \mathbf{t})^\mathrm{T} \mathbf{t} \nonumber
+\end{align}
+where $\mathbf{y}$ is the solution to the problem in bilateral-space, $\mathbf{m}$ and $\mathbf{n}$ are defined by Eq.~\ref{eq:equiv}, and $\mathbf{t}$ and $\mathbf{c}$ are per pixel initial solutions and confidences (Eq.~\ref{eq:pixel_loss}).
+The Hadamard (element-wise) product is denoted by $\circ$.
+%%
+
+
+
+The optimization problem of Eq.~\ref{eq:pixel_loss} is intractably slow to solve naively. However, the bilateral-space formulation allows feasible and fast execution.
+Minimizing Eq.~\ref{eq:quad_min} is equivalent to solving a sparse linear system:
+\begin{equation*}
+\mathbf{A}\mathbf{y} = \mathbf{b}
+%\label{eq:linear_system}
+\end{equation*}
+and we can produce a pixel-space solution $\mathbf{\hat x}$ by slicing out the solution from the linear system:
+\begin{equation}
+\mathbf{\hat x} = \mathbf{S}^\mathrm{T}(\mathbf{A}^{-1} \mathbf{b})
+\label{eq:solution}
+\end{equation}
+
+In summary, OBS takes an input image vector and a confidence image to construct a simplified bilateral grid from the reference image. With that, it produces the $\mathbf{A}$ matrix and $\mathbf{b}$ vector of Eq. ~\ref{eq:quad_min} to solve the linear system in Eq. ~\ref{eq:solution} and obtain an output image.
+
+\subsubsection{Algorithmic Modifications}\label{sec:alg_mod}
+Though computationally efficient, OBS as presented has a number of properties that make it difficult to implement in hardware, or even to achieve real-time operation on modern CPU or GPU systems.
+Vectorizing and parallelizing CPU or GPU processing on the sparse 5D bilateral grid $\mathbf{\hat W}$ demonstrates too-irregular memory access patterns to achieve large performance benefits from parallelization.
+Moreover, the use of second order global optimization limits the level of parallelism we can extract from the algorithm.
+We modify OBS to construct a hardware-friendly bilateral solver and address these specific challenges: color and sparse memory indexing, and second order global optimization.
+Our modifications also allow for an alternative, more efficient initialization and reduced quantization artifacts, which we will discuss after formulating our algorithm.
+
+\paragraph{Color and sparse memory indexing.}
+The bilateral solver of~\cite{BarronPoole2016} was designed around a hard bilateral grid or a permutohedral lattice \cite{Adams2010}, meaning that optimization takes place in a ``sparse'' five-dimensional bilateral space (where the five dimensions are position in $x$ and $y$, pixel luma, and two pixel chroma values).
+The resulting 5D grid has an image-dependent ``sparsity'' that is challenging to exploit in parallel algorithms.
+Moreover, the connectivity structure of the graph used in the bilateral solver varies as a function of the input, leading to expensive and unpredictable memory access patterns.
+Attempting to resolve this by solely converting the sparse grid into a ``dense'' representation of the 5D space requires a prohibitive amount of memory.
+Instead, HFBS ignores the color of the input image and uses a ``dense'' 3D bilateral grid~\cite{Chen2007}, which makes memory indexing predictable and enables further optimizations. Ignoring color this way induces a small decrease in accuracy, as we will demonstrate.
+
+\paragraph{Second order global optimization.}
+The numerical optimization in OBS was performed using the preconditioned conjugate gradient method with a Jacobi or Jacobi-like hierarchical preconditioner.
+%Conjugate gradient (and most other second-order optimization techniques) can significantly hasten optimization in tasks such as ours by modeling the curvature of the energy surface being optimized, but
+Conjugate gradient methods use a global optimization step: at each iteration, updating each variable of the optimization vector requires reasoning about the gradient at all other variables.
+Such global communication requirements make parallel hardware implementation difficult, as we want to be able to individually update and optimize any variable in our state space via local communication with the ``neighboring'' variables in our bilateral grid.
+To avoid global communication, HFBS performs optimization using gradient descent with momentum (i.e., the ``Heavy Ball'' algorithm), which can be shown to have similar asymptotic performance as conjugate gradient~\cite{polyak1964some}.
+This converts an irregular number of global matrix operations into a regular, but larger, number of local updates that are much easier to execute in parallel.
+
+The Heavy Ball algorithm does not naturally accommodate a preconditioner, so we reformulate our optimization problem with a transformation that indirectly applies a Jacobi preconditioner during optimization.
+We find that HFBS slightly underperforms the preconditioned conjugate gradient solver of~\cite{BarronPoole2016} and therefore requires roughly twice as many steps for convergence.
+However, since each step is significantly faster to compute (roughly 4$\times$ faster on CPU and much faster on GPU/FPGA), we see an overall increase in performance.
+
+\subsubsection{Formulating a Hardware-friendly bilateral solver}
+We now formalize the details of HFBS and how it relates to the original bilateral solver. Both OBS and HFBS minimize an optimization problem of the form of Eq.~\ref{eq:pixel_loss}. In this case, the $t_i$ is the low resolution flow shown in Figure~\ref{fig:teaser}b. We derive the confidence image for these low resolution flow fields by computing normalized sum-of-squared differences.
+The resulting confidence is larger for areas that are near each other and match well.
+
+We obtain the weight $\hat W_{i,j}$, which determines the bilateral-space distance between two pixels $i$ and $j$, from a bistochastized version of the matrix $\mathbf{W}$ whose elements are calculated via the following:
+\begin{equation}
+W_{i,j} = \exp\left( - { \norm*{ [[p^x_i, p^y_i] - [p^x_j, p^y_j] }^2 \over 2 \sigma_{xy}^2 } -  { ( p^l_i - p^l_j )^2 \over 2 \sigma_{l}^2 }  \right)
+\label{eq:hfbs-bilateral_affinity}
+\end{equation}
+where each pixel $p_i$ has a spatial position $(p^x_i, p^y_i)$ and luminance $p^l_i$.
+% The $\sigma_{xy}$ and $\sigma_{l}$ parameters control the support of the spatial and luminance components of the bilateral filter, respectively.
+While OBS includes color information in $\hat W_{i,j}$ (Eq.~\ref{eq:bilateral_affinity}), HFBS only considers luminance.
+
+
+%Both OBS and HFBS reformulate the optimization problem of Eq.~\ref{eq:pixel_loss} as a linear system.
+%Before getting into the details of this formulation, we explain another difference that exists between OBS and HFBS.
+The bistochastization step in ~\cite{BarronPoole2016} requires 10-20 iterations to achieve low error.
+To reduce the fixed cost of this step, we use a faster, approximate bistochastization step for initializing the bilateral solver.
+Unlike OBS, which fully-bistochastizes $\mathbf{W}$ into $\hat{\mathbf{W}}$,
+we construct an approximately bistochastized $\hat{\mathbf{W}}$ (equivalent to one iteration of bistochastization)
+that still satisfies the requirements of the bilateral solver:
+\begin{align}
+\mathbf{m}_0 = \mathbf{S} \mathbf{1}
+\quad\quad
+\mathbf{n} = \sqrt{ \epsilon + \mathbf{m}_0 \over \epsilon + \mathbf{B} \mathbf{1} } \quad\quad
+\mathbf{m}_1 = \mathbf{n} \circ \left( \mathbf{B} \mathbf{n} \right) \label{eq:m_equals}
+\end{align}
+% where $\circ$ and $/$ denote element-wise multiplication and division.
+In OBS, bistochastization is done to convergence, which produces a $\mathbf{n}$ which satisfies $\mathbf{m}_0 = \mathbf{n} \circ \left( \mathbf{B} \mathbf{n} \right)$.
+Partial bistochastization requires that we treat this equality as an assignment, thereby constructing $\mathbf{m}_1$ to explicitly obey this constraint (Eq.~\ref{eq:m_equals}). This produces nearly-indistinguishable output while being faster and easier to compute.
+
+Our normalization also differs from OBS by the use of $\epsilon \sim 0.00001$ in the construction of $\mathbf{n}$.
+Adding $\epsilon$ to the numerator prevents divide-by-zero later and
+ensures that empty grid cells do not propagate information during optimization. Adding it to the denominator prevents the addition of $\epsilon$ in the numerator from biasing the solution towards $0$.
+Note that the partial bistochastization step of HFBS is not iterative and does not require any convergence, and thus is significantly faster than the bistochastization step of OBS.
+
+As described earlier, the expensive per-pixel optimization in Eq.~\ref{eq:pixel_loss} can be reformulated to a much more tractable optimization problem inside a bilateral grid. For convenience we will define $\mathbf{B} \mathbf{y}$ (the product of some grid $\mathbf{y}$ with a blur $\mathbf{B}$) as a scaling of and ``diffusion'' of $\mathbf{y}$:
+\begin{align}
+%\operatorname{blur}(G) &= 2G + \operatorname{diffuse}(G) \\
+\label{eq:diffuse} \mathbf{B} \mathbf{y} &= 2 \mathbf{y} + \mathbf{D} \mathbf{y} \nonumber\\
+ \mathbf{D}\mathbf{y} = D(\mathbf{y}) &= \mathbf{y}(x + 1, y, z) + \mathbf{y}(x - 1, y, z) \nonumber \\
+& + \mathbf{y}(x, y+1, z) + \mathbf{y}(x, y-1, z) \nonumber \\
+& + \mathbf{y}(x, y, z+1) + \mathbf{y}(x, y, z-1) \nonumber
+\end{align}
+where $\mathbf{D}$ is a diffusion operator (which we can interchangeably refer to as a matrix and  a function) that replaces each element in $\mathbf{y}$ with the sum of its neighbors. Because our 3D bilateral grid is dense in memory, this diffusion process is a simple stencil operation.
+
+We now perform a variable substitution, as in Eq.~\ref{eq:substitution}. For us, this simply requires dividing by the square root of the diagonal of the $\mathbf{A}$ matrix:
+%\begin{align}
+\begin{equation*}
+  \mathbf{y} = \mathbf{p} \circ \hat{\mathbf{z}} \quad \quad  \quad \quad  \mathbf{p} = {1 \over \sqrt{ \mathbf{S} \mathbf{c} + \lambda \left( \mathbf{m}_1 - 2 \left( \mathbf{n} \circ \mathbf{n} \right) \right)}}
+  %\mathbf{y} &= \mathbf{p} \circ \hat{\mathbf{z}} \nonumber\\
+  %\mathbf{p} &= {1 \over \sqrt{ \mathbf{S} \mathbf{c} + \lambda \left( \mathbf{m}_1 - 2 \left( \mathbf{n} \circ \mathbf{n} \right) \right)}} \nonumber
+%\end{align}
+\end{equation*}
+where $\hat{\mathbf{z}}$ is the solution to the substituted problem.
+
+With our variable substitution in place, we can reformulate Eq.~\ref{eq:quad_min}:
+\begin{align}
+& \underset{\mathbf{z}}{\mathrm{minimize}} \quad {1 \over 2} \mathbf{z}^\mathrm{T} \tilde{\mathbf{A}} \mathbf{z} - \tilde{\mathbf{b}}^\mathrm{T} \mathbf{z} + c  \nonumber \\
+& \quad \tilde{\mathbf{A}} = \mathbf{I} -  \operatorname{diag}\left( \mathbf{q} \right) \mathbf{D}  \operatorname{diag}\left( \mathbf{q} \right) \nonumber \\
+  & \quad \tilde{\mathbf{b}} = \mathbf{p} \circ  \left( \mathbf{S} \left( \mathbf{c} \circ \mathbf{t} \right) \right) \nonumber \\
+& \quad \mathbf{q} = \sqrt{\lambda} \left( \mathbf{n} \circ \mathbf{p} \right) \nonumber
+\end{align}
+
+Here $c$ is the same as in Eq.~\ref{eq:quad_min}. Note that the diagonal of $\tilde{\mathbf{A}}$ is $\mathbf{1}$, so optimizing this problem without a preconditioner is the same as optimizing Eq.~\ref{eq:quad_min} with a Jacobi preconditioner. Minimizing this problem requires solving a linear system, undoing our preconditioning variable substitution, and then slicing out a solution:
+\begin{equation*}
+\hat{\mathbf{z}} = \tilde{\mathbf{A}}^{-1} \tilde{\mathbf{b}}  \quad  \quad \quad \quad
+\mathbf{\hat x} = \mathbf{S}^\mathrm{T}\left( \mathbf{p} \circ \hat{\mathbf{z}}  \right)
+\end{equation*}
+
+We will solve this problem using the ``Heavy Ball'' method (gradient descent with momentum).
+This problem is fully-described by the diffusion operator $D(\cdot)$ and the bilateral grids $\tilde{\mathbf{b}}$ and $\mathbf{q}$.
+
+Algorithm~\ref{alg:heavy} shows pseudocode describing how optimization is performed:
+
+\begin{algorithm}[h]
+\caption{Bilateral-Space Heavy Ball Method \label{alg:heavy} \\
+\textbf{Input:}
+problem description $\{ D(\cdot), \tilde{\mathbf{b}}, \mathbf{q} \}$,
+initial state $\mathbf{z}_{\mathrm{init}}$,
+step size $\alpha = 1$,
+momentum $\beta = 0.9$,
+number of iterations $n = 256$.
+\\
+\textbf{Output:} state after $n$ iterations $\mathbf{z}$ }
+\begin{algorithmic}[1]
+\State $\mathbf{z} \gets \mathbf{z}_{\mathrm{init}}$
+\State $\mathbf{h} \gets \mathbf{0}$
+\For{$i = 1 : n$ }
+\State $ \mathbf{g} \gets \mathbf{z} -\mathbf{q} \circ D( \mathbf{q} \circ \mathbf{z} ) - \tilde{\mathbf{b}}$
+\State $ \mathbf{h} \gets \beta \mathbf{h} + \mathbf{g}$
+\State $ \mathbf{z} \gets \mathbf{z} - \alpha \mathbf{h}$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+It can be shown that if the momentum and step size hyperparameters are set correctly, this heavy ball method has the same asymptotic performance as conjugate gradient \cite{polyak1964some}.
+Because preconditioning has been absorbed into the problem, performance approaches preconditioned conjugate gradient.
+Since the diffusion operator $D(\cdot)$ is a local stencil, the gradient update to $\mathbf{g}$ and the optimization update to $\mathbf{h}$ and $\mathbf{z}$ can be performed efficiently (i.e., vectorized, parallelized, etc).
+
+\paragraph{Better Initialization to Reduce Optimization Iterations}
+Our objective function is convex and thus invariant to the initialization $\mathbf{z}_{\mathrm{init}}$, but a better initialization may allow us to converge in fewer iterations. We can achieve this with a simple weighted blur in our bilateral grid.
+\begin{equation*}
+\mathbf{z}_{\mathrm{init}} = { \operatorname{blur}( \mathbf{S}( \mathbf{c} \circ \mathbf{t}), \sigma_b) \over \mathbf{p} \circ \operatorname{blur}( \mathbf{S}(\mathbf{c}), \sigma_b ) }
+\end{equation*}
+where $\operatorname{blur}(\mathbf{a}, \sigma_b)$ is a large-support 3D Laplacian blur of $\mathbf{a}$ with a scale of $\sigma_b$:
+%\begin{align}
+\begin{equation*}
+\begin{split}
+  & \operatorname{blur}(\mathbf{a}, \sigma_b)(t_x, t_y, t_z) =  \\
+  & \displaystyle \iiint_{-\infty }^{\infty } e^{ \left( \frac{-|\tau_x|-|\tau_y|-|\tau_z|}{\sigma_b} \right)}
+      \mathbf{a}(t_x-\tau_x, t_y-\tau_y, t_z-\tau_z ) d \tau_x d \tau_y d \tau_z
+\end{split}
+\end{equation*}
+%\end{align}
+and $t_x$, $t_y$, and $t_z$ are 3D coordinates.
+This can be efficiently implemented as three separable infinite impulse response filters  (i.e., exponential smoothing, forward and backward) in the three dimensions of the grid.
+The intuition
+behind this initialization is that the solution should be close to $\mathbf{b}$
+where the confidence is large and smooth where confidence is small.
+We found that this initialization can be implemented efficiently on a CPU and
+roughly halves the number of required iterations.
+
+\paragraph{Reduced Quantization Artifacts}
+In OBS, slicing can
+ introduce ``blocky'' quantization artifacts in the output~\cite{BarronPoole2016}.
+This quantization requires post-processing, adding to the computational cost
+of running the bilateral solver.
+However, HFBS uses a dense and low-dimensional grayscale bilateral grid
+which allows us to efficiently slice out of our bilateral grid using trilinear
+interpolation. As shown in~\cite{Chen2007}, this produces smooth results
+without post-processing. The trilinear interpolation can be done through a weighted slice, where
+$\mathbf{S}_{\mathrm{tri}}$ is analogous to $\mathbf{S}$ but with trilinear
+weights instead of hard ``one-hot'' assignment:
+\begin{equation*}
+\mathbf{\hat x} = { \mathbf{S}_{\mathrm{tri}}^\mathrm{T} \left( \mathbf{m}_0 \circ \mathbf{p} \circ \mathbf{\hat z} \right) \over \mathbf{S}_{\mathrm{tri}}^\mathrm{T} \left( \mathbf{m}_0 \right)} \label{eq:soft_slice}
+\end{equation*}
+By performing a weighted slice according to the per-vertex grid occupancy
+$\mathbf{m}_0$ this process produces artifact-free results in comparison to results from OBS, even if trilinear
+interpolation is not used in the splatting step. This ``soft'' slicing is only
+slightly more expensive than its ``hard'' equivalent, though both forms can be
+implemented very efficiently by virtue of being simple gather operations in a
+dense bilateral grid.
+
+
+% \begin{itemize}
+% 	%\item Briefly repeat the high-level VR video process
+% 	%\item Then mention the depth estimation step is the slowest
+% 	%\item Discuss existing algorithms. Basically previous work from Jon's paper, and then mention the benefits of Jon's algorithm.
+% 	%\item Why depth estimation is hard? Mention that it has the common tradeoff between quality and speed. Most of existing fast algorithms are not good enough for VR purposes. Most of high-quality algorithms are slow. Jon's algorithm is pretty fast, and meets VR requirements. However, it does not meet real-time constraints.
+% 	\item More details of Jon's older algorithm
+% 	\item Other applications of Jon's algorithm
+% 	\item Baseline speed report (for the old algorithm)
+% 	\item ``Compatibility'' with hardware implementation. In other words, say why the original algorithm is not easy to implement in hardware. For instance, sparse matrix representation is not necessarily efficient. Global optimization steps can be troublesome. Not a lot of room for parallel processing.
+% 	\item Discuss the new algorithm
+% 	\item New math from Jon
+% 	\item Why this algorithm fits a hardware implementation better
+% \end{itemize}
+
+% Possible figures and tables:
+% \begin{itemize}
+% 	\item Re-use the high-level block diagram of VR. Include Google Jump and Google Cardboard. Report run time of each block.
+% 	\item Illustration of depth estimation from a pair of images. Show flow of two pixel groups.
+% 	\item Figure illustrating Jon's depth estimation algorithm steps: block matching, upsampling, smoothing, etc. Report their run time percentage
+% 	\item Figure showing Jon's algorithm being used in other applications.
+% 	\item Table reporting speed
+% \end{itemize}
+
+% As discussed in Section~XX, VR video preparation involves a high-quality depth estimation (DE) step that turns out to be the slowest step of the pipeline. A natural tradeoff exists between the quality and the speed of DE algorithms. Real-time DE algorithms do not meet the quality requirements of VR [refs], while the existing high-quality algorithms are too slow for real-time VR.
+
+% Barron et al. [ref] present a DE algorithm that meets the VR quality requirements and is XX$\times$ faster than algorithms of similar quality. Nevertheless, this algorithm also fails to meet real-time requirements.

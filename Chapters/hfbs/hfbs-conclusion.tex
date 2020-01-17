@@ -1,0 +1,9 @@
+\subsection{Conclusions}
+
+The hardware-friendly bilateral solver enables scalable, real-time processing of VR video on modern hardware.
+We explore a hardware-software codesign approach to construct an algorithm that is both faster \emph{and} more accurate than prior work, optimizing algorithm details and hardware implementation together. 
+In particular, HFBS uses a bilateral-space Heavy Ball algorithm and a 3D dense bilateral grid that allows fast and predictable memory accesses. 
+In contrast, the baseline algorithm~\cite{BarronPoole2016} uses a 5D sparse grid and is about 4$\times$ slower than HFBS. 
+We also design an FPGA accelerator for HFBS using reduced-precision fixed-point numbers and customized memory layout. 
+Our CPU, GPU, and FPGA implementations of HFBS are 4$\times$, 32$\times$, and 50$\times$ faster than the original bilateral solver. 
+We observe that our FPGA accelerator is more energy-efficient than comparable CPU and GPU implementations, and can be practically deployed at both the camera node or in the cloud to enable real-time VR video rendering.

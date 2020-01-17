@@ -21,3 +21,5 @@ metadata.tex
 *.ipynb
 .ipynb_checkpoints/
 classic-thesis-example/
+*.run.xml
+*.bcf

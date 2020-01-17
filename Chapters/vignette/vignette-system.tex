@@ -1,0 +1,191 @@
+%!TEX root = ../paper.tex
+
+\subsection{\nameStore System Design}
+\label{sec:system}
+
+
+We now describe \name's storage manager for maintaining perceptual video information.
+\nameStore uses low overhead metadata to encode perceptual data and a heuristic-guided search to reduce the compute load of generating perceptual transcodings.
+\nameStore's metadata representation reduces full-resolution frames to a small number of bytes, and its heuristic search algorithm reduces the time taken to find an optimal tile configuration by $\sim$30$\times$ in our experiments.
+
+\subsubsection{Overview of \nameStore}
+\label{sec:system:goals}
+
+\nameStore exposes perceptual video compression to applications by providing three features: (1) transparent perceptual metadata, (2) simple storage management policies, and (3) a search algorithm that reduces transcoding cost.
+We embed perceptual metadata as a side channel within the video container.
+Standard video containers (i.e., mp4) encapsulate saliency information along with video content, so that applications with and without perceptual support can decode \name videos.
+A \threesixty video player, for example, can initialize videos to be oriented in the direction of a high-saliency region it decodes from \name metadata, but the videos can also be played traditionally in a standard video player like VLC. % perceptually-aware video applications can use information from the saliency metadata but a perceptually agnostic video applications can  and thus do not impede the functionality of video applications that choose not to use it.
+
+\systemOverviewFigure
+
+\nameStore can be used in both open and closed-feedback loops for perceptual transcoding; \ref{fig:system-overview} shows how \nameStore can switch between an ``open loop'' mode, where video is perceptually compressed once based on automatically generated saliency maps, and a ``closed loop'' mode, where perceptually compressed video can be updated based on cues from user-end viewing devices.
+The heuristic search feature included in \nameStore leverages intrinsic video features to enable $\sim$30$\times$ faster perceptual transcoding at near-optimal quality results.
+
+\nameStore operates like similar large video management services~\cite{vbench, huang2017sve, netflix2018shotbased}.
+Upon upload, it chunks videos into segments, typically 6-12 seconds in length.
+Each video segment consists of one keyframe and an ensuing set of predicted frames.
+\nameStore can perform perceptual compression on a per-video basis, or across the video library when a specified condition is met (e.g., low storage capacity, or video popularity decreasing beneath a threshold).
+
+\subsubsection{Saliency Map Metadata}
+\label{sec:system:metadata}
+% \vspace{-.5em}
+
+Video storage systems maintain containers of compressed video data that store relevant video features in metadata.
+\nameStore adopts this approach, and injects a small amount ($\sim$100 bytes) of saliency metadata inside each video container.
+% \nameCompress uses a single saliency map to encode perceptual information for a video segment, so \nameStore needs only to associate a single map with each video.
+We encode this map as a bitstring that includes fields for the number of rows and columns used for tiled saliency and the saliency weights for each tile.
+These bitstrings typically range in size from 8--100 bytes.
+\ref{fig:video-metadata} shows how this metadata is included as a saliency \texttt{trak}, similar to other metadata atoms in a video container.
+
+\videoMetadataFigure
+
+\subsubsection{\nameStore API}
+\label{sec:system:interface}
+
+
+The \nameStore API defines functions to support the open- and closed-loop modes shown in~\ref{fig:system-overview}.
+% \nameStore's API consists of three functions: \texttt{vignette\_transcode}, \texttt{vignette\_squeeze}, and \\ \texttt{vignette\_update}.
+\ref{table:policies} shows the programming interface for \name, which includes three perception-specific operations: \texttt{vignette\_transcode()}, \texttt{vignette\_squeeze()}, and \texttt{vignette\_update()}.
+Each API operation ingests a video and some required parameters and outputs a video with any generated perceptual metadata encapsulated in the video container.
+
+\begin{table*}[h]
+\centering
+\caption{\name API}
+\label{table:policies}
+\rowcolors{2}{gray!20}{white}
+
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lll} \toprule
+Function           & Compression Type & Data required                                                                                          \\ \midrule
+\texttt{transcode}        & General          & \texttt{\textless{}IN video, IN CRF/target bitrate, OUT video\textgreater{}}                                        \\
+\texttt{vignette\_transcode} & Perceptual       & \texttt{\textless{}IN video, (IN CRF/target bitrate,) OUT video, OUT saliency metadata\textgreater{}}                 \\
+\texttt{vignette\_squeeze}   & Perceptual       & \texttt{\textless{}IN video, IN CRF/target bitrate, OUT video\textgreater{}} \\
+\texttt{vignette\_update}    & Perceptual       & \texttt{\textless{}IN video, IN fixation map, OUT video, OUT saliency metadata\textgreater{}} \\ \bottomrule
+\end{tabular}
+}
+\end{table*}
+
+The \name API is included as a shared library linked into~\lightdb.
+System developers using \nameStore to manage video data can write storage policies or preconditions to execute \nameStore functions for a specific video or collection of videos.
+For instance, a social media service could apply perceptual compression as videos decrease in popularity to reduce storage capacity.
+A VR video-on-demand service that ingested eye tracking information could apply perceptual compression as new perceptual information is collected for certain videos.
+
+\noindent\textbf{Transcode Functions.}
+Transcode operations express the most basic \nameStore function, video transcoding.
+When a new video is uploaded to the storage system, the storage manager triggers the general-purpose \texttt{transcode()} function to transcode the video to any specified bitrates and formats for content delivery.
+This function takes as input a video and target quality parameter, expressed either by CRF or bitrate, and produces a regularly transcoded video.
+
+The \texttt{vignette\_transcode()} function is the default saliency-based API call.
+It takes as input a video and an optional quality or bitrate target, and produces both a video and its corresponding generated saliency metadata.
+When \texttt{vignette\_transcode} is triggered, \nameStore generates new saliency maps, and then compresses the video according to the target quality expressed.
+
+\nameStore's transcode functions use similar signatures, letting the system easily switch between regular and perceptual compression when storage system pressure changes.
+Including saliency information as a metadata stream included in the video file container makes it transparent to saliency-agnostic applications or commands like \texttt{mediainfo} or \texttt{ffprobe}.
+
+\noindent\textbf{Quality Modulation Functions.}
+As noted in \ref{subsec:mapping}, \nameCompress maps saliency to quality levels for each tile.
+A \texttt{vignette\_squeeze()} call will re-compress a video using a specified, reduced bitrate or quality threshold.
+It takes in a video, target bitrate, and saliency mapping and produces the newly compressed video.
+For instance, \texttt{vignette\_squeeze(input.mp4,100k)} transcodes a previously saliency-encoded video from a higher bitrate to a maximum of 100kbps in the most salient regions.
+The \texttt{vignette\_squeeze()} function will recompress videos from a higher quality mapping to a lower one, but it will not transcode low-quality videos to a higher-quality mapping to avoid encoding artifacts.
+This function only executes transcoding and compression with pre-generated saliency metadata, but does not update or generate new saliency metadata.
+A system can invoke \texttt{vignette\_squeeze()} before video data is sent to smaller cache or in preparation for distribution to devices with smaller displays.
+
+\noindent\textbf{Functions for Updating Perceptual Maps.}
+\nameStore also supports a ``closed-loop'' mode, where saliency maps are updated with new information from eye tracking devices.
+To invoke this mode, \nameStore uses the \texttt{vignette\_update()} function to ingest and re-process videos with new perceptual information.
+A 2-dimensional eye tracker map is easy to convert to the saliency map input used in \nameCompress.
+Similar to how \name constructs per-video saliency maps, \texttt{vignette\_update()} updates the video's saliency map with eye tracker information by executing a weighted average of the original map and the input eye tracker map.
+The update function takes in a fixation map and generates a new metadata bitstream of saliency information that is attached to the video container.
+
+\subsubsection{Heuristic Search for Tile Configurations}
+\label{subsec:search-algo}
+
+Most of \name's computation overhead comes from the exhaustive search over tile configurations for a given video.
+This exhaustive search is typically performed once, upon video upload, but consumes significant processing time.
+\nameStore contributes a lower cost search algorithm that achieves near-optimal results with a $\sim$30$\times$ performance improvement, for situations where fast saliency-based transcoding is required, e.g., for a newly uploaded video.
+Depending on available resources, a video storage system could choose the exhaustive search for optimal results or heuristic-guided search for faster processing.
+
+\name's search technique uses motion vector information from encoded video streams to estimate the size of video tiles.
+It enumerates tile configurations that group regions of high motion together, and selects a configuration that minimizes the difference in motion vector values across tiles.
+% We compute this difference by evaluating the average standard deviation of motion vector values within a tile, and comparing to the last best result seen.
+This heuristic approximates the observation that high-motion areas should not be divided across multiple tiles.
+
+The algorithm extracts motion vector information from encoded videos using {{MPEGflow}}~\cite{mpegflow} and requires one transcoding pass.
+Similar to our tile configuration search from \ref{subsec:tiles}, the search exhaustively evaluates tile configurations of the motion vectors.
+The search evaluates the motion encapsulated by tiles under a configuration and chooses the configuration with the minimum deviation of motion vectors in each tile.
+This heuristic approximates the result of exhaustive encoding but uses much less computation.
+Yet, this technique works well because good tile configurations are able to encapsulate redundant motion or frequency information with a single tile, rather than replicate it across tiles.
+Compared with an exhaustive search, which can transcode a video hundreds of times to empirically produce the optimal tile configuration, our algorithm produces a result $\sim$30$\times$ faster than the exhaustive method and within 1 dB of the best-PSNR result when executed over the videos we use in our evaluation.
+
+\begin{comment}
+  \begin{itemize}
+  \item Search space: min to max tiles, quality per tile / GOP
+  \item Search algorithm: for all tile sizes, for all GOPs, for all qualities
+  \item Loss function: eye weighted PSNR for a bitrate or CRF
+  \item For all tiles, for all GOPs: compress((some map), GOP)
+  \end{itemize}
+
+  We define the algorithm in more detail in~\ref{alg:heuristic-search}.
+
+  \begin{algorithm}
+    \caption{Heuristic-based search for selecting a near-optimal saliency tile configuration}\label{alg:heuristic-search}
+    \begin{algorithmic}[]
+      \Procedure{GenTileConfig}{$v$}\Comment{generate tiling for video $v$}
+      \LState $bestStdDev\gets 20$\Comment{Initialize to maximum}
+      \LState $bestConfig\gets$\textbf{\emph{null}}\Comment{Initialize to empty}
+      \LState $motionVectors\gets\textsc{compress}(v)$
+      \LState $minTileRows,minTileCols,motionTiles\gets \textsc{cluster}(motionVectors)$
+      \LState $lastStdDev \gets 20$
+      \While{$\Delta stdDev(motionTiles))\ge .1$}
+      \ForAll{$\{rows,cols\}\gets\{1,1\} , \{minTileRows,minTileCols\}$}
+      \If{$avgStdDev \le bestStdDev$}
+      \LState $bestStdDev\gets avgStdDev$
+      \LState $bestConfig \gets \{rows,cols\}$
+      \EndIf
+      \LState $\Delta stdDev(motionTiles)\gets lastStdDev-avgStdDev$
+      \LState $lastStdDev \gets avgStdDev$
+      \EndFor
+      \EndWhile
+      \LState \textbf{return} $bestConfig$\Comment{Return best tile configuration}
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
+
+  The \texttt{vignette\_transcode} function can also take a saliency mapping as an optional argument, which defines how saliency will correlate to quality.
+  It will, by default, invoke a linear mapping unless the developer specifies otherwise.
+  Saliency mappings exist in a hierarchy, where the high-quality mapping is the lowest compression tier, and the small file-size mapping is the highest tier.
+
+  r system decides videos are no longer popular} or if another function outlined in \ref{sec:system:interface} is met.
+  Each video segment is encoded along a resolution ladder of various resolutions and bitrates.
+  Different resolutions support different display device characteristics.
+  Different bitrates at each resolution point support different network bandwidth requirements.
+  This process of chunking a video and encoding along an encoding ladder of resolutions and bitrates is standard for all videos and does not involve any knowledge of perceptual information.
+
+  The server generates saliency maps from a trained model~\cite{mlnet2016} for each video included in the policy.
+
+  Perceptual map data is stored as additional metadata for the video.
+  Applying this function\brandon{which function?} is all that is required to implement the open loop scheme in~\ref{fig:system-overview-open}.
+  To implement the closed loop scheme, shown in~\ref{fig:system-overview-closed}, the system must support another function to receive and integrate perceptual data from end-users in the saliency maps attached to a given video.
+  \brandon{Oh, I see you talk about policies in 5.3.1-3.  But I haven't read that yet and was confused!}
+  \ref{table:system-components} describes the requisite components of a~\nameStore system.
+  Standard storage systems like Amazon already provide most of the components required to implement \nameStore.
+
+  \begin{table}[t]
+  \centering
+  \caption{\nameStore components and their functions \todo{make into figure}}
+  \label{table:system-components}
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{l|l}
+  Component                     & Role                                                               \\ \hline
+  Storage                       & Maintain and replicate data                                        \\
+  Worker                        & Execute regular and perceptual transcoding                         \\
+  Storage Manager               & Observe and trigger compression policies                           \\
+  Front-end device              & Manage and serve videos                                            \\
+  Eye-tracker                   & Optionally log eyetracking/other perceptual data \\
+                                & to improve compression
+  \end{tabular}
+  }
+  \end{table}
+
+\end{comment}

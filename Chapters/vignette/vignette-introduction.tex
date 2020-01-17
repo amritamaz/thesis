@@ -1,0 +1,45 @@
+%!TEX root = ../paper.tex
+
+
+For decades, video codecs have exploited how humans see the world, for example, by devoting increased dynamic range to spatial features (low frequency) or colors (green) we are more likely to observe.
+One such perceptual cue, \emph{saliency}, describes where in a video frame a user focuses their perceptual attention.
+As video resolutions grow, e.g., \threesixty video and 8K VR displays, the salient regions of a video shrink to smaller proportion of the video frame~\cite{sitzmann2018saliency}.
+Video encoders can leverage saliency by concentrating bits in more perceptually interesting visual areas.
+Prior work, however, focuses only on achieving bitrate reduction or quality improvement at the cost of complicated, non-portable prototypes designed for a single codec implementation \cite{li2011visual,hadizadeh2014vidcomp,8117038,5223506}.
+Exploiting saliency in video compression can ease the burden of video data growth while maintaining perceptual quality.
+In this work, we address the challenges of storing and integrating this perceptual data into cloud video storage and processing systems.
+
+
+In this section, we describe \name, a cloud video storage system that leverages perceptual information to reduce video sizes and bitrates.
+\name is designed to serve as a backend for large-scale video services, such as content delivery systems or social media applications.
+\name has two components: a compression scheme, \textit{\nameCompress}, and a storage manager, \textit{\nameStore}.
+\nameCompress leverages a new saliency-based compression algorithm to achieve up to 95\% lower bitrates while minimally reducing quality.
+\nameStore uses a simple API to trigger saliency-based compression when needed, allowing applications to trade off between faster traditional compression and \name's smaller video sizes.
+The system uses low-overhead metadata, can be easily integrated into existing media storage structures, and remains transparent to standard video applications.
+% \nameStore supports generating saliency maps with a neural network as well as integrating perceptual information from VR headsets or other eye tracking devices to improve the quality of its perceptual compression. %, shown in~\ref{fig:system-overview}.
+% \todo{do we get power savings?}
+
+\name is \textit{not} a new standalone codec or compression standard.
+Instead, it extends existing, modern codecs to take advantage of the untapped perceptual compression potential of video content, especially high-resolution video served in VR and entertainment settings.
+% \todo{drop in two examples of situations you'd use \name: video popularity or 360 video players}
+% We explicitly designed our saliency-based compression scheme to work with standard codec features.\brandon{Redundant?}
+As a result, off-the-shelf software and hardware accelerators can decompress \name's perceptually compressed videos with no modifications.
+We implement \name as an extension to \lightdb~\cite{lightdb}, a database management system for video.
+Our prototype of \name demonstrates cost savings to cloud video providers and power savings during mobile video playback.
+Our work thus complements other advances in codec implementations and can easily be implemented with new standards, like \avone.
+
+This chapter makes the following contributions:
+
+\begin{itemize}
+  \item \textbf{Systems support for perceptual video compression.} We propose \name, a system for producing and managing perceptually compressed video data. \name produces videos that are 80--95\% smaller than standard videos, consume 50\% less power during playback, and demonstrate minimal perceived quality loss.
+  \item \textbf{A forward-compatible perceptual encoding pipeline.} \name leverages existing features of modern video codecs to implement perceptual compression, and can be deployed in any video processing system that supports such codecs, such as \hevc or \avone. % \hevc-based encoding.
+  \item \textbf{Custom storage for perceptual data.} \name's storage manager efficiently stores and manages perceptually compressed videos and is integrated in a modern video processing database system. \nameStore supports both a heuristic-guided search for fast perceptual compression and an exhaustive mode to compute an optimal saliency-based compression configuration.
+\end{itemize}
+
+% \noindent\textbf{Quantitative evaluation and user study:}
+\noindent To our knowledge, this is the first work to consider storage management of perceptually-compressed video information.
+Using saliency as a motivating perceptual cue, we evaluate the limits of perceptual compression in a video storage system with a collection of modern and high-resolution video datasets.
+\name's compression scheme uses a neural network trained to predict content saliency and an off-the-shelf \hevc encoder to reduce bitrate requirements by 80--95\%.
+Our results show that \name can reduce whole-system power dissipation by 50\% on a mobile phone during video playback.
+Quantitative evaluation and user study results validate that these bitrate and power savings come at no perceived loss in video quality.
+ %\brandon{Oh, right, here's the evaluation stuff.  Consider moving most of this into a contribution unless this is a normal thing for the conference?}

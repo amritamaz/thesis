@@ -1,0 +1,59 @@
+%!TEX root = ../paper.tex
+
+\subsection{Methodology}
+\label{sec:vignette-methodology}
+
+We implement \name by extending \lightdb~\cite{lightdb}, a database management system for VR videos.
+\lightdb{} lets developers declaratively express queries over large-scale video and uses a rule-based optimizer to maximize performance.
+Developers can easily express \hevc-based saliency encoding in \lightdb's query language by combining its \texttt{Encode}, \texttt{Partition}, and \texttt{Subquery} operators:
+% \vspace{-0.5em}
+\begin{lstlisting}[style=VRQL]
+Decode("rtp://...")
+  >> Partition(Time, 1, Theta, $\pi$ / rows, Phi, $2\pi$ / cols)
+  >> Subquery([](auto& partition) {
+        return Encode(partition, $saliency\_mapping$(partition) })
+  >> Store("output");
+\end{lstlisting}
+% \vspace{-0.5em}
+
+\noindent In this example, \texttt{Partition} divides the input video into tiles, \texttt{Encode} transcodes each tile with the corresponding \texttt{saliency\_mapping} value as an argument, and  \texttt{Subquery} executes the given operation over all the partitioned tiles.
+We also wrote our object recognition queries for \ref{subsec:qos} in \lightdb to simulate video analytics workloads.
+To generate saliency maps, we used MLNet~\cite{mlnet2016} with publicly-available weights trained on the SALICON~\cite{huang2015salicon}, which achieves 94\% accuracy on the MIT300 saliency benchmark.
+
+\noindent\textbf{Baseline: } We compare \name against the HEVC encoding implementations included with \texttt{FFmpeg}.
+We configure \texttt{FFmpeg} with support for NVENCODE~\cite{nvenc} GPU-based encoding of \hevc video, as it is supported by large-scale video services and devices~\cite{de2016large}.
+We also implement \nameCompress on top of \texttt{FFmpeg} version \texttt{n4.1-dev}, and use the GPU-based NVENC HEVC encoder for tiled encoding.
+Unless otherwise specified, we target a constrained bitrate using maximum bitrate mode (VBV) to rapidly generate results.
+
+We performed all experiments on a single-node server running Ubuntu 16.04 and containing an Intel i7-6800K processor (3.4 Ghz, 6 cores, 15 MB cache), 32 GB DDR4 RAM at 2133 MHz, a 256 GB SSD drive (ext4 file system), and a Nvidia P5000 GPU with two discrete NVENCODE chipsets.
+
+\noindent \textbf{Video Workload Datasets}: We use a collection of video datasets, listed in Table~\ref{table:benchmarks}, to evaluate the impact of our techniques across different classes of video.
+Standard video formats and emerging VR formats comprise our evaluation datasets.
+The former include representative workloads from Netflix~\cite{netflix2016data} and YouTube~\cite{vbench}.
+The VR and emerging video datasets highlight demands of ultra high-definition (UHD) formats such as 360$^\circ$ video~\cite{saliency-map} and the Blender stereoscopic and UHD open source films~\cite{blender}.
+To construct a representative sampling of Blender video segments, we partitioned the movies in the Blender dataset (``Elephants Dream'', ``Big Buck Bunny'', ``Sintel'', and ``Tears of Steel'') into 12-second segments, and selected five segments that covered the range of entropy rates present in each film.
+
+\benchmarkInformationFigure
+
+In this collection of datasets, we found that the \texttt{vbench} ``desktop'' video, a 5-second computer screencast recording, responded poorly during all compression evaluations because of its low entropy and content style, so we excluded it from our evaluation results.
+We discuss this style of video in relation to \name further in \ref{sec:related}.
+We also replaced Netflix's single ``Big Buck Bunny'' video segment with the same video content from Blender's stereoscopic, 4K, 60 frames-per-second version of the video.
+
+\noindent \textbf{Quantitative Quality Metrics}:
+We measured video encoding quality using two quality metrics, peak signal-to-noise ratio (PSNR) and eye-weighted PSNR (EWPSNR).
+% While manual inspection or user studies are the ideal metric for user satisfaction, they are unsustainable to deploy for large-scale video encoding systems.
+% Instead, researchers use quantitative metrics to approximate quality.
+PSNR reports the ratio of maximum to actual error per-pixel, in decibels (dB), by computing the per-pixel mean squared error and comparing it to the maximum per-pixel error.
+% PSNR is typically computed for each of the three channels in the YCbCr video color space and averaged to produce a single average PSNR value.
+PSNR is popular for video encoding research, but researchers acknowledge that it fails to capture some obvious perceptual artifacts~\cite{netflix2016data}.
+Acceptable PSNR values fall between 30 and 50 dB, with values above 50 dB considered to be lossless~\cite{vbench}.
+For saliency prediction evaluations, researchers developed eye-weighted PSNR to more accurately represent human perception~\cite{li2011visual}.
+EWPSNR prioritizes errors perceived by the human visual system rather than evaluating PSNR uniformly across a video frame.
+We computed EWPSNR using the per-video saliency maps described in~\ref{sec:tiled-compression} as ground truth.
+% This metric uses the same core metric as PSNR; however, it accommodates more perceptual qualities but still fails to capture perceptual artifacts.
+
+% Using the VMAF phone model is more generous to distortions from comparing to an already-encoded video.
+
+% We measured quality using all three metrics: PSNR, EWPSNR, and VMAF.
+% When possible, we report all results.
+% For simplicity, we considered only PSNR when generating our per-video bitrate ladders to best mirror reported practices across the largest number of video services.

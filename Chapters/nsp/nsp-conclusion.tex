@@ -1,0 +1,32 @@
+% !TEX root = paper.tex
+% \clearpage
+
+
+
+\subsection{Conclusions}
+ \label{sec:nsp-conclusion}
+
+In this chapter, we use the notion of ``in-camera processing pipelines'' to thoroughly characterize the design of a highly constrained low-power camera system.
+Our results highlight how design parameters for individual accelerators can influence the full-system execution behavior, as well as shape decisions about whether to process a computation block in the camera or offload the computation.
+In particular, the inclusion of optional computational blocks---that are not essential for pipeline correctness, but increase overall computational efficiency by generating semantic perceptual information---can lead to significant cost reductions.
+
+Power and performance constraints require increasingly efficient computational platforms, and architects will continue to look to hardware acceleration to enable challenging applications.
+% Full-system evaluations can render useless the benefits of tightly-accelerated hardware accelerators, or that in real applications, and
+In this section, we show how the benefits of accelerators can be a small fraction of the challenges of data communication in the system.
+% As we demonstrate in this paper, even tightly-optimized accelerators can fail to improve performance if they fail to consider full-system communication challenges. % does this make sense? how does the reader know we haven't cherry picked examples?
+Given the growth of image data production and requirements of modern vision algorithms, future computational camera applications require such a full system approach to maintain power and performance efficiency.
+
+
+%capitalize on the wealth of design options within this space and no component should be designed in isolation.
+
+
+
+% \paragraph{Acknowledgment:} It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was epoch of grad school, it was the epoch of machine-learning, it was the season of Light, it was the Heart of Darkness, it was the summer of deadlines, it was a winter of Verilog, we had everything before us, we had nothing before us, we were all going direct to post-doc, we were all going to fail our defense - in short, the period was so far like the present period, that some of its noisiest professors insisted on its being received, for good or for evil, in the superlative degree of comparison paper review only.
+
+% We propose evaluating in-camera processing pipelines, a heterogeneous collection of functional blocks at different implementations, to easily assess the most efficient implementation of a power- or performance-constrained image processing workload.
+% While prior work has evaluated acceleration units for specific vision or graphics tasks, we focus on modeling and optimizing full-system image-sensor-centric workloads, where a large number of accelerators are available and the choice of when to offload computation is challenging.
+% We conduct design space explorations for two applications where in-camera processing is required, and present two specialized solutions -- a sub-mW face authentication SoC for energy harvesting cameras, and a real-time 3D-360$\degree$ stereoscopic virtual reality video assembly from 16 HD cameras.
+% For both case studies, we achieved a significant cost reduction, enabling both continuous face authentication on harvested energy and real-time HD panoramic VR video production. More importantly, we believe our technique will continue to enable new classes of applications for high-performance and energy-constrained camera systems.
+
+
+%It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way - in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.[2]

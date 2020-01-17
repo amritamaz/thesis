@@ -1,0 +1,73 @@
+% !TEX root = paper.tex
+
+\subsection{Experimental Methodology \& Results}
+We designed HFBS with the goal of improving bilateral solver performance by parallelizing on modern hardware, while maintaining comparable visual accuracy. 
+We compare our algorithm across CPU, GPU, and FPGA implementations. 
+The CPU is a Xeon E5-2620 with six cores, and the GPU is an NVIDIA GTX 1080 Ti.
+Both platforms execute optimized implementations of the kernels written and tuned with Halide~\cite{halide}.
+We prototyped our FPGA design on two devices, and simulated a third. 
+To evaluate performance and host-device memory traffic, we experimentally prototyped on a Xilinx Zynq-7020 SoC and  a Xilinx Kintex-7 connected to a host CPU over PCIe.
+We also synthesized and simulated a target evaluation design for the Xilinx Virtex UltraScale+ VU9P to evaluate full-resolution frame processing.
+Details of each platform are listed in Table~\ref{evaluated-platforms}.
+
+\begin{table}[h]
+\centering
+\caption{Evaluated platforms}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Platform & Type & Cores & Process (nm) & Freq (MHz) \\ \midrule
+Xeon E2620 & CPU & 6 & 32 & 2000 \\
+Nvidia 1080 TI & GPU & 3584 & 16 & 1582 \\
+Zynq SoC & FPGA & N/A & 28 & 125 \\
+Kintex Ultrascale+ & FPGA & N/A & 16 & 250 \\
+\bottomrule
+\end{tabular}
+\label{evaluated-platforms}
+\end{table}
+
+Both FPGA-based accelerator systems use DMA, either over an on-chip interconnect for the Zynq or PCIe for the Kintex devices. 
+The CPU prepares the bilateral-grid data structure with pixels mapped to grid vertices, and transfers them via DMA to the FPGA fabric. 
+The hardware accelerator processes the vertices with the bilateral-space filtering and streams them back to the CPU, where the bilateral-grid-filtered result is converted into the fully-processed depth map.
+
+Applying the computation of $B_3$ to a high-resolution video is equivalent to applying millions of blurs to the bilateral grid representation of the video frames. Across a single frame, most of these filters can run in parallel, so we designed streaming compute units to run bilateral filters on a stream of grid vertices. We find that BSSA requires at least 32-bit floating-point precision to produce high-quality depth maps, and use DSP units on the FPGA fabric to compute efficient floating-point operations. Each compute unit requires 18 DSP units in our design, so we can scale up to 12 parallel compute units on the ZC702. However, we project that if we scale up to a top-of-the-line Xilinx Virtex UltraScale+ FPGA, we can parallelize up to 682 compute units, which are more than enough for real-time operation. Table~\ref{table:vr-resources} summarizes the setup we use in our evaluation and resource requirements for real-time performance with a 16-camera system.
+
+\begin{table}[h]
+  \centering
+\caption{Requirements for FPGA acceleration platform.}
+  \begin{tabular}{ l @{\hskip 6pt}l @{\hskip 6pt}l @{\hskip 6pt}l  }
+\toprule
+ & \textbf{Resource} & \textbf{Evaluation} & \textbf{Target} \\
+\midrule
+System   & FPGA Model       & Zynq-7000 & Virtex UltraScale+ \\
+         & FPGA (\#)        & 1                 & 16                       \\
+         & Cameras          & 2                 & 16                       \\
+         % & Camera Model     & GoPro HERO4 Black & GoPro HERO4 Black        \\
+         % & Image Resolution & 3840x2160         & 3840x2160                \\
+         % & Camera FPS       & 30                & 30                       \\
+\midrule
+Per FPGA & Logic            & 46\%           & 44\%                  \\
+         & RAM              & 7\%            & 99\%                  \\
+         & DSP              & 94\%           & 100\%                  \\
+         & Clock (MHz)      & 125               & 250       \\
+\bottomrule
+\end{tabular}
+
+
+\label{table:vr-resources}
+\end{table}
+
+\paragraph{Benchmarking.} To benchmark our algorithm, we execute the bilateral solver on flow fields and confidences generated from the ten training images in the Middlebury stereo dataset~\cite{middlebury-data}, and evaluate runtime and accuracy. 
+We compare runtimes for our algorithm on CPU, GPU, and FPGA with the bilateral solver of~\cite{BarronPoole2016} on CPU as the baseline.
+For CPU and GPU implementations, we report the average runtime from $8$ trials; the FPGA runtime is deterministic and did not vary across trials. 
+We characterize power consumption for the CPU and GPU by measuring utilization and scaling from the reported device power.
+For the FPGA, we report estimated power consumption from Xilinx Vivado's power report.
+
+\paragraph{Bilateral grid sizes.} The size of the bilateral grid data ranges from 4KB-1.8GB, depending on the $\sigma_{xy}$ used to construct the grid.
+All results use a $\sigma_{l} = 16$. 
+We use $256$ iterations of optimization in all cases, more than enough guarantee convergence for all algorithms and implementations. 
+Note that our performance comparison is not at iso-quality, as our algorithm has slightly more error but qualitatively similar results, which we discuss more in Section~\ref{sec:depth_superres}.
+All computation is single-precision floating-point, except for bilateral solving on the FPGA which is conducted with 64-bit fixed-point numbers.
+We observe transfer throughput for the FPGA over a single PCIe channel to range between 9.6-11.3 Gbps, which is in keeping with reported estimates.
+Since both GPU and FPGA communicate with the host over PCIe and we assume frames can be pipelined, we omit the transfer time between the host processor and the device from reported runtimes.
+
+

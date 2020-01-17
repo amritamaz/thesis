@@ -1,0 +1,13 @@
+\subsection{Conclusion}
+This section proposes integrating perceptual compression techniques with cloud video storage infrastructure to improve storage capacity and video bitrates while maintaining perceptual quality.
+\name combines automatic generation of perceptual information with a video transcoding pipeline to enable large-scale perceptual compression with minimal data overhead.
+Our storage system supports a feedback loop of perceptual compression, including updates as an application gathers data from sources such as eye trackers.
+Our offline compression techniques deliver storage savings of up to 95\%, and user trials confirm no perceptual quality loss for \name videos 50-75\% smaller in size.
+
+Our limit study of video transcoding shows that significant opportunity for compression can be uncovered by the inclusion of perceptual information.
+% \todo{some statistics from limit study here}
+\name describes a feasible implementation for managing perceptual information and leveraging it to reduce video data size as more perceptual data is collected.
+\name's design complements the contributions of existing large-scale cloud video storage and processing systems.
+Video systems can use \name to further improve storage capacity or in anticipation of video workloads that produce perceptual information.
+As users adopt new technologies to capture more perceptual cues, \name's techniques can be extended to utilize these perceptual cues as well.
+As VR video consumption and new perceptual markers---such as eye trackers in VR headsets---grow in popularity, \name's techniques will be critical in integrating perceptual compression at large scale for higher quality, lower bitrate video. %reduce storage and transmission load on their video streaming and storage infrastructure

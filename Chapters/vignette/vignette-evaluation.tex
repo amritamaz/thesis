@@ -1,0 +1,266 @@
+%!TEX root = ../paper.tex
+
+
+\subsection{Evaluation}
+\label{sec:vignette-eval}
+
+We designed our evaluation to answer the following questions:
+
+\begin{itemize}
+ \item \textbf{Storage:} What storage and bandwidth savings does \name provide? How do tile configurations affect compression gains and quality?
+ \item \textbf{Quality of Service:} How does \name's compression technique affect quality of service (QoS) of video services like video streaming (perceptual quality user study) or machine learning (speed, accuracy)? % Does perceptual compression hamper the quality of standard video services?
+ % \item[\ding{205}] \textbf{User Study:} How do viewers respond to our perceptual compression implementation?
+ \item \textbf{Compute Overhead:} What is the computational overhead of \name's compression algorithm and storage manager?
+ \item \textbf{Data Center \& Mobile Cost:} How do Vignette's storage and network bandwidth savings impact video storage system and mobile viewing costs?
+\end{itemize}
+
+\subsubsection{Storage and Bandwidth Savings}
+\label{subsec:storage}
+To evaluate the storage and bandwidth benefits of \name, we applied \nameCompress to the corpus of videos described in \ref{sec:vignette-methodology}.
+We transcoded our video library at iso-bitrate in salient regions and decreased bitrate linearly with saliency to a minimum 10\% target bitrate in the lowest saliency tiles, as illustrated in~\ref{fig:saliency-tiles-overview}.
+In these experiments, we examine how our transcoding performs across a range of resolutions and workloads, as is expected in a video storage system.
+
+
+\paragraph{Impact of Tiling on Compression and Quality: } We first examined the impact of tiling on compression benefits using a fixed saliency map.
+% We used a linear mapping of saliency values to constant bitrate to encode saliency information in individual HEVC tiles.
+We used an exhaustive tile configuration search and evaluated all tile sizes to identify an optimal number of tiles for each video.
+We observed that, given a fixed saliency map, optimal tile configurations to maximize storage savings and quality varied based on entropy and video content.
+Some videos benefited from many small tiles, while others performed best with fewer large tiles.
+
+\tileVsSizeFigure
+
+The smallest tile size we evaluated were 64 pixels in breadth, but most videos performed best with tiles having a breadth of 300--400 pixels.
+As \ref{plot:tile-vs-size} shows, this experiment indicated that the optimal tile configuration for a video is content-dependent and can vary from four tiles to forty, and that tile configuration is an important component of tile-based compression.
+
+
+\paragraph{Overall Compression, Bandwidth, Quality: }We next explored peak compression, bandwidth, and quality savings by applying \name to our video corpus and evaluating compression and quality savings.
+We used the results of our exhaustive tile search to identify the best compression-quality configurations for each video.
+\ref{fig:average-storage-bitrate-savings} shows aggregate storage savings, partitioned by  dataset.
+
+\avgStorageBitrateSavings
+
+Overall, we find that \nameCompress produces videos that are 1--15\% of the original size when maintaining the original bitrate in salient regions.
+These compression savings include the fixed overhead of perceptual metadata, which is $<$100 B for all videos.
+Datasets with higher video resolutions (Blender, VR-360) demonstrated the highest compression savings.
+The vbench dataset, which is algorithmically chosen to have a wide variance in resolution and entropy, exhibits a commensurately large variance in storage reduction.
+Of the videos with the lowest storage reduction, we find that each tends to have low entropy, large text, or other 2D graphics that are already efficiently encoded.
+
+
+\ref{table:dataset-quality} shows the average reduction in bitrate and resulting quality, measured in PSNR and EWPSNR.
+Our results show that EWPSNR results are near-lossless for each benchmark dataset.
+The PSNR values---which do not take the human visual processing system into account--- are lower, but still above the 35 dB threshold, and so remain acceptable for viewing.
+
+\begin{table}[h]
+  \caption{Average bitrate reduction and quality measurements for \nameCompress by dataset. For PSNR and EWPSNR, $>$ 30 dB is acceptable for viewing, 50 dB+ is lossless.}
+  \label{table:dataset-quality}
+  \centering
+  % \resizebox{\linewidth}{!}{%
+    \begin{tabular}{lccc}
+      \toprule
+       & Bitrate  & PSNR & Eye-weighted \\
+      Benchmark & Reduction &   (dB) & PNSR (dB)  \\ \midrule
+      vbench       &   85.6 \%     & 39       &   51                                    \\
+      Netflix      & 98.6\phantom{ \%}       & 34        &  45                                 \\
+      VR-360      & 98.8\phantom{ \%}        & 36        &  45                                \\
+      Blender     & 98.2\phantom{ \%}        & 39        &  49               \\ \bottomrule
+    \end{tabular}
+  % }
+\end{table}
+
+
+
+
+\ref{fig:example-vid-saliency} highlights a \name video frame from the Netflix dataset, with an output PSNR of 36 dB and EWPSNR of 48 dB.
+Overall, the results indicate that \nameCompress provides acceptable quality for its compression benefit.
+
+\exampleVidSaliencyFigure
+
+\subsubsection{Quality of Service}
+\label{subsec:qos}
+To understand the impact of perceptual compression on common video system workloads, we evaluated quality of service (QoS) delivered by \name for two applications: entertainment streaming with a user study and evaluation of a video analytics application that performs object recognition.
+These applications optimize for different QoS metrics: perceptual quality for entertainment video, and throughput and accuracy for object recognition.
+
+
+\paragraph{Perceptual Quality User Study:} We ran a user study to quantify viewer perception of our saliency-based compression.
+The study presented users with two versions of the same video: one encoded with \hevc at 20 Mbps, the other with \nameCompress.
+The \nameCompress videos were randomly chosen to be either 1 Mbps, 5 Mbps, 10 Mbps, or 20 Mbps.
+% One video in the pair was encoded with \hevc and the other with \nameCompress.
+The study asked users their preference between the matched pairs for 12 videos.
+The bitrate of the \nameCompress video varied randomly across the questionnaire.
+The goal was to discover if viewers prefer \nameCompress to \hevc, and, if so, if those preferences are more or less pronounced at different bitrate levels for \name.
+
+\userStudyFigure
+
+
+The 12 videos included three videos from each dataset, selected to cover a range of entropy levels.
+All videos had original bitrates above 20Mbps, except two from vbench.
+Each video was encoded at a target bitrate (1Mbps, 5Mbps, 10Mbps, or 20Mbps), and the questionnaire randomly selected which bitrate to serve.
+We distributed the questionnaire as a web survey and ensured videos played correctly in all browsers by losslessly re-encoding to \avc.
+
+We recruited 35 naive participants aged 20--62 (51\% women, 49\% men) from a college campus to participate in the study.
+\ref{plot:user-study} shows the results averaged across subjects and videos.
+When \name videos are encoded at 1 Mbps in the most salient regions, 72\% users preferred the \hevc baseline.
+However, for \name videos encoded at 5, 10, and 20 Mbps, users either could not tell the difference between \hevc and \name, or preferred \name videos 60\%, 79\%, and 81\% of the time, respectively.
+This suggests that video systems can deliver \name-encoded videos at 50-75\% lower bitrate with little perceived impact.
+
+\paragraph{Object classification: } Video storage and processing systems often perform analytics and machine learning tasks on their video libraries at scale~\cite{poms2018scanner,shen2017deepvideo,zhang2017livevideoanalytics}.
+To evaluate any performance degradation in latency or quality from using \nameCompress, we profile \name while running  YOLO~\cite{redmon2017yolo}, a popular fast object recognition algorithm.
+We compare against baseline \hevc-encoded videos to evaluate if \name incurs any additional cost in a video processing setting.
+
+\begin{table}[h]
+  \centering
+  \caption{\name Speedup and Accuracy Compared to \hevc Baseline on YOLO Object Recognition.}
+  \label{table:yolo}
+\begin{tabular}{ccc} \toprule
+  Decode              & Total Speedup             &  Average    \\
+  Speedup             & (Decode + YOLO)           & Accuracy \\ \midrule
+  34.6\% $\pm$ 14.3\% & 2.6\% $\pm$ 2.2\% & 84\% $\pm$ 14\% \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\ref{table:yolo} shows that using \name-compressed videos provides some speedup when decoding videos for object recognition, but this benefit is overshadowed by the cost of running YOLO.
+Examining accuracy, we find that \name videos maintain 84\% accuracy on average, compared to the baseline \hevc videos.
+% \todo{break out table by benchmark suite}
+We find that accuracy on the YOLO task is lowest for the videos in the VR360 suite, and tends to correspond to the areas where the video is distorted from the equirectangular projection.
+While saliency-compressed videos can provide slight benefits for video analytics latency, especially if video decoding is the system bottleneck, future work should investigate how to optimize saliency-based compression for video analytics.
+
+
+\subsubsection{Compute Overhead}
+\nameCompress bears the additional processing overhead of executing a neural network to generate or update saliency maps.
+\nameStore can switch between an exhaustive or more computationally-efficient heuristic tile configuration search to uncover optimal tile configurations for a video.
+We benchmarked the latency of the combined saliency and transcoding pipeline in two modes: exhaustive, which generates saliency maps per frame and exhaustively evaluates tiling, and heuristic, which uses the heuristic search algorithm to select a tile configuration within 0.25 dB of the best-PSNR choice (\ref{subsec:search-algo}).
+
+\computeTable
+
+\ref{table:compute} shows generating saliency maps in either mode dominates computation time for \name, and that our heuristic search is 33$\times$ faster than an exhaustive search.
+This step, however, is only executed once per video and off the critical path for video streaming workloads.
+
+
+\subsubsection{Analytical Model of \name Data Center and Mobile Costs}
+\label{subsec:datacentermobile}
+We use our evaluation results to model \name's system costs at scale for data center storage and end-user mobile power consumption. While these results are a first-order analysis, they suggest the potential benefit of deploying \name.
+
+% \vspace{.25cm}
+\paragraph{Data center compute, storage, and network costs. }
+Given the high compute cost of \name, we evaluate the break-even point for systems that store and deliver video content.
+We used Amazon Web Services (AWS) prices from July 2018 in the Northern California region to characterize costs.
+We use a \texttt{c5.xlarge} instance's costs for compute, S3 for storage, and vary the number of videos transferred to the Internet as a proxy for video views.
+We assume a video library of 1 million videos that are 10 MB each, encoded at 100 different resolution-bitrate settings (as in~\cite{huang2017sve,netflix2018dynamicopt}) to produce $\sim$500 TB of video data.
+We estimate baseline compute cost to be a two-pass encoding for each video at $\$0.212$ / sec and \name's transcode computation to be $5\times$ a baseline transcode.
+Larger companies likely use Reserved or Spot Instance offerings, which provide better value for years-long reservation slots or non-immediate jobs; they are 36\% and 73\% cheaper, respectively.
+For storage, we estimate costs to be \$0.023 / GB on S3 and assume Vignette-compressed videos would be 10\% of the original videos (\ref{subsec:storage}).
+Transferring data out from S3 costs \$0.05 / GB; this cost is where \name achieves the majority of its savings.
+
+\awsBreakevenFigure
+
+% Cost(views) = Proccesing(videos) + Storage(videos) + Network(views)
+% P(videos) = videos*encoding_options*transcode_time
+% S(videos) = videos*video_size*encoding_options
+% Network(views) = views*video_size
+
+\ref{fig:aws-utilization} shows how different compute pricing models produce different savings at small numbers of video library views, but that \name becomes cost-effective at large video viewing rates.
+For all compute pricing levels, a system would need to service $\sim$2 billion views across a million-video library before \name's compute overhead would be amortized across transmission and storage savings.
+This number is easily reached by large video services; Facebook reported 8 billion daily views in 2016~\cite{fbviews}.
+
+% \vspace{.25cm}
+\paragraph{Mobile Power Consumption.}
+We explicitly designed \name to work with the \hevc{} standard so off-the-shelf software and hardware codecs could decompress \name videos.
+\nameCompress's tiling strategy, however, makes video bitstream density highly non-uniform across the visual plane.
+This results in inefficiency for hardware architectures that decode variably-sized tiles in parallel.
+On the other hand, even such designs will achieve a higher overall power efficiency because of the reduced file sizes to decode and display.
+To investigate whether \name videos can achieve power savings, we profiled power consumption on a Google Pixel 2 phone during video playback of \name videos and standard \hevc-encoded videos.
+
+\powerFigure
+
+We measured battery capacity on a Google Pixel 2 running Android 8.1.0, kernel 4.4.88-g3acf2d53921d, playing videos on MX Player v1.9.24 with ARMv7 NEON instructions enabled.
+When possible, MX Player used hardware acceleration to decode videos.\footnote{MX Player only supported decoding stereoscopic videos with the software decoder.}
+We disabled nonessential display and button backlights, as well as any configurable sensors or location monitors, to minimize extraneous power consumption.
+We logged battery statistics each minute using 3C Battery Monitor Widget v3.21.8.
+We conducted three trials, playing the 93-file video library in a loop until battery charge dissipated from 100\% to 30\%, for our \hevc baseline and \name videos.
+
+\ref{fig:power} shows our results.
+We found that \name video enabled 1.6$\times$ longer video playback time with the same power consumption, or, $\sim$50\% better battery life while viewing a fixed number of videos.
+While hardware decoder implementations are typically proprietary, these results indicate that perceptual compression has benefits for mobile viewers, as well as cloud video infrastructure.
+
+\subsubsection{Discussion}
+
+\paragraph{Using \name in Other Storage Systems.}
+We crafted the policies, metadata extensions, and encoder design to make the ideas behind \nameStore{} compatible with pre-existing video storage or transcoding systems.
+\name can easily be implemented for other codecs, like the upcoming \avone,
+For instance, an Amazon MediaConvert instance with a storage layer in Amazon EBS and Glacier can easily use the policies and metadata in \ref{sec:system} to implement \name.
+We could further improve \name by building on other optimizations that work with off-the-shelf video standards.
+For instance, \name's heuristic search algorithm could include power and performance information from open-source video transcoding ASICs~\cite{asicclouds, zhang2017racetosleep} to target more power-efficient tiling configurations.
+VideoCoreCluster~\cite{liu2016greenvid} demonstrated energy-efficient adaptive bitrate streaming in real-time using a cluster of low-cost transcoding ASICs, which \name could leverage for better server transcoding performance.
+
+\paragraph{Other video system optimizations.}
+Using Fouladi~\etal's parallel cloud transcoding could also improve \name's transcode latency, and \name's saliency-based tiling could integrate with their codesigned network transport protocol and video codec to better tune streaming quality~\cite{fouladi2018salsify, fouladi2017excamera}.
+At the physical storage layer, Jevdjic \etal's approximate video storage framework, which maps video streams to different layers of error correction, could be coupled with \name's saliency mapping for more aggressive approximation of non-salient video regions~\cite{jevdjic2017approxvid}.
+Integrating \name with these systems could further improve power efficiency during playback, transcoding latency, or archival video storage durability.
+
+
+\begin{comment}
+
+  The optimal tile configuration encodes the best rectangular granularity of tiles to capture information from the saliency map.
+  We implemented the technique, measured compression ratios, and computed two quality metrics: PSNR and VMAF.
+  \ref{plot:tile-vs-size} demonstrates video size differences compared to the original encodes.
+
+  \tileVsSizeFigure
+  We swept across tile sizes with a single quality mapping to uncover the "optimal" number of tiles for each video.
+  Tiling partitions the amount of information available to the encoder, which may make it a worse than not tiling because the encoder cannot access information between neighboring tiles.
+
+  Pushing close to this size would also result in a poor compression result because of the constrained information available to be encoded per-tile. % from the \hevc standard~\cite{hevc}.
+  We also observe that some videos struggle to maintain high PSNR after tiling; we evaluate this further in~\ref{subsec:qos}.
+  \todo{condense this result, put a table to summarize those results or pull out some numbers}
+
+  To evaluate the benefits and drawbacks of saliency-based compression, we performed a limit study exploring the minimum and maximum benefit of the tiling-based saliency scheme described.
+
+
+    Each video segment is encoded along a resolution ladder of various resolutions and bitrates.
+    Bitrate ladders enumerate all parameters exhaustively to support varied display device characteristics and network bandwidth requirements.
+    Different bitrates at each resolution point support different network bandwidth requirements.
+    Moreover, bitrate ladders identify situations when a video may have demonstrate higher quality at a lower resolution and higher bitrate than the reverse~\cite{netflix2018dynamicopt}.
+
+  \vbenchScoreFigure
+
+  \noindent \textbf{vbench scores. }
+  We evaluated \name's performance on \texttt{vbench}~\cite{vbench} to compare scores of video service scenarios to \hevc{}.
+  For quality scores, we used PSNR only, as in the original paper~\cite{vbench}, although it is the least competitive of our quality metrics.
+  Although our system is not explicitly designed to compete with other video transcoding architectures, computing \texttt{vbench} scores highlights the scenarios in which \name is competitive and where more improvement is needed.
+  We generated \texttt{vbench} scores, shown in \ref{plot:vbench}, for all the videos in the \texttt{vbench} suite.
+  The results of our \texttt{vbench} analysis show that our system performs well in some scenarios but not others, as expected. This communicates \todo{}.
+
+  \textbf{Microbenchmark: Impact of Different Saliency Mappings.}
+  For the tile-based scheme, we have to optimize for two variables: number of tiles in a video and quality map of low-saliency regions.
+  We processed each video and saliency map pair by sweeping over all tile-size configurations and the linear, high-quality, and small file size quality mappings.
+
+  \begin{table}[tb]
+    \caption{Bitrate and quality results by saliency mapping.}
+    \label{table:mapping-results}
+  \begin{tabular}{l|llll}
+  Mapping & Bitrate $\downarrow$ & PSNR $\downarrow$ & EWPSNR $\downarrow$ & VMAF$\downarrow$ \\ \hline
+  Linear          & 50 \%            & 10                &                     &                  \\
+  High-quality    & 30 \%            & 2                 &                     &                  \\
+  Small file size & 70 \%            & 15                &                     &
+  \end{tabular}
+  \end{table}
+
+  \ref{table:mapping-results} shows \todo{blah blah blah} over the saliency mappings.
+  % While most videos responded well to tile-based compression, some high entropy videos demonstrated significant PSNR loss.
+  % Upon inspection, we found that this PSNR loss stems from poor motion encoding ability within tile bounds.
+  % \ref{fig:vignette-failures} shows two instances of this failure case, which occured in 6\% of videos in our dataset.
+  % Since video libraries often partition videos based into segments or shots based on content, this issue could be resolved in practice by not applying \nameCompress to these high-motion segments.
+
+  % \brandon{Is there no result figure or table for this section? }
+
+  % \textbf{Microbenchmark: Saliency Map Impact on Compression and Quality.}
+  % After finding an optimal tile configuration for each video, we investigated the impact of our compressed super-saliency map on compression and quality results.
+  % We evaluated our videos compressed with four test saliency maps: a baseline ``all-1's'' saliency map, \name's auto-generated super-saliency map, and two ``updated'' maps: our input map re-weighted with a strawman random saliency map, and our input map re-weighted with one eye tracker trace from ~\cite{saliency-map}.
+  % The baseline map marks the whole video as salient, approximating a regular encoding, but with the overhead of tiles.
+  % % We re-weighted the saliency map augmented with eye tracker data
+  % We computed EWPSNR with collected eye tracker traces as weights and restricted this evaluation to the VR-360 dataset, as we only had eye tracker traces for that benchmark.
+  %
+  % As expected, applying \nameCompress with an ``all-1's'' map provided no compression benefits and resulted in no quality loss, incurring an overhead of 1.5\%-4\% bitrate.
+  % This overhead could be interpreted as overhead from including tiling information or
+  % \todo{fill in this}
+
+\end{comment}

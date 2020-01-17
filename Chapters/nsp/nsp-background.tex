@@ -1,0 +1,43 @@
+% !TEX root = paper.tex
+\subsection{Near-Sensor Processing} \label{sec:nsp-background}
+
+In-camera processing is not new, and prior work has introduced many in-camera processors~\cite{hauswald2014hybrid}. In this section, we discuss our general approach to analyzing image processing pipelines and review notable related work in computation offloading, image processing hardware, and similar accelerator designs. This section summarizes literature related to our low-power mobile vision hardware accelerator design, organized into the areas of computation offloading, vision-centric architectures, and in-camera hardware accelerators.
+
+\subsubsection{Computation offload}
+
+\subsubsection{Vision-centric architectures}
+
+Consequently, we choose to explore fixed-function hardware to meet the constraints of our ultra-low-power or high-performance application targets. Table~\ref{table:near-sensor-accelerators} categorizes image processing accelerators related to the computational blocks we evaluate in our case studies on different hardware platforms: In-sensor or analog, ASIC, FPGA, and GPU. 
+
+
+\begin{table*}[h]
+\caption{Related accelerators for in-camera processing.}
+  \label{table:near-sensor-accelerators}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llll}
+\textbf{In-sensor} & \textbf{ASIC} & \textbf{FPGA} & \textbf{GPU} \\
+\midrule
+Motion~\cite{multipower-isscc13,multipower-isscc05} & ASIC image processing~\cite{bilat_isscc,myriad15,convolution_engine} & FPGA image processing~\cite{darkroom} & GPU image filters~\cite{halide} \\
+Edge detection~\cite{edge-sensor15, edge-isscc01, conv-sens13} & ASIC NN~\cite{bilat_isscc,myriad15,convolution_engine,shidiannao,minerva,eyeriss} & FPGA face detection~\cite{cvpr2007,cho_parallelized_2009,energy_eff_vj12} & GPU FD~\cite{vj_gpu,opencv} \\
+Early NN layers~\cite{Chen_2016_ASPVision, redeye, conv-sens09} &  & FPGA NN ~\cite{farabet2010} & GPU NN~\cite{cudnn} \\
+Analog/mixed-signal~\cite{Centeye, Alaghi13, stoch-edge-sensor14} &  &  &  \\
+\midrule
+\end{tabular}
+}
+    % \vspace{-1em} 
+\end{table*}
+
+
+
+\subsubsection{In-camera compression}\label{sec:compression-related-work}
+Compressing sensor data incurs computation--communication tradeoffs that are related to what we study in this paper. 
+The range of choices for compression methods (e.g., lossy, loss-less, etc.) and parameters (e.g., compression rate,speed, etc.) make it a difficult optimization problem, and often it is not trivial to decide whether it is cost-efficient to perform compression inside a sensor node~\cite{zordan-compression}. 
+Methods of sensor data compression, and their tradeoffs are well-studied in the literature~\cite{vanderbyl-compression}. 
+These data compression methods are usually application-agnostic, although they may be specialized for an application domain (e.g., image processing). 
+Data compression and the in-camera processing pipelines discussed here are complementary. Compression blocks can be included as optional blocks at the output of each application block, and the same methodology can be used to solve the joint problem.
+
+
+Compression is typically application-agnostic, although they may be specialized for an application domain (e.g., image processing).
+While we do not explicitly consider compression in this study, compression can be treated as an optional block in in-camera processing pipelines.
+
+

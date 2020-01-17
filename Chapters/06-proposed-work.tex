@@ -1,0 +1,47 @@
+\section{Proposed Work}
+\label{sec:proposed}
+\markboth{Proposed Work}{Proposed Work}
+
+My accomplished work towards this thesis demonstrated that perceptual optimizations can be applied to video systems during video capture and storage. 
+To complete this thesis, I plan to apply these ideas to two other aspects of video systems: machine learning-based analytics frameworks during video processing, and mobile video playback during streaming.
+I propose two bodies of work: 
+
+\begin{itemize}
+    \item \textbf{Machine Vignette}: Generating profiles of neural network saliency to optimize video compression for deep learning systems. 
+    \item \textbf{Chroma Vignette}: Leveraging information about color perception to reduce display power consumption on mobile phones during video playback.
+\end{itemize}
+
+These projects build on the ideas for perceptual optimization developed in~\cref{sec:near-sensor}, \cref{sec:hfbs}, and \cref{sec:vignette}, but applied to other critical aspects of the video systems pipeline.
+
+\subsection{Machine Vignette: AI-friendly Perceptual Models for Video Analytics}
+\label{sec:mach-vign}
+Vignette uses neural networks to estimate human visual perception for videos, trading off file size for perceptual quality.
+Video analytics, a major video workload, however, typically processes videos through computer vision algorithms to generate some non-video output, e.g., traffic camera footage to read license plates, count cars, or detect and recognize objects.
+These systems mostly optimize video for processing by machine learning applications, but rather, by machines to produce outputs to queries over large-scale videos.
+
+While Vignette's human-optimized compression technique maintains visual quality and reduces inference latency due to faster decode times, results show degraded accuracy on object recognition tasks.
+For these systems, human saliency is less important than machine learning performance, but there are other systems, namely video analytics platforms, which depend on machine learning performance on video data.
+The initial analysis in~\cref{sec:vignette-eval} indicated that including human perceptual models as a guiding signal during compression improved decode latency by 35\%, but the overall speedup from YOLO remained low, and accuracy was reduced.
+Recent work in neural network understanding explains this degradation by observing large differences between what humans and machine learning models find salient in a video~\cite{olah2018the}.
+
+To support video analytics, I propose extending Vignette to include machine saliency, i.e., what spatial regions of a neural network model finds important during inference, and developing new algorithms using machine saliency to optimize performance on video analytics applications.
+The goal of this work is to generate new saliency models, based on prior work in neural network saliency and interpretability~\cite{Simonyan2013DeepIC,Zeiler2014VisualizingAU,Zintgraf2017VisualizingDN}, that maintain the compression and performance results but also maintain accuracy on machine learning tasks. 
+My hypothesis is that using AI-friendly perceptual models to aggressively scale in non-salient regions, in conjunction with existing optimizations for video analytics systems~\cite{videostorm, chameleon18sigcomm, focus18osdi} will reduce query latency and allow distributed analytics systems to achieve better load balancing.
+
+\subsection{Chroma Vignette: Color Transforms for Power-efficient Mobile Video:}
+\label{sec:chroma-vign}
+When playing video on smartphones or AR/VR headsets, the cost of display rendering dominates power consumption~\cite{likamwa-apsys}. 
+Playing Vignette videos consumes less power than conventionally encoded videos due to smaller file size, but this power efficiency can be dramatically improved by incorporating more perceptual information about color. 
+Presently, Vignette reduces quality in less salient regions using bitrate or other quality metrics, but maintains color fidelity uniformly throughout the video frame. 
+Video compression algorithms already include some tradeoffs between color quality and bitrate, but do not take into account saliency information or display rendering information.
+
+For OLED mobile displays, however, slight, imperceptible, changes in color value can result in large differences in power dissipation. 
+Using hardware-software codesign techniques to accommodate these perceptual color transforms could result in longer video playback on mobile devices.
+For instance, prior work applied perceptual color transformations to static images to reduce OLED display power consumption by up to 66\%~\cite{crayon, stanley2018perceived}. 
+
+I propose to develop a hardware-software system on top of Vignette to approximate color values in less-salient tiles. 
+Prior work achieved significant power savings for 2D graphics and small images, but these solutions cannot be directly transferred from static images to the domain of compressed video.
+To solve this, I aim to use existing infrastructure from Vignette to develop a perceptual color transform framework for mobile video.
+I propose developing a cloud-based compression framework on top of Vignette to generate power-efficient color profiles.
+These profiles could then be transferred with streamed video to a mobile device, and the mobile operating system could transform per-frame colors to reduce power consumption.
+My hypothesis is that these color transform profiles can be stored and transferred with the videos at low overhead, and rendered with little perceptual loss and large power savings for the user.
