@@ -1,6 +1,6 @@
 %!TEX root = ../paper.tex
 
-\subsection{\nameStore System Design}
+\section{\nameStore System Design}
 \label{sec:system}
 
 
@@ -8,7 +8,7 @@ We now describe \name's storage manager for maintaining perceptual video informa
 \nameStore uses low overhead metadata to encode perceptual data and a heuristic-guided search to reduce the compute load of generating perceptual transcodings.
 \nameStore's metadata representation reduces full-resolution frames to a small number of bytes, and its heuristic search algorithm reduces the time taken to find an optimal tile configuration by $\sim$30$\times$ in our experiments.
 
-\subsubsection{Overview of \nameStore}
+\subsection{Overview of \nameStore}
 \label{sec:system:goals}
 
 \nameStore exposes perceptual video compression to applications by providing three features: (1) transparent perceptual metadata, (2) simple storage management policies, and (3) a search algorithm that reduces transcoding cost.
@@ -26,7 +26,7 @@ Upon upload, it chunks videos into segments, typically 6-12 seconds in length.
 Each video segment consists of one keyframe and an ensuing set of predicted frames.
 \nameStore can perform perceptual compression on a per-video basis, or across the video library when a specified condition is met (e.g., low storage capacity, or video popularity decreasing beneath a threshold).
 
-\subsubsection{Saliency Map Metadata}
+\subsection{Saliency Map Metadata}
 \label{sec:system:metadata}
 % \vspace{-.5em}
 
@@ -39,7 +39,7 @@ These bitstrings typically range in size from 8--100 bytes.
 
 \videoMetadataFigure
 
-\subsubsection{\nameStore API}
+\subsection{\nameStore API}
 \label{sec:system:interface}
 
 
@@ -98,7 +98,7 @@ A 2-dimensional eye tracker map is easy to convert to the saliency map input use
 Similar to how \name constructs per-video saliency maps, \texttt{vignette\_update()} updates the video's saliency map with eye tracker information by executing a weighted average of the original map and the input eye tracker map.
 The update function takes in a fixation map and generates a new metadata bitstream of saliency information that is attached to the video container.
 
-\subsubsection{Heuristic Search for Tile Configurations}
+\subsection{Heuristic Search for Tile Configurations}
 \label{subsec:search-algo}
 
 Most of \name's computation overhead comes from the exhaustive search over tile configurations for a given video.

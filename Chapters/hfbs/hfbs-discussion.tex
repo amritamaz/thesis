@@ -1,22 +1,22 @@
-\subsection{Discussion}
+\section{Discussion}
 There are a number of optimizations our hardware design can integrate for improved performance.
 Nevertheless, we observe that our design can be practically deployed at both the camera node or in the cloud to enable real-time VR video rendering.
 
 
-\paragraph{Accelerator optimizations.}
+\subsection{Accelerator optimizations.}
 There are many opportunites to further optimize our hardware design.
 For instance, our design only accelerates the iterative optimization portion of HFBS.
-Integrating splat and slice operations into our accelerator, as in~\cite{bilat_isscc}, would reduce transfer costs from GB-large bilateral grid to smaller MB-sized images and further reduce runtimes. 
-Also, many vertices of the dense bilateral grid begin as zeros and do not need to be processed;  intelligently ignoring these zero-valued grid vertices can reduce wasted computation and potentially improve the runtime. 
+Integrating splat and slice operations into our accelerator, as in~\cite{bilat_isscc}, would reduce transfer costs from GB-large bilateral grid to smaller MB-sized images and further reduce runtimes.
+Also, many vertices of the dense bilateral grid begin as zeros and do not need to be processed;  intelligently ignoring these zero-valued grid vertices can reduce wasted computation and potentially improve the runtime.
 Similarly, the wasted memory space from our addressing scheme can be mitigated with increased control logic, which may allow us to maximize the bilateral grid size.
 We can also more tightly pipeline the three phases of reading, processing, and writing out grid data to reduce latency; these stages currently execute sequentially.
-To ease prototyping portability, our design used single PCIe channels for reading and writing, which leaves the remaining channels idle. 
+To ease prototyping portability, our design used single PCIe channels for reading and writing, which leaves the remaining channels idle.
 The board we target, Xilinx Virtex UltraScale+, supports up to 16 PCIe channels that can be leveraged to improve transfer times.
 
-\paragraph{System specifications for real-time VR video processing platforms.}
-While our design can execute bilateral solving under real-time constraints, the bilateral solver is just one step in the Jump VR video rendering pipeline. 
-Moreover, the design we present processes the flow field from a camera pair while the VR video capture system we target processes 16 flow fields from a 16-camera rig. 
-We outline the specifications and cost for a system that could process the full 16-camera input to produce virtual reality video in real-time in Table~\ref{vr-shoebox}. 
+\subsection{System specifications for real-time VR video processing platforms.}
+While our design can execute bilateral solving under real-time constraints, the bilateral solver is just one step in the Jump VR video rendering pipeline.
+Moreover, the design we present processes the flow field from a camera pair while the VR video capture system we target processes 16 flow fields from a 16-camera rig.
+We outline the specifications and cost for a system that could process the full 16-camera input to produce virtual reality video in real-time in Table~\ref{vr-shoebox}.
 \begin{table}[h]
 \centering
 \caption{Full-system specification for an end-to-end real-time VR pipeline}
@@ -25,10 +25,10 @@ We outline the specifications and cost for a system that could process the full 
 \begin{tabular}{llrrrr}
 \toprule
 \textbf{Item}     & \textbf{Use}          & \textbf{\#} & \textbf{Unit \$} & \textbf{Total \$} & \textbf{Max. Power} \\ \midrule
-GoPro      	 & Camera      & $16$   & \$$360$       & \$$5,760$       & N/A            \\ 
+GoPro      	 & Camera      & $16$   & \$$360$       & \$$5,760$       & N/A            \\
 Virtex Ultrascale+	 & HFBS   & $16$   &  \$$2,995$    	& \$$47,920$ 		& $\approx$$400$ W   \\
 Intel i7-7700K     & Host CPU     	  & $1$     & \$$350$   	& \$$350$         &  $\approx90$ W              \\
-Nvidia Titan X    	 & Etc. acceleration  & $1$        	& \$$1,600$       & $\approx$$250$    \\ \midrule 
+Nvidia Titan X    	 & Etc. acceleration  & $1$        	& \$$1,600$       & $\approx$$250$    \\ \midrule
 \midrule \textbf{Full-System} &  & & & \$55,360 & 490 W \\ \bottomrule
 \end{tabular}
 
@@ -38,4 +38,3 @@ Nvidia Titan X    	 & Etc. acceleration  & $1$        	& \$$1,600$       & $\app
 The monetary cost of deploying such a many-FPGA system in both configurations is high, but the power consumption of our FPGA-based system, with 16 high-end fully-utilized FPGAs, is approximately that of two GPUs.
 Such power savings can be critical for mobile camera rigs.
 At the data center level, power constraints are less stringent, but deploying custom hardware for high-bandwidth tasks can still reduce power consumption and operating costs.
-

@@ -1,7 +1,7 @@
 %!TEX root = ../paper.tex
 
 
-\subsection{Evaluation}
+\section{Evaluation}
 \label{sec:vignette-eval}
 
 We designed our evaluation to answer the following questions:
@@ -14,7 +14,7 @@ We designed our evaluation to answer the following questions:
  \item \textbf{Data Center \& Mobile Cost:} How do Vignette's storage and network bandwidth savings impact video storage system and mobile viewing costs?
 \end{itemize}
 
-\subsubsection{Storage and Bandwidth Savings}
+\subsection{Storage and Bandwidth Savings}
 \label{subsec:storage}
 To evaluate the storage and bandwidth benefits of \name, we applied \nameCompress to the corpus of videos described in \ref{sec:vignette-methodology}.
 We transcoded our video library at iso-bitrate in salient regions and decreased bitrate linearly with saliency to a minimum 10\% target bitrate in the lowest saliency tiles, as illustrated in~\ref{fig:saliency-tiles-overview}.
@@ -75,7 +75,7 @@ Overall, the results indicate that \nameCompress provides acceptable quality for
 
 \exampleVidSaliencyFigure
 
-\subsubsection{Quality of Service}
+\subsection{Quality of Service}
 \label{subsec:qos}
 To understand the impact of perceptual compression on common video system workloads, we evaluated quality of service (QoS) delivered by \name for two applications: entertainment streaming with a user study and evaluation of a video analytics application that performs object recognition.
 These applications optimize for different QoS metrics: perceptual quality for entertainment video, and throughput and accuracy for object recognition.
@@ -125,7 +125,7 @@ We find that accuracy on the YOLO task is lowest for the videos in the VR360 sui
 While saliency-compressed videos can provide slight benefits for video analytics latency, especially if video decoding is the system bottleneck, future work should investigate how to optimize saliency-based compression for video analytics.
 
 
-\subsubsection{Compute Overhead}
+\subsection{Compute Overhead}
 \nameCompress bears the additional processing overhead of executing a neural network to generate or update saliency maps.
 \nameStore can switch between an exhaustive or more computationally-efficient heuristic tile configuration search to uncover optimal tile configurations for a video.
 We benchmarked the latency of the combined saliency and transcoding pipeline in two modes: exhaustive, which generates saliency maps per frame and exhaustively evaluates tiling, and heuristic, which uses the heuristic search algorithm to select a tile configuration within 0.25 dB of the best-PSNR choice (\ref{subsec:search-algo}).
@@ -136,7 +136,7 @@ We benchmarked the latency of the combined saliency and transcoding pipeline in 
 This step, however, is only executed once per video and off the critical path for video streaming workloads.
 
 
-\subsubsection{Analytical Model of \name Data Center and Mobile Costs}
+\subsection{Analytical Model of \name Data Center and Mobile Costs}
 \label{subsec:datacentermobile}
 We use our evaluation results to model \name's system costs at scale for data center storage and end-user mobile power consumption. While these results are a first-order analysis, they suggest the potential benefit of deploying \name.
 
@@ -182,7 +182,7 @@ We conducted three trials, playing the 93-file video library in a loop until bat
 We found that \name video enabled 1.6$\times$ longer video playback time with the same power consumption, or, $\sim$50\% better battery life while viewing a fixed number of videos.
 While hardware decoder implementations are typically proprietary, these results indicate that perceptual compression has benefits for mobile viewers, as well as cloud video infrastructure.
 
-\subsubsection{Discussion}
+\subsection{Discussion}
 
 \paragraph{Using \name in Other Storage Systems.}
 We crafted the policies, metadata extensions, and encoder design to make the ideas behind \nameStore{} compatible with pre-existing video storage or transcoding systems.

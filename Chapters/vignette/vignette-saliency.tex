@@ -1,6 +1,6 @@
 %!TEX root = ../paper.tex
 
-\subsection{Background: Perceptual Compression Using Saliency Maps}
+\section{Background: Perceptual Compression Using Saliency Maps}
 
 \label{sec:saliency}
 Saliency is a widely-utilized measure of the perceptual importance of visual information.
@@ -10,7 +10,7 @@ In this paper, we use saliency as an example of one such perceptual cue to demon
 This section provides background on saliency, compares methods for generating and encoding saliency information, and introduces the machine learning technique \name uses to gather perceptual information about video data.
 We also describe \emph{tiles}, the codec feature we use to compress videos with saliency information.
 
-\subsubsection{Salience Maps and Detection Algorithms} Saliency-detection algorithms highlight visually significant regions or objects in an image.
+\subsection{Salience Maps and Detection Algorithms} Saliency-detection algorithms highlight visually significant regions or objects in an image.
 A saliency map captures visual attention in the form of a heatmap, where the map's values correspond to the salience of pixels in the input.
 In this paper, we visualize saliency maps as grayscale video frames or heatmaps for clarity.
 % \name, however, uses a more efficient technique for saliency map compression, described in~\ref{sec:tiled-compression}.
@@ -20,14 +20,14 @@ Moreover, the low latency and poor spatial resolution of eye-tracking devices pr
 VR headsets, however, are natural environments for the efficient deployment of eye tracking, and they have motivated improvements in the performance and accuracy of eye trackers~\cite{Whitmire:2016:ESC:2971763.2971771}.
 Recent work combining these improved eye tracker-generated fixation maps with deep learning has improved the accuracy of saliency prediction algorithms, especially for natural images and video~\cite{bylinskii2016saliency}.
 
-\subsubsection{Systems Support for Perceptual Video Compression} Prior work has investigated many techniques for including saliency information in video compression, reducing bitrate at iso-quality by 20-60\%.
+\subsection{Systems Support for Perceptual Video Compression} Prior work has investigated many techniques for including saliency information in video compression, reducing bitrate at iso-quality by 20-60\%.
 However, these techniques required significant changes to video codecs, i.e., maintaining full-frame saliency maps to use as additional input~\cite{8117038}, computing saliency models on-the-fly at high computational cost~\cite{5223506}, or solving complex optimization problems to allocate video bits~\cite{li2011visual}, as the quality of saliency map generation was the limiting factor to deploying perceptual compression.
 % \todo{explain that we don't actually want to plug perceptual compression into the video encoer}
 Recent interest in applying machine learning techniques to problems in visual comprehension resulted in accurate saliency prediction models that effectively mimic the human visual system~\cite{bylinskii2016saliency}.
 Moreover, interest from VR developers in deploying fast and accurate eye tracking for improved VR experiences further improved the accuracy of saliency maps with high quality fixation data, leading to a virtuous cycle of saliency map prediction and improvement~\cite{Whitmire:2016:ESC:2971763.2971771}.
 The final challenge in closing the gap for deploying perceptual video compression is to design storage systems that manage and support perceptual information.
 
-\subsubsection{Tiled Video Encoding} \name uses tiles to implement perceptual compression.
+\subsection{Tiled Video Encoding} \name uses tiles to implement perceptual compression.
 Tiling a video divides a single video stream into independent regions that are encoded as separate decodable streams \cite{6547985}.
 Encoders can code tiles at separate qualities or bitrates, and decoders can decode tiles in parallel.
 Tiles are simple to express using standard encoding libraries, like \texttt{FFmpeg}~\cite{ffmpeg} and are supported in many video codecs.
@@ -37,7 +37,7 @@ Standard encoders only support rectangular tiles, and cannot leverage motion acr
 Using only native features, however, guarantees that our compression scheme is compatible with any modern codec that implements tiling, like \hevc or \avone~\cite{avone}.
 As video standards and codec efficiency improve, using general codec features to perform encoding and manage storage ensures that perceptual information remains useful.
 \begin{comment}
-  \subsection{Automatically Generating Saliency Maps}
+  \section{Automatically Generating Saliency Maps}
   \name generates saliency maps for existing video datasets using \mbox{MLNet~\cite{mlnet2016}}, a convolutional neural network that extracts saliency features and uses learned priors to encode those features into a single saliency model.
 
   A saliency predicting algorithm identifies important objects or regions. A saliency map then captures that information in the form of a heatmap overlaid on top of video frames.
@@ -57,7 +57,7 @@ As video standards and codec efficiency improve, using general codec features to
   Entertainment content providers like Netflix already leverage information about mobile viewing habits to optimize video quality for display and device characteristics~\cite{netflix2015encoding}.
   Most videos are stored for the purposes of viewing by humans or for human analytics, both which are concerned with the perceptual information in the video, not necessarily the raw bit representation of each pixel.
 
-  \subsection{Saliency from Eye Fixation Maps}
+  \section{Saliency from Eye Fixation Maps}
   \brandon{This also feels like related work -- do I need to know it to survive sections 3-7?  Maybe just because I haven't read the latest introduction in detail yet.}
   are a core codec feature, providing functionality to
 

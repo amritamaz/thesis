@@ -1,5 +1,6 @@
-\section{Related Work}
-\label{sec:related}
+%************************************************
+\chapter{Related Work}\label{ch:related}
+%************************************************
 \markboth{Related Work}{Related Work}
 
 This document describes perceptually optimized video processing systems, ranging from energy-constrained mobile cameras to cloud video storage infrastructure. I first present a survey of related work in hardware and software support for video systems, from mobile devices to cloud video computing. I then organize relevant works based on their use of the perceptual optimizations we consider in this thesis: structural, semantic, or saliency-based.
@@ -14,9 +15,9 @@ This document describes perceptually optimized video processing systems, ranging
 \end{figure}
 
 
-\subsection{Systems and Architecture for Visual Computing}
+\section{Systems and Architecture for Visual Computing}
 
-\subsubsection{Near-sensor processing for camera capture}
+\subsection{Near-sensor processing for camera capture}
 \label{sec:related:camera}
 
 Image sensor data is typically captured as an analog signal and then converted to a digital signal for processing.
@@ -25,7 +26,7 @@ Centeye chips~\cite{Centeye}, for instance, allow arbitrary analog computations 
 Other work studied computing early layers of convolutional NNs at the pixel level~\cite{Chen_2016_ASPVision, redeye, conv-sens09}.
 In addition to the analog domain, these early compute stages can be implemented in the mixed-signal domain, using techniques like stochastic computing~\cite{stoch-edge-sensor14, Alaghi13}.
 
-\subsubsection{Vision-centric specialized hardware accelerators}
+\subsection{Vision-centric specialized hardware accelerators}
 \label{sec:related:vision-hw}
 
 After visual data is captured and converted into a digital signal at the sensor node, it is sent through an image sensor processor (ISP).
@@ -47,7 +48,7 @@ Barr and Asanovi\'{c} observed that naive lossy compression can needlessly incre
 Han et al. use sensor-based filters to reduce the size of data to be processed on-device to make onloaded computation feasible~\cite{glimpsedata}.
 Our hardware-software codesign approaches explore the tradeoff space between offloading and onloading in the context of highly constrained camera systems.
 
-\subsubsection{Hardware accelerators for virtual reality video capture}
+\subsection{Hardware accelerators for virtual reality video capture}
 \label{sec:related:vr-hw}
 
 There are many ways to capture and render VR video, but each method presents unique challenges.
@@ -67,7 +68,7 @@ While real-time hardware systems for processing VR video are becoming commercial
 Most similar to the design discussed in~\ref{sec:hfbs} is that of Rithe et al.~\cite{bilat_isscc}, who designed a low-power reconfigurable processor for bilateral filtering.
 Their design differs by implementing the splatting and slicing operations in hardware, but it can only perform streaming bilateral filters and does not support repeated iterations of filtering in-memory, a necessity for fast bilateral-space optimization.
 
-\subsubsection{Video streaming and storage systems}
+\subsection{Video streaming and storage systems}
 \label{sec:related:streaming}
 
 The rise of video sharing applications has driven significant recent work in processing and storage systems for video content.
@@ -81,7 +82,7 @@ These services maintain user experience by transcoding videos at high quality fo
 Recent systems work has proposed new designs for datacenter-scale video transcoding and streaming infrastructure, specifically optimized for the large data bandwidth and many streaming endpoints typical of modern video workloads~\cite{fouladi2017excamera, fouladi2018salsify,liu2016greenvid, asicclouds}.
 These systems codesign compute and network layers with software implementations of typical video transcoding steps to better leverage datacenter resources, working within the bounds of existing video compression or streaming application requirements.
 
-\subsubsection{Cloud video management and analytics}
+\subsection{Cloud video management and analytics}
 \label{sec:related:vdbms}
 
 While systems for optimizing cloud-scale transcoding are well studied, more recent focus on pushing video content through complex analytics and processing pipelines has motivated a resurgence of interest in video database management systems (VDBMSs).
@@ -90,9 +91,9 @@ In comparison with the earlier VDBMS designs, these more recent VDBMSs have dram
 Prior work has also evaluated using hardware acceleration~\cite{asicclouds, liu2016greenvid, vbench} in the cloud to improve video processing performance.
 
 
-\subsection{Perceptual Optimizations for Visual Computing}
+\section{Perceptual Optimizations for Visual Computing}
 
-\subsubsection{Approximate visual computing}
+\subsection{Approximate visual computing}
 Approximate computing research seeks to trade off computation and energy consumption for quality.
 The key value proposition is that many application domains, such as visual computing, can tolerate small drops in quality for benefits in speed or energy efficiency~\cite{8054698, sampson2011enerj}.
 While much of the literature considers image and video processing a natural domain for evaluating general-purpose approximate computing techniques, the metrics for evaluation are restricted to per-pixel quality metrics, as opposed to higher-level quality information~\cite{sampson2011enerj,snnap,Guo:2016:HIS:2872362.2872413,8342234}.
@@ -100,7 +101,7 @@ A notable exception to this is approximate computing work targeted at machine le
 Approximate computing techniques have been specifically applied to video processing~\cite{xu2018videochef} and storage~\cite{jevdjic2017approxvid} in support of conventional video compression algorithms, as well.
 While these techniques are in the spirit of trading off quality for visual computing performance, they either focus only on pixel-level optimizations or are more general-purpose and coarse than the perceptual optimizations considered for this thesis.
 
-\subsubsection{Structural video data optimization}
+\subsection{Structural video data optimization}
 Structural perceptual information refers to the physical structure of the visual data (e.g., spatial location, depth perception, color spaces).
 While these attributes exist or can be derived from traditional 2D visual data structures, recent work in computational photography and vision has built algorithms operating on new data representations that hold these structural elements in equal importance to pixel-based information.
 
@@ -112,14 +113,14 @@ Towards more hardware-efficient execution on GPUs, Yang~\cite{pami_gpu_stereo14}
 
 Another example of structural perception optimization leverages perceptual color and light tradeoffs in viewing digital content. Recent work like Crayon \cite{crayon} and Ishihara \cite{stanley2018perceived} proposes replacing power-hungry colors with perceptually similar ones to achieve better power consumption on mobile displays, while ShutPix (\cite{Yan:2017:TMP:3123266.3123344}) proposes to turn some pixels off entirely. These structure-based optimizations use existing information (e.g., edges, depth, color space) in a video frame to uncover opportunities for perceptual optimization, rather than using newly-generated perceptual information.
 
-\subsubsection{Semantics-based video optimization}
+\subsection{Semantics-based video optimization}
 Semantics-based video optimizations concentrate effort on areas where objects or regions of defined importance are identified in video frames.
 Many of the VDBMSs proposed to support deep learning or video analytics employ some form of semantic-based optimization to efficiently distribute datacenter resources~\cite{videostorm, chameleon18sigcomm, focus18osdi, blazeit, noscope}.
 Specifically, they combine the use of multiple classification algorithms to more intelligently distribute computing effort to video frames that are determined to have interesting content.
 BlazeIt~\cite{blazeit}, for instance, calls their coupling of simple, efficient classifiers with complex, precise ones ``scrubbing queries'', and Focus~\cite{focus18osdi} uses the technique to build up an ``approximate index'' of relevant videos.
 Recent work in virtual reality video streaming~\cite{leng2018semantic,leng2019vrv} demonstrates another example of semantic optimization, using the object recognition classes output by neural networks to drive video transcoding or rendering effort.
 
-\subsubsection{Saliency-based video optimization}
+\subsection{Saliency-based video optimization}
 Saliency-based video optimizations include information about visual importance.
 These saliency predictions can be generated from machine learning algorithms or hand-annotated, and targeted at specific domains of saliency: human visual saliency~\cite{lee2012perceptualcodingsurvey}, 2D graphics and visualization saliency~\cite{borkin2013makes,Bylinskii:2017:LVI:3126594.3126653}, or machine learning feature saliency~\cite{olah2018the,Simonyan2013DeepIC,Zeiler2014VisualizingAU,Zintgraf2017VisualizingDN}.
 

@@ -1,4 +1,4 @@
-\subsection{\name Perceptual Compression Design}
+\section{\name Perceptual Compression Design}
 \label{sec:tiled-compression}
 
 % Before designing a storage system to support perceptually compressed video,
@@ -8,7 +8,7 @@ Our technique takes a video as input, generates a per-frame perceptual map for t
 It uses only the native features of the \hevc codec to ensure compatibility with other video libraries.
 % Whenever possible, it overestimates saliency to minimize the potential of degrading video quality in areas of interest.
 
-\subsubsection{Automatically Generating Saliency Maps}
+\subsection{Automatically Generating Saliency Maps}
 \label{subsec:supersal}
 
 We use MLNet (\cite{mlnet2016}) to automatically generate a corresponding saliency map for a video input.
@@ -23,7 +23,7 @@ Because video storage systems slice videos into short segments (10-20 seconds) f
 % Our aggregated per-video saliency maps, however, provide more information for salient regions than that derived from a computed average across single frames.
  % an aggregated video saliency map indicates many more salient pixels than for any single video frame, but provides more complete information for salient regions that appear briefly than if we were to compute the average across frames.
 
-\subsubsection{Leveraging Saliency With Tiled Video Encoding}
+\subsection{Leveraging Saliency With Tiled Video Encoding}
 \label{subsec:tiles}
 
 Once a saliency map for each video is produced, we then use it to perceptually encode videos with the tiling feature in \hevc~\cite{hevc}.
@@ -47,7 +47,7 @@ This exhaustive enumeration takes about 30 minutes per 15-second video to find t
 
 \saliencyTilesOverviewFigure
 
-\subsubsection{Mapping Saliency to Video Quality Rates}
+\subsection{Mapping Saliency to Video Quality Rates}
 \label{subsec:mapping}
 
 Each \hevc tile is encoded at a single quality or bitrate setting throughout the video stream, requiring \nameCompress to select per-tile encoding qualities.

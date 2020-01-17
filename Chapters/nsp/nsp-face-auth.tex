@@ -32,10 +32,10 @@ We first discuss the hardware accelerators required for the camera pipeline, pre
 We then evaluate them together on a real-world face authentication workload using real video we collected.
 Our evaluation discusses the performance and power improvements, specifically exploring the tradeoffs in power consumption arising from considering the total cost of computation and communication.
 
-\subsection{Background: Face Detection and Machine Learning Metrics}
+\section{Background: Face Detection and Machine Learning Metrics}
 \label{sec:backvj}
 
-\subsubsection{Viola-Jones algorithm for face detection}
+\subsection{Viola-Jones algorithm for face detection}
 
 The Viola-Jones (VJ) face detection algorithm is a state-of-the-art computer vision algorithm for fast, accurate face detection \cite{vj_journal}. It detects faces by scanning a window of fixed size across the image, looking for features of a face, such as eyes and nose. If enough of these features are found, then the window at a particular location in the image is identified as a face. To account for faces of different sizes in an image, the scanning window is scaled and passed over the scene multiple times. The face detection process at each window is independent of windows at other positions and scale sizes.
 
@@ -125,7 +125,7 @@ I_\Sigma (x,y) = I(x,y) + I_\Sigma (x,y-1)+I_\Sigma (x-1,y)-I_\Sigma (x-1,y-1)
 \end{equation}
 
 
-\subsubsection{Accuracy metrics for machine learning applications}
+\subsection{Accuracy metrics for machine learning applications}
 
 Precision and recall are widely used accuracy metrics used in computer vision applications to understand the quality and quantity of classifier results. For face detection, the goal is to correctly identify labeled face windows in an image as faces---these outcomes are \textit{true positives}. A \textit{false positive} is a classifier identifying a non-face window as a face, and \textit{false negatives} occur when a classifier misidentifies a face as a background window. \emph{Recall} is the ratio of true positives to all actual positive elements (i.e., how many of the actual faces were detected as faces), and \emph{precision} is the ratio of true positives to all identified positive elements (i.e., how many of the faces detected were actually faces). A perfect classifier achieves both precision and recall of 1.0.
 
@@ -133,7 +133,7 @@ We can unify precision and recall into one metric, an \textit{\fscore}, which qu
 This combined metric
 gives a good first-order assessment of a design choice's impact on ``accuracy'', but because the \fscore  weights precision and recall equally, the score may skew towards the metric that performs worse, obfuscating the impact of an optimization on the individual metrics.
 
-\subsection{On-chip hardware acceleration for energy harvesting cameras}
+\section{On-chip hardware acceleration for energy harvesting cameras}
 
 A generic mobile sensor node usually consists of one or several sensors followed by analog-to-digital converters (ADCs), processing elements and wireless communication interfaces. We focus discussion on energy constrained systems, such as the WISP \cite{wisp}, a battery-less system that  harvests energy from RFID reader signals to perform sampling, processing and communication tasks. Our ideas, however, also apply to battery-powered systems with small footprint and very long battery-lifes (e.g., home automation/alarm systems, and other camera-based sensor nodes).
 
@@ -153,7 +153,7 @@ The WISP5.0 is based on the MSP430FR5969 microcontroller with a low-power 3D ADX
 
 We envision the described face detection accelerator to be coupled with a neural network accelerator and microcontroller and embedded in a single chip, where the image sensors and processors are fabricated on the same die. This allows low-cost access to the sensor data, since the cost of data movement is significantly reduced. One can use low-power circuits to perform motion detection. This means that a frame is captured only when motion happens, yielding a significant energy reduction. The motion detection circuit in \cite{multipower-isscc13} can be seen as a Level-0 (L0) accelerator that filters the frames, before sending them to the L1 accelerator for face detection.
 
-\subsubsection{Neural network face authentication}
+\subsection{Neural network face authentication}
 
 NNs are considered state-of-the-art for image inference~\cite{amos2016openface}, so for our face authentication task, we employ a systolic NN design, based on SNNAP~\cite{snnap,moreau-bitwidth}.
 We train the NNs with Fast Artificial Neural Network Library (FANN)~\cite{fann}, a popular open-sourced NN library.
@@ -171,9 +171,9 @@ Figure~\ref{fig:snnap-pu} shows the datapath of a processing unit composed of fo
     \label{fig:snnap-pu}
 \end{figure}
 
-\subsection{In-camera face detection using Viola-Jones face detection}
+\section{In-camera face detection using Viola-Jones face detection}
 
-\subsubsection{VJ algorithm tradeoffs.}
+\subsection{VJ algorithm tradeoffs.}
 We first tune the parameters of the VJ algorithm in search of the optimal point in the energy-accuracy tradeoff space.
 Recall that the Viola-Jones algorithm scans a fixed-size window across an image,
 evaluating a classifier at each x-y location, and then scales the window and repeats
@@ -240,7 +240,7 @@ higher recall than a constant step size. Accuracy here is normalized to the step
 of 2.5\%.
 This parameter selection results in 86\% less invocations of the VJ classifier and no loss in accuracy for our real-world workloads.
 
-\subsubsection{Classifier structure}
+\subsection{Classifier structure}
 The structure of the classifier, or the number of stages and features in each stage,
 impacts the energy efficiency of the architecture as well as the accuracy of the
 classifier. Prior work in hardware implementation of Viola-Jones has used
@@ -305,7 +305,7 @@ which classify more false positives, will spend more energy overall than those w
 This effect is demonstrated in Figure~\ref{fig:vj-tradeoff}.
 
 
-\subsubsection{VJ streaming microarchitecture.}
+\subsection{VJ streaming microarchitecture.}
 Many VJ accelerators exist in the literature for different application domains and power envelopes.
 The key observation that facilitates sub-mW power consumption for our accelerator is to process the data in a streaming fashion, leveraging the nature of the pixel stream.
 Designing an accelerator in the camera node allows us to process the data in the flow of the input pixel stream, rather than repeatedly fetching blocks from a memory.
@@ -384,7 +384,7 @@ We also included a unit to transform face windows from integral image form to st
 
 % With the terms described above we derive the dynamic and leakage energy per cycle for a full ANN, VJ, and OpenMSP430 combination. While there is an energy minima at 0.5V for the leakage energy (Figure~\ref{fig:system_voltage}), the dynamic and total energies continue to decrease into the sub-threshold region. Hence, the optimal the system voltage is determined by the minimum voltage at which performance constraints are satisfied. For our application, we select the 0.7V/28 MHz operating point, which satisfies the application performance constraint of 1 FPS.
 
-\subsection{Experimental results}
+\section{Experimental results}
 Table~\ref{table:fa-hardware} describes the details of our evaluation. We compared the performance and energy of our accelerator configuration against a software baseline running on an MSP430, a low-power microprocessor on the WISPCam. We wrote an NN micro-benchmark trained for face authentication, and emulated execution on a synthesized OpenMSP430 design. We then compared the performance of the NN and face detection (FD) accelerators. To obtain accurate energy estimates, we measure the initiation interval of the hardware pipelines in functional simulation
 and use power dissipation numbers derived from PTPX to produce energy estimates.
 
@@ -410,7 +410,7 @@ Freq & 27.9MHz & Area & 0.06$mm\textsuperscript{2}$ & Area & 0.38$mm\textsupersc
 
 \end{table}
 
-\subsubsection{Physical implementation and optimization}
+\subsection{Physical implementation and optimization}
 
 We implemented our design in Verilog, synthesized with Synopsys Design Compiler using the TSMC 65nm Gplus Standard VT library, and performed place-and-route with Synopsys IC Compiler. SRAM macros are generated with an ARM Advantage memory compiler. A layout shot of our system components is shown in Figure~\ref{fig:layout_shot}. To find the optimal system voltage, we derive the static and dynamic components of the total system energy and select the minimum-energy voltage that still satisfies system performance requirements.
 
@@ -428,7 +428,7 @@ In our evaluation, system requirements constrain the baseline choice: the MSP430
 Higher-performance embedded processors, while able to execute our application with better performance than an MSP430, were limited by the power budget required.
 In prior NN-accelerator work, the most appropriate comparison is ShiDianNao~\cite{shidiannao}, which also operates at $ \sim$300mW, still significantly higher-power than our design.
 
-\subsubsection{Improvements over a single frame.}
+\subsection{Improvements over a single frame.}
 
 We first evaluate our hardware accelerators' performance over a software baseline.
 For this experiment, we program the MSP430 running software for face detection, either using an artificial neural network or Viola-Jones.
@@ -494,7 +494,7 @@ Figure~\ref{fig:vj-cdf} shows the
 distribution of features across windows in a typical 176$\times$144 image with a single face -- only 0.01\%
 of windows need to compute the full classifier.
 
-\subsubsection{Tradeoffs in computation and communication.} To improve energy efficiency, we evaluate hybrid approaches, which first use VJ-based face-detection
+\subsection{Tradeoffs in computation and communication.} To improve energy efficiency, we evaluate hybrid approaches, which first use VJ-based face-detection
 to filter out the windows that do not contain faces, to only feed the small fraction of frames that do contain faces to the neural network that performs face identification.
 This approach takes advantage of the efficiency of the Viola-Jones accelerator, to reduce the cost of performing face identification with a neural network accelerator.
 
@@ -531,7 +531,7 @@ Figure~\ref{fig:full-face-auth-pipeline} shows the detailed power breakdown betw
 
 So, why not always offload neural networks? We examined the extent to which different constraints in our design contributed to our results. We found that if the communication power cost per pixel grew by 2.68$\times$, it would be more power-efficient to perform the NN in-camera. Our evaluation sourced communication power data from work using a directed RFID reader, and RF-based energy harvesting systems may not always deliver consistent power.
 
-\subsubsection{Discussion}
+\subsection{Discussion}
 
 Analysis of the video workloads highlights the benefits and limitations of our filtering approach at the application level. Importantly, the complete pipeline, consisting of motion detection, VJ, and NN, did not eliminate any true faces in any of our workloads. Using these filtering steps reduces data bandwidth, but we find that the extent of the data reduction could be improved. Motion detection often is triggered in innocuous situations, such as when people pass by in a frame or a mobile device is carried while walking. Our face detector misclassifies many false positives as faces, and also detects faces in static posters and photos. We examined the results of one of our security authentication workloads to illustrate: out of 62 frames of video, 12 frames were accepted through a motion detection block. In those 12 frames, the VJ detector passed forty 400-pixel face windows to the NN classifier. Visual inspection of those 40 faces found that 10\% were false positives---with a perfect face detector that only detected true faces, the power to offload or compute the NN on-device would be reduced.
 

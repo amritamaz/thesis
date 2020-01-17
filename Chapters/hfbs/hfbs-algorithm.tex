@@ -1,10 +1,10 @@
-\subsection{Hardware-Friendly Bilateral Solving}
+\section{Hardware-Friendly Bilateral Solving}
 \label{sec:solver}
 
 In this section, we formulate a bilateral solver that maintains speed, scalability, and accuracy, while also being parallelizable.
 We first describe the original bilateral solver of~\cite{BarronPoole2016}, and motivate the requirements for a hardware-friendly bilateral solver. We then provide a detailed formulation of our algorithm and its advantages.
 
-\subsubsection{Bilateral-Space Optimization}
+\subsection{Bilateral-Space Optimization}
 The original bilateral solver (OBS) consists of (1) an objective and (2) optimization technique~\cite{BarronPoole2016}.
 The input to the solver is a reference RGB image, a target image that contains noisy observed quantities we wish to improve, and a confidence image.
 The goal is to recover an ``output'' vector $\mathbf{x}$, which will resemble the input target where the confidence is large while being smooth and tightly aligned to edges in the reference image.
@@ -76,7 +76,7 @@ and we can produce a pixel-space solution $\mathbf{\hat x}$ by slicing out the s
 
 In summary, OBS takes an input image vector and a confidence image to construct a simplified bilateral grid from the reference image. With that, it produces the $\mathbf{A}$ matrix and $\mathbf{b}$ vector of Eq. ~\ref{eq:quad_min} to solve the linear system in Eq. ~\ref{eq:solution} and obtain an output image.
 
-\subsubsection{Algorithmic Modifications}\label{sec:alg_mod}
+\subsection{Algorithmic Modifications}\label{sec:alg_mod}
 Though computationally efficient, OBS as presented has a number of properties that make it difficult to implement in hardware, or even to achieve real-time operation on modern CPU or GPU systems.
 Vectorizing and parallelizing CPU or GPU processing on the sparse 5D bilateral grid $\mathbf{\hat W}$ demonstrates too-irregular memory access patterns to achieve large performance benefits from parallelization.
 Moreover, the use of second order global optimization limits the level of parallelism we can extract from the algorithm.
@@ -102,7 +102,7 @@ The Heavy Ball algorithm does not naturally accommodate a preconditioner, so we 
 We find that HFBS slightly underperforms the preconditioned conjugate gradient solver of~\cite{BarronPoole2016} and therefore requires roughly twice as many steps for convergence.
 However, since each step is significantly faster to compute (roughly 4$\times$ faster on CPU and much faster on GPU/FPGA), we see an overall increase in performance.
 
-\subsubsection{Formulating a Hardware-friendly bilateral solver}
+\subsection{Formulating a Hardware-friendly bilateral solver}
 We now formalize the details of HFBS and how it relates to the original bilateral solver. Both OBS and HFBS minimize an optimization problem of the form of Eq.~\ref{eq:pixel_loss}. In this case, the $t_i$ is the low resolution flow shown in Figure~\ref{fig:teaser}b. We derive the confidence image for these low resolution flow fields by computing normalized sum-of-squared differences.
 The resulting confidence is larger for areas that are near each other and match well.
 
