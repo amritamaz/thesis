@@ -29,32 +29,33 @@ My work takes these quality tradeoffs for visual computing a step further, by sp
 
 \section{Thesis Proposal}
 My thesis proposes \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
-While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{sec:related}), my proposal to use perceptual cues expands the design space, resulting in new accelerator designs and improved performance benefits.
+While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{ch:related}), my proposal to use perceptual cues expands the design space, resulting in new accelerator designs and improved performance benefits.
 
 \subsection{Thesis Overview.} My thesis argues that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
 To support this claim, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
 The resulting works demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
 
-In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency; and use hardware-software codesign to optimize computer systems at different points in the video storage pipeline: during camera capture (\ref{sec:near-sensor}), camera processing (\ref{sec:hfbs}), cloud video analytics (\ref{sec:mach-vign}) and storage (\ref{sec:vignette}), as well as mobile video rendering (\ref{sec:chroma-vign}).
+In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency; and use hardware-software codesign to optimize computer systems at different points in the video storage pipeline: during camera capture (\ref{ch:near-sensor}), camera processing (\ref{ch:hfbs}), cloud video streaming and storage (\ref{ch:vignette}), as well as mobile video playback (\ref{ch:mob-vdec}).
 
 \begin{itemize}
-\item \textbf{Structure.} I use structural information about color and depth in captured video to design an algorithm for fast, accurate 3D-\threesixty video generation (\ref{sec:hfbs}).
+\item \textbf{Structure.} I use structural information about color and depth in captured video to design an algorithm for fast, accurate 3D-\threesixty video generation (\ref{ch:hfbs}).
 In particular, I formulate a new data structure for processing video captured from VR camera rigs into visually pleasing 3D-\threesixty video, and design a hardware accelerator around this data structure for real-time VR video generation.
-I also propose using structural information about the power consumption of color rendering to optimize video playback for mobile displays (\ref{sec:chroma-vign}).
 
-\item \textbf{Semantics.} I evaluate the use of \emph{semantic information} in the design of hardware ASICs for an energy-harvesting camera system (\ref{sec:near-sensor}).
+\item \textbf{Semantics.} I evaluate the use of \emph{semantic information} in the design of hardware ASICs for an energy-harvesting camera system (\ref{ch:near-sensor}).
 In this project, I compose two accelerators---a simple machine learning algorithm and a more computationally intense one---to conduct semantic filtering for improved energy efficiency.
 
-\item \textbf{Saliency.} I use human visual saliency to optimize video compression, and show the design of a storage system built codesigned with an understanding of this perceptual cue (\ref{sec:vignette}), and propose new work in applying neural network saliency to large-scale video analytics systems (\ref{sec:mach-vign}).
+\item \textbf{Saliency.} I use human visual saliency to optimize video compression, and show the design of a storage system built codesigned with an understanding of this perceptual cue (\ref{ch:vignette}).
+I also describe new mobile video decode hardware for these perceptually-compressed videos during mobile playback (\ref{ch:chroma-vign}).
 These projects demonstrate using automatically-generated saliency information from machine learning algorithms to optimize large-scale video processing pipelines.
 \end{itemize}
 
-This thesis proposal consists of three primary sections.
-Section~\ref{sec:related} contextualizes my work within the areas of specialized computer architectures and visual computing systems, and highlights prior work using the perceptual cues I consider.
-Section~\ref{sec:near-sensor} describes my work codesigning computer vision hardware for energy-harvesting cameras, balancing tradeoffs of accuracy and energy efficiency through the use of semantic perceptual information.
-Section~\ref{sec:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
-In Section~\ref{sec:vignette}, I describe a new storage system, designed to support applying human visual saliency information to traditional video compression, to improve storage and streaming bandwidth.
-To conclude, Section~\ref{sec:proposed} identifies two future opportunities I plan to investigate during the completion of my thesis, applying perceptual information to video pipelines during video analytics in the cloud and during streaming video playback on mobile phones.
+This thesis follows the following structure:
+Chapter~\ref{ch:related} contextualizes my work within the areas of specialized computer architectures and visual computing systems, and highlights prior work using the perceptual cues I consider.
+Chapter~\ref{ch:near-sensor} describes my work codesigning computer vision hardware for energy-harvesting cameras, balancing tradeoffs of accuracy and energy efficiency through the use of semantic perceptual information.
+Chapter~\ref{ch:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
+In Chapter~\ref{ch:vignette}, I describe a new storage system, designed to support applying human visual saliency information to traditional video compression, to improve storage and streaming bandwidth.
+Chapter~\ref{ch:mob-vdec} describes how new mobile device hardware can adapt for a future of these perceptually-optimized videos to improve performance and energy consumption.
+To conclude, Chapter~\ref{ch:proposed} identifies future opportunities for perceptually-optimized visual computing systems, applying perceptual information to video pipelines during video analytics in the cloud and to optimize display rendering of visual content on new devices.
 
 
 %*****************************************
