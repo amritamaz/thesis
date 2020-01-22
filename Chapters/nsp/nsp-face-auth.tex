@@ -433,30 +433,41 @@ In prior NN-accelerator work, the most appropriate comparison is ShiDianNao~\cit
 We first evaluate our hardware accelerators' performance over a software baseline.
 For this experiment, we program the MSP430 running software for face detection, either using an artificial neural network or Viola-Jones.
 We then compare latency and energy efficiency of this software implementation on the MSP430 to each hardware accelerator.
-
-% \begin{figure}[h]
-%      \centering
-         \begin{figure}[h]
-         \centering
-             \begin{center}
-               \includegraphics[width=0.4\textwidth]{nsp-figs/software_speedup.pdf}
-             \end{center}
-             \caption{Accelerator speedup.}
-             \label{fig:sw-compare:speed}
-         \end{figure}
-     % \quad
-     \begin{figure}[h]
-         \centering
-         \begin{center}
-         \includegraphics[width=.4\textwidth]{nsp-figs/software_energy.pdf}
-       \end{center}
-         \caption{Accelerator energy improvement.}
-         \label{fig:sw-compare:energy}
-     \end{figure}
-     % \hfill
-%         \caption{Accelerator speedup \& energy efficiency improvements of the ANN and VJ accelerators compared to software running on the MSP430.}
-%         \label{fig:sw-compare}
-% \end{figure}
+\begin{figure}[!ht]
+  \subfloat[Accelerator speedup.]{%
+    \includegraphics[width=0.45\textwidth]{nsp-figs/software_speedup.pdf}
+  }
+  \hfill
+  \subfloat[Accelerator energy improvement.]{%
+    \includegraphics[width=0.45\textwidth]{nsp-figs/software_energy.pdf}
+  }
+  \caption{Accelerator speedup \& energy efficiency improvements of the ANN and VJ accelerators compared to software running on the MSP430.}
+  \label{fig:sw-compare}
+\end{figure}
+% 
+% % \begin{figure}[h]
+% %      \centering
+%          \begin{figure}[h]
+%          \centering
+%              \begin{center}
+%                \includegraphics[width=0.4\textwidth]{nsp-figs/software_speedup.pdf}
+%              \end{center}
+%              \caption{Accelerator speedup.}
+%              \label{fig:sw-compare:speed}
+%          \end{figure}
+%      % \quad
+%      \begin{figure}[h]
+%          \centering
+%          \begin{center}
+%          \includegraphics[width=.4\textwidth]{nsp-figs/software_energy.pdf}
+%        \end{center}
+%          \caption{Accelerator energy improvement.}
+%          \label{fig:sw-compare:energy}
+%      \end{figure}
+%      % \hfill
+% %         \caption{Accelerator speedup \& energy efficiency improvements of the ANN and VJ accelerators compared to software running on the MSP430.}
+% %         \label{fig:sw-compare}
+% % \end{figure}
 
 Overall, we find that hardware acceleration leads to substantial
 performance improvement over a software implementation on an OpenMSP430.

@@ -7,19 +7,30 @@ We now evaluate the performance of our algorithm and hardware, including runtime
 Figure~\ref{fig:latency-all} plots the runtime results of bilateral solver implementations on all our benchmarks, as a function of the spatial bandwidth.
 Figure~\ref{fig:latency-all}a shows the runtime for the optimization portion of the solver, and Figure~\ref{fig:latency-all}b shows the runtime for the complete bilateral solver including pre-processing.
 
-  \begin{figure}[h!]
-    \includegraphics[width=0.235\textwidth]{hfbs-figs/runtime_opt.png}
-    \caption{Runtime (Optimization Only)}
-  \end{figure}
-  \begin{figure}[h!]
-    \includegraphics[width=0.235\textwidth]{hfbs-figs/runtime_total.png}
-    \caption{Runtime (Total)}
-  \end{figure}
+  % \begin{figure}[h!]
+  %   \includegraphics[width=0.235\textwidth]{hfbs-figs/runtime_opt.png}
+  %   \caption{Runtime (Optimization Only)}
+  % \end{figure}
+  % \begin{figure}[h!]
+  %   \includegraphics[width=0.235\textwidth]{hfbs-figs/runtime_total.png}
+  %   \caption{Runtime (Total)}
+  % \end{figure}
 % \caption{Runtimes of the baseline, CPU, GPU, and FPGA implementations of HFBS, as a function of the spatial bandwidth ($\sigma_{xy}$ of Eq.~\ref{eq:hfbs-bilateral_affinity}).
 % }
 
 % \label{fig:latency-all}
 % \end{figure}
+\begin{figure}[!ht]
+  \subfloat[Runtime (Optimization Only)]{%
+    \includegraphics[width=0.45\textwidth]{hfbs-figs/runtime_opt.png}
+    }
+  \hfill
+  \subfloat[Runtime (Total)]{%
+    \includegraphics[width=0.45\textwidth]{hfbs-figs/runtime_total.png}
+  }
+  \caption{Runtimes of the baseline, CPU, GPU, and FPGA implementations of HFBS, as a function of the spatial bandwidth ($\sigma_{xy}$ of Eq.~\ref{eq:hfbs-bilateral_affinity}).}
+  \label{fig:latency-all}
+\end{figure}
 
 As we increase the spatial bandwidth ($\sigma_{xy}$ of Eq.~\ref{eq:hfbs-bilateral_affinity}), we see that the overall grid size decreases, and runtimes shorten for all implementations.
 We find that our algorithm outperforms the baseline on all platforms at all spatial bandwidths.

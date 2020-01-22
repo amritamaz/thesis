@@ -65,7 +65,7 @@ They observe that the majority of rendering time is spent running the bilateral 
 Modern systems using similar pipelines require users to upload camera streams to a cloud service or high-performance computing system---this workflow impedes real-time applications such as live VR video streaming.
 While real-time hardware systems for processing VR video are becoming commercially available~\cite{gopro,sphere,vahana}, these existing solutions provide either live panorama processing or stereoscopic 3D, not both.
 
-Most similar to the design discussed in~\ref{sec:hfbs} is that of Rithe et al.~\cite{bilat_isscc}, who designed a low-power reconfigurable processor for bilateral filtering.
+Most similar to the design discussed in~\ref{ch:hfbs} is that of Rithe et al.~\cite{bilat_isscc}, who designed a low-power reconfigurable processor for bilateral filtering.
 Their design differs by implementing the splatting and slicing operations in hardware, but it can only perform streaming bilateral filters and does not support repeated iterations of filtering in-memory, a necessity for fast bilateral-space optimization.
 
 \subsection{Video streaming and storage systems}
