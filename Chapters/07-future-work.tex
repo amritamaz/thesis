@@ -4,7 +4,7 @@
 
 My accomplished work towards this thesis demonstrated that perceptual optimizations can be applied to video systems during video capture and storage.
 Looking forward, I expect these advances can be applied in the near-term in two domains: machine learning-based analytics frameworks during video processing, and mobile video playback during streaming.
-These projects build on the ideas for perceptual optimization developed in~\ref{ch:near-sensor}, \ref{ch:hfbs}, \ref{sec:vignette}, and \ref{ch:mob-vdec}, but applied to other critical aspects of the video systems pipeline.
+These projects build on the ideas for perceptual optimization developed in~\ref{ch:near-sensor}, \ref{ch:hfbs}, \ref{ch:vignette}, and \ref{ch:mob-vdec}, but applied to other critical aspects of the video systems pipeline.
 
 % \begin{itemize}
 %     \item \textbf{Machine Vignette}: Generating profiles of neural network saliency to optimize video compression for deep learning systems.
@@ -12,7 +12,7 @@ These projects build on the ideas for perceptual optimization developed in~\ref{
 % \end{itemize}
 
 
-\section{Machine Vignette: AI-friendly Perceptual Models for Video Analytics}
+\section{AI-friendly Perceptual Models for Video Analytics}
 \label{sec:mach-vign}
 Vignette uses neural networks to estimate human visual perception for videos, trading off file size for perceptual quality.
 Video analytics, a major video workload, however, typically processes videos through computer vision algorithms to generate some non-video output, e.g., traffic camera footage to read license plates, count cars, or detect and recognize objects.
@@ -27,7 +27,7 @@ To support video analytics, I believe Vignette-style perceptual compression coul
 The key challenge is to generate new saliency models, based on prior work in neural network saliency and interpretability~\cite{Simonyan2013DeepIC,Zeiler2014VisualizingAU,Zintgraf2017VisualizingDN}, that maintain the compression and performance results but also maintain accuracy on machine learning tasks.
 My hypothesis is that using AI-friendly perceptual models to aggressively scale in non-salient regions, in conjunction with existing optimizations for video analytics systems~\cite{videostorm, chameleon18sigcomm, focus18osdi} will reduce query latency and allow distributed analytics systems to achieve better load balancing.
 
-\section{Chroma Vignette: Color Transforms for Power-efficient Mobile Video:}
+\section{Color Transforms for Power-efficient Mobile Video:}
 \label{sec:chroma-vign}
 When playing video on smartphones or AR/VR headsets, the cost of display rendering dominates power consumption~\cite{likamwa-apsys}.
 Playing Vignette videos consumes less power than conventionally encoded videos due to smaller file size, but this power efficiency can be dramatically improved by incorporating more perceptual information about color.
