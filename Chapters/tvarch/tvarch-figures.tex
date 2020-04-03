@@ -2,7 +2,7 @@
 
 \newcommand{\foveatedExampleFigure}{
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
     \includegraphics[width=\linewidth]{tvarch-figs/foveated-eye.pdf}
     \caption{The human eye only perceives the foveal region at full resolution~\cite{foveated-coding}.}
@@ -16,7 +16,7 @@
 }
 
 \newcommand{\vdecBaselineArchFigure}{
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
 \includegraphics[width=\linewidth]{tvarch-figs/system-arch.pdf}
 \caption{System architecture of typical video playback flow on mobile/VR SoC.}
@@ -26,7 +26,7 @@
 
 \newcommand{\vdecCTUTimingFigure}{
 
-\begin{figure*}[t]
+\begin{figure*}[h]
     \centering
     \begin{minipage}[b]{.375\textwidth}
         \centering
@@ -46,7 +46,7 @@
 
 
 \newcommand{\vdoOverview}{
-\begin{figure*}[t]
+\begin{figure*}[h]
   \centering
 \includegraphics[width=.7\linewidth]{tvarch-figs/mvdo-extended.pdf}
 \caption{\nameArch accelerator with heterogeneous parallel decoder cores. \nameArch uses a custom scheduler optimized for processing tiled VR video to efficiently distribute work to decode cores. \nameArch maps video tiles to decode cores in different frequency regions to further improve energy consumption, allocating tiles based on the complexity of the video tile.}
@@ -55,7 +55,7 @@
 }
 
 \newcommand{\vdoprofOverview}{
-\begin{figure}[t]
+\begin{figure}[h]
 \includegraphics[width=.9\linewidth]{tvarch-figs/vdoprof2.pdf}
 \caption{The \nameArchprof framework flow helps VR developers optimize energy consumption of their videos for hardware decoders. \nameArchprof generates energy profiles for video decode architectures and suggests energy-optimal tile configurations for playback constraints.}
 \label{fig:vdo-prof}
@@ -63,7 +63,7 @@
 }
 
 \newcommand{\perceptualCompressionEnergyFigure}{
-  \begin{figure}[t]
+  \begin{figure}[h]
     \centering
       \includegraphics[width=\linewidth]{tvarch-figs/perceptual-energy-opportunity.pdf}
       \caption{Normalized video size and decode energy consumption on mobile SoC.}
@@ -71,7 +71,7 @@
       \end{figure}%
 }
 \newcommand{\coresVsDecodeSpeedupFigure}{
-  \begin{figure}[t]
+  \begin{figure}[h]
     \centering
       \includegraphics[width=\linewidth]{tvarch-figs/cores-v-decode-speedup.pdf}
       \caption{Decode performance for in-order and \nameArch's parallel decoding, with and without optimal scheduling.}
@@ -80,7 +80,7 @@
 }
 
 \newcommand{\coresVsEnergySpeedup}{
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
     \includegraphics[width=\linewidth]{tvarch-figs/cores-v-power-area-speedup.pdf}
     \caption{Tradeoff between energy consumption per frame and decode speedup as more cores are added to \nameArch. This figure references a homogenous-core design. \todo{still need DVFS results} }
@@ -90,15 +90,15 @@
 
 \newcommand{\motivationComputeMemEnergyTime}{
 
-\begin{figure*}[t]
+\begin{figure*}[h]
     \centering
-    \begin{minipage}[t]{.48\textwidth}
+    \begin{minipage}[h]{.48\textwidth}
         \centering
         \includegraphics[width=.95\linewidth]{tvarch-figs/perceptual-energy-opportunity.pdf}
         \caption{Memory energy consumption decreases by using perceptual compression, but decoders do not take advantage of this.}
         \label{fig:mot-percept-energy}
     \end{minipage} \hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[h]{0.48\textwidth}
         \centering
             \includegraphics[width=\linewidth]{tvarch-figs/motivation-single-tile-energy-time.pdf}
             \caption{VR video hardware decoders do not take advantage of video tile parallelism. Even as more parallelism is made available, decode energy and runtime remain approximately stagnant.}
@@ -122,7 +122,7 @@
         \includegraphics[width=\linewidth]{tvarch-figs/cdf-baseline.pdf}
         \caption{CDF of quality target for pixels in frame.}
         \label{subfig:og-cdf}
-      \\
+
       \centering
       \includegraphics[width=\linewidth]{tvarch-figs/perceptualCompressionExample/tiled-example.pdf}
       \caption{Tiled compression, centered around the fovea. Video size is 11 MB.}
@@ -132,7 +132,7 @@
         \includegraphics[width=\linewidth]{tvarch-figs/cdf-tiled.pdf}
         \caption{CDF of quality target for pixels in frame.}
         \label{subfig:tiled-cdf}
-      \\
+
       \centering
       \includegraphics[width=\linewidth]{tvarch-figs/perceptualCompressionExample/multi-scale.pdf}
       \caption{Multi-resolution compression: two tiles for foveal and peripheral areas. Video size 5 MB. }
@@ -142,7 +142,7 @@
         \includegraphics[width=\linewidth]{tvarch-figs/cdf-layered.pdf}
         \caption{CDF of quality target for pixels in frame.}
         \label{subfig:layered-cdf}
-      \\
+
     \caption{Example video still and visualizations of tiled and multi-resolution video compression. These VR video compression methods use 40-75\% less storage by distributing quality across video tiles.}
     \label{fig:example-vid-compressed}
 \end{figure}
@@ -150,7 +150,7 @@
 }
 
 \newcommand{\dvfsEnergySpeedup}{
-\begin{figure*}[t]
+\begin{figure*}[h]
     \centering
       \centering
       \includegraphics[width=\linewidth]{tvarch-figs/dvfs-energy-speedup-all.pdf}
@@ -167,7 +167,7 @@
 }
 
 \newcommand{\evalEnergyPower}{
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
           \centering
           \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-breakdown.pdf}
@@ -183,18 +183,18 @@
 }
 
 \newcommand{\evalRegularTileEnergy}{
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
     \centering
     \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-regular-vbench.pdf}
     \caption{\texttt{vbench} energy consumption results for regularly distributed tiles. }
     \label{subfig:eval-energy-regular-vbench}
-\\
+
   \centering
   \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-fov-vbench.pdf}
   \caption{\texttt{vbench} energy consumption results for irregular foveated tiles. }
   \label{subfig:eval-energy-fov-vbench}
-\\
+
   \centering
   \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-multi-vbench.pdf}
   \caption{\texttt{vbench} energy consumption results for multi-resolution foveation. }
@@ -202,18 +202,18 @@
 \caption{Energy consumption for decoding \texttt{vbench} videos. \texttt{vbench} videos range in resolution and show a commensurate range in energy consumption. \nameArch reduces energy consumption for all compression styles but is most scalable for foveated tiles and lowest-energy for multi-resolution foveation.}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
     \centering
     \includegraphics[width=.675\textwidth]{tvarch-figs/eval-energy-regular-vr.pdf}
     \caption{\texttt{vr-360} energy consumption results for regularly distributed tiles.}
     \label{subfig:eval-energy-regular-vr}
-\\
+
   \centering
   \includegraphics[width=.675\textwidth]{tvarch-figs/eval-energy-fov-vr.pdf}
   \caption{\texttt{vr-360} energy consumption results for irregular foveated tiles.}
   \label{subfig:eval-energy-fov-vr}
-\\
+
   \centering
   \includegraphics[width=.675\textwidth]{tvarch-figs/eval-energy-multi-vr.pdf}
   \caption{\texttt{vr-360} energy consumption results for multi-resolution foveation.}
@@ -224,20 +224,18 @@
 
 
 \newcommand{\dvfsConfigTable}{
-\begin{table}[t]
+\begin{table}[h]
   \centering
   \caption{\nameArch Evaluation Design Points and Configuration Characteristics}
   \label{tab:dvfs-configs}
-  \resizebox{\linewidth}{!}{%
-  \begin{tabular}{@{}llll@{}}
-  \toprule
-  Configuration           & Base-Opt     & Low-Power    & Pareto       \\ \midrule
-  \# Cores (Big - Little) & 4 (2 - 2)    & 8 (2 - 6)    & 52 (2 - 50)  \\
-  Energy / Frame (mJ)     & 0.606        & 0.56         & 0.52         \\
-  Speedup                 & 2.83$\times$ & 4.41$\times$ & 21.8$\times$ \\
-  Power (mW)              & 7.41         & 10.68        & 49.1         \\ \bottomrule
+  \begin{tabular}{llll} \toprule
+  Configuration           & Base-Opt     & Low-Power    & Pareto        \\\midrule
+  \# Cores (Big - Little) & 4 (2 - 2)    & 8 (2 - 6)    & 52 (2 - 50) \\
+  Energy / Frame (mJ)     & 0.606        & 0.56         & 0.52 \\
+  Speedup                 & 2.83$\times$ & 4.41$\times$ & 21.8$\times$  \\
+  Power (mW)              & 7.41         & 10.68        & 49.1          \\  \bottomrule
   \end{tabular}
-  }
+
 \end{table}
 
 }

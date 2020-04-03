@@ -1,5 +1,5 @@
-\section{Motivation: Irregularity in \\Perceptually-Compressed Video}
-\label{sec:characterization}
+\section{Motivation: Irregularity in Perceptually-Compressed Video}
+\label{sec:tva-characterization}
 
 This section describes two popular perceptual compression schemes and characterizes their energy consumption and scalability gap.
 The two compression schemes are tile-based foveation and multi-resolution foveation.
@@ -30,13 +30,14 @@ The most popular method of foveated video compression is \emph{tile-based} compr
 This method approximates the foveated resolution degradation by partitioning the video into rectangular regions with resolution correlated with the distance from the foveal region.
 Tile-based compression divides the video into contiguous tiles encoded at qualities matching the foveated pattern.
 In this scheme, the bitrate $B$ for each tile is determined by
-\begin{equation}
+\begin{align}
     B \leq c_{r}HWb_{pp}f_{r}
-\end{equation}
+\end{align}
 where $H$ and $W$ are the height and width of the video, $b_{pp}$ the bits per pixel--set to 12 as in~\cite{kaplanyan2019deepfovea}, $c_r$ the compression rate, and $f_r$ the frame rate.
 For a set number of quality levels $l$, the bitrate is distributed as
-\begin{equation}B = w_{1}B_{1} + w_{2}B_{2} + ... + w_{l}B_{l}
-\end{equation}
+\begin{align}
+  B = w_{1}B_{1} + w_{2}B_{2} + ... + w_{l}B_{l}
+\end{align}
 where $w_{1} ... w_{l}$ are weights corresponding to the number of tiles allocating that bitrate.
 For instance, the toy example in~\ref{subfig:tiled-still} has $l=4$ foveation quality levels, and $c_r = {1.0, .75, .5, .1}$.
 
