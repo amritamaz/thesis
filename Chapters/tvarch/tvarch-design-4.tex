@@ -1,0 +1,99 @@
+\vfill\null
+
+\section{RABBIT: Hardware Support for \\Perceptual Video Decoding}
+\label{sec:vdo-hw}
+
+This section describes \nameArch, a new video decoder that optimizes for tile-level parallelism in VR video workloads and tile-proportional execution.
+It enables perceptual decoding by:(1) adding custom logic to support scalable tile decoding and (2) heterogeneous decoder cores to handle the non-uniformity of perceptually compressed videos.
+% This additional hardware supports (i) parallel decoder cores and (ii) scaling parallelized decoders to support finely-tiled videos.
+
+\ref{fig:mvdo-arch} shows a prototype design for \nameArch, which builds on a recent low-power video decoder architecture for VR devices~\cite{tikekar18ijssc}.
+To rapidly explore the design space, we constructed a simulator based on this baseline architecture and added support for our custom scheduling and dual-frequency zones for the decode cores.
+We optimized decode latency for tiling and multi-layer video and assessed potential speedup from optimal scheduling (\ref{subsec:tile-sched} ).
+% We first optimize the latency of decoding tiled and multi-layer perceptual video on this parallel architecture with a custom scheduler (\ref{subsec:tile-sched}).
+We then explored the optimal number of parallel cores needed to efficiently decode tiled and multi-resolution perceptual video (\ref{subsec:parallel-design-space}).
+Having selected an appropriate number of parallel cores for a mobile VR video decoder, we considered the energy and latency impact of partitioning the decode units into separate frequency domains to balance tile irregularity across our design (\ref{subsec:hetero-cores}).
+
+\subsection{Scheduling tile decode for lower latency}
+\label{subsec:tile-sched}
+\nameArch optimizes hardware decoding for tile-based compressed VR video.
+To understand the change in performance when decoding tiles as opposed than sequential rows, we first present an example using four decoder cores, as in the original baseline decoder architecture~\cite{hevcThesis}.
+
+
+\vdecCTUTimingFigure
+
+For a conventional hardware decoder architecture, parallel decoder cores must still abide by dependencies on previous rows and columns, as shown in \ref{fig:ctu-timing}.
+Because tiles break this dependency, decoders can execute on multiple regions without synchronization.
+This allows decoding to execute with reduced latency.
+The short example in \ref{fig:ctu-timing}, for instance, terminates in 7 cycles for the sequential decoding process, but it can be reduced to four cycles with tile-based decoding.
+For large-resolution video where complex 64$\times$64 CTUs can bottleneck decoding, these gains can be more significant.
+
+However, the irregularity of data within a tile introduces more inefficiencies.
+\ref{fig:tile-schedule} illustrates how a naive parallel schedule for distributing tiles across multiple cores can result in unequal distribution of work across the cores.
+In this example, the default schedule distributes tiles in raster order because they are decoded from the \hevc bitstream.
+This ordering considers only the position of tiles in a frame, even though tiles have no dependencies and can be decoded in any order.
+As a result, the load is unevenly distributed across cores: Decoder 1 spends the longest time, while Decoder 3 sits idle for almost half the runtime.
+
+A more intelligent solution takes advantage of tile size and complexity, which are known at encode time.
+We encode this data into the video bitstream as metadata, to be processed by a scheduler during decoding.
+Knowing the complexity of tiles lets the scheduler more evenly distribute tiles to decoder cores.
+To meet this goal, \nameArch places a simple scheduler in front of the decoder core, as shown in~\ref{fig:mvdo-arch}.
+This scheduler augments the tile metadata bitstream with the bitrate for each tile, as an approximation of the decode complexity.
+Based on this information, the scheduler sorts the tile indices, and uses that order to distribute tiles to cores.
+
+\coresVsDecodeSpeedupFigure
+
+
+The scheduler uses a fast bitonic sort to sort the tiles in $O(log^2(n))$ time, or about 25 cycles for 128 tiles.
+Based on the spread of bitrates and tiling configurations in our benchmark workloads, we determined that the sorter needs to support a bitrate range from 1--$\sim$100,000 kbps, or a 16-bit range.
+This means that \nameArch does not correctly sort tiles below 1 kbps or 100 Mbps.
+For the highest resolution video we evaluated, partitioned into 128 tiles, the metadata consumed $<300$ bytes.
+
+\subsection{Exploring performance impacts of scaling parallel core count}
+\label{subsec:parallel-design-space}
+Using the approach described above, \nameArch efficiently balanced work across decoder cores.  We next assessed how \nameArch decoded tiled videos.
+As our workload, we characterized decode performance on a 4K video partitioned into 128 tiles.
+We scaled the hypothetical number of cores from 4 to 128 and evaluated simulated runtime and decode energy per frame.
+
+
+\ref{fig:cores-decode} shows how decode performance scales with the number of cores.
+Compared to a theoretically optimal speedup, in-order decoding was consistently 2--3$\times$ slower, due to decode dependencies constraints from row-order decoding.
+The Parallel-Naive design broke row dependencies by decoding tiles, but it maintained the naive scheduling pattern.
+On average, this design outperformed in-order decoding, but poor load distribution degraded performance as the number of cores grew to 128.
+The Parallel-Sched design added \nameArch's optimal scheduler algorithm to the parallel cores.
+Even with the overhead of sorting the tile bitstream, it achieved near-optimal performance at low numbers of cores and the closest-to-optimal performanc as the number of cores grew significantly.
+
+\dvfsEnergySpeedup
+
+\subsection{Optimizing decode latency with scalable-frequency cores}
+\label{subsec:hetero-cores}
+% Even a highly-utilized, parallel decoder architecture with optimal scheduling still performs poorly on the multi-resolution foveated configuration (\ref{subfig:fov-still}).
+% This style of foveation has the best compression efficiency and, as a result, lowest memory-related energy consumption, but only requires two tiles for decoding.
+% The parallel architectures, using 8-16 cores on separable tiles, exhibit a different distribution of complexity across the video.
+% \todo{figure here to illustrate}
+
+To further optimize resource distribution on a chip with decoder units, \nameArch runs cores in multiple frequency domains to enable heterogeneous decode performance across cores.
+By operating at different frequencies, these heterogeneous cores can support different decode rates for tiles with varying bitrates or encoding complexity.
+% Supporting multiple performance targets with different decoder designs is feasible because VR videos provide a range of CTU complexities and bitrates across tiles in a VR video.
+As described in~\ref{sec:characterization}, VR videos can be encoded at a range of tiling configurations, which strain a parallel video in different ways.
+At one extreme, videos with tiled foveation may have 20-60 low-complexity tiles for peripheral regions and a smaller number of higher-complexity tiles for foveal regions.
+At the other extreme, a multi-layer foveated video uses only two tiles: one high-complexity tile for the foveal region, and one low-complexity tile servicing the entire peripheral region.
+Leveraging multiple frequency domains for \nameArch's decode cores allows us to explore configurations of faster, energy-consuming cores for high-resolution areas and energy-efficient cores for low-resolution regions to optimally balance energy and delay.
+
+To explore parallel designs with partitioned frequency domains, we swept the number of parallel cores and partitioned the cores between low- and high-frequency operating regions.
+The low frequency was selected to be the lowest frequency that could sustain 30 FPS throughput of a video tile, and the high frequency was constrained the be the highest operating frequency for the decoder core.
+Based on the video decoder architecture we simulated, this frequency ranged from 8 - 20 MHz.
+To evaluate energy consumption, we calculated the energy needed to decode a synthetic video sequence engineered to represent the average of our video benchmarks in video frame complexity and CTU sizes.
+We computed the energy for this synthetic video and divided by the number of frames in order to report the energy consumed per frame in the synthetic video, and we evaluated across all video decoder configurations generated.
+
+\ref{fig:dvfs-exploration} shows the results. In~\ref{subfig:dvfs-all}, we consider all architectural design points between 4 and 128 cores and all partitions of these cores across the high- and low-frequency domains; we did not eliminate any datapoints.
+We found a Pareto-frontier of optimal energy-speedup configurations that allowed for 60-100$\times$ decode latency improvement, typically requiring over 100 cores.
+
+We used this information to select target configurations on which to evaluate \nameArch performance.
+Keeping in mind our VR target hardware, we constrained the design space to only those designs that were under a 50 mW power budget~\cite{tikekar18ijssc}.
+This resulted in the configurations shown in~\ref{subfig:dvfs-sub50}.
+Though more sparse, the design space still showed performance-optimal points.
+From these, we selected: (1) a Pareto-optimal design point, representing the fastest point with low energy; (2) a low-power design point, demonstrating the highest speedup while maintaining low power consumption; and (3) a baseline-optimized point, which was the dual-frequency configuration with the best energy-speedup using 4 cores, as in the baseline architecture.
+\ref{tab:dvfs-configs} provides more performance details on these design points.
+
+\dvfsConfigTable

@@ -1,0 +1,96 @@
+\section{Motivation: Irregularity in \\Perceptually-Compressed Video}
+\label{sec:characterization}
+
+This section describes two popular perceptual compression schemes and characterizes their energy consumption and scalability gap.
+The two compression schemes are tile-based foveation and multi-resolution foveation.
+We describe each technique and evaluate performance on a mobile SoC from Nvidia using its hardware video decoder; \ref{sec:vdoprof} lists a complete experimental setup.
+
+\perceptualCompressionExampleFigure
+
+
+\subsection{Foveated video compression}
+
+Perceptual video compression reduces memory bandwidth and associated rendering costs by incorporating information about the human visual system.
+The most faithful method for applying perceptual compression is \emph{foveated compression}.
+Foveated compression mimics the human eye's performance in the center of the eye, or \emph{foveal} region, with resolution declining exponentially for pixels not at the center of the eye (\ref{subfig:eye}).
+The point where the eye gaze is centered is the \emph{fixation point}, and the region of pixels around it that maintains the highest resolution is called the \emph{foveal region}, corresponding to the area around the center of the eye's retina, the fovea.
+
+\motivationComputeMemEnergyTime
+
+True foveated videos are significantly smaller than conventional videos.
+They use sparse samples and upsampling to best emulate a true foveated viewing experience~\cite{patney2017perceptual}.
+However, they require custom hardware or high-energy GPU processing to decompress and still present challenges related to temporal aliasing and visual artifacts~\cite{kaplanyan2019deepfovea}.
+As an alternative, video distribution services have designed different ways to approximatae a true foveated user experience.
+These perceptual compression methods discard or downscale visually unimportant areas of the image, e.g., peripheral areas of the video frame outside the foveal region~\cite{google-foveation,fov-cloud-ryoo, visualcloud2017haynes}.
+In this paper, we use the term \emph{perceptual compression} to describe any technique that mimics a foveated viewing experience.
+
+
+\subsubsection{Tile-based foveated compression}
+The most popular method of foveated video compression is \emph{tile-based} compression, where many small tiles encode regions of different quality (\ref{subfig:tiled-still}).
+This method approximates the foveated resolution degradation by partitioning the video into rectangular regions with resolution correlated with the distance from the foveal region.
+Tile-based compression divides the video into contiguous tiles encoded at qualities matching the foveated pattern.
+In this scheme, the bitrate $B$ for each tile is determined by
+\begin{equation}
+    B \leq c_{r}HWb_{pp}f_{r}
+\end{equation}
+where $H$ and $W$ are the height and width of the video, $b_{pp}$ the bits per pixel--set to 12 as in~\cite{kaplanyan2019deepfovea}, $c_r$ the compression rate, and $f_r$ the frame rate.
+For a set number of quality levels $l$, the bitrate is distributed as
+\begin{equation}B = w_{1}B_{1} + w_{2}B_{2} + ... + w_{l}B_{l}
+\end{equation}
+where $w_{1} ... w_{l}$ are weights corresponding to the number of tiles allocating that bitrate.
+For instance, the toy example in~\ref{subfig:tiled-still} has $l=4$ foveation quality levels, and $c_r = {1.0, .75, .5, .1}$.
+
+Foveated tiling (\ref{subfig:tiled-still}) produces larger videos than true foveation, but it can be decoded using traditional video decoder hardware.
+Tile-based compression can be considered a coarse mode of foveated compression; instead of dropping single pixels in a continuous function, it downscales contiguous tiles and compresses at different scales.
+Recent work tiles videos into as few as 4 and as many as 128 tiles to improve network bandwidth and streaming latency.
+
+\subsubsection{Multi-resolution compression} This second technique more aggressively compresses video by partitioning the frame into two layers: one small, high-quality tile for the foveal region that is layered over a larger background tile for the peripheral region~\cite{guenter2012foveated}  (\ref{subfig:fov-still}).
+Based on visual perception parameters from~\cite{guenter2012foveated}, multi-resolution allocates two bitrate regions $B = w_{1}B_{1} + w_{2}B_{2}$, where $w_{1} \ll w_{2}$ and $B_{1} \gg B_{2}$.
+
+The multi-resolution technique has significantly better compression efficiency than the tile-based method but less granularity in controlling the amount of foveation available.
+On an implementation-level, it can be understood as a minimum-viable foveation method: it leverages human visual models to dedicate the minimum number of bits required for necessary resolution at the cost of the more subtle gradation provided by tiling methods.
+Recent work deployed multi-resolution foveated compression using two tiles, one for the low-resolution region and the second for the high-resolution, foveal region \cite{google-foveation}.
+However, the size and bitrate of these two tiles are extremely uneven.
+
+\subsection{Memory-compute tradeoffs for perceptual compression}
+Despite the requent deployment of tiled and multi-resolution compression, hardware video decode performance of these workloads is not well understood.
+To motivate the design of \nameArch, we first characterized perceptual video decode performance on the hardware video decoder of the Nvidia Jetson TX2 board, the basis for recent VR headsets, e.g., the VR device from Gameface Labs~\cite{gameface}.
+The TX2 board contains a state-of-the-art Tegra X2 mobile SoC~\cite{nvidia-jetson-tx2}, and its design is similar to the smartphone-grade SoCs used by other VR device vendors (like Samsung and Facebook Oculus).
+We used the TX2's on-board Texas Instruments INA 3221 voltage monitor IC to conduct detailed power measurements of the video decode chip.
+We disabled WIFI and display rendering to isolate energy consumption related specifically to the video decode accelerator.
+We ran the TX2 in MAX-Q mode~\cite{nvidia-jetson-reference} to maximize power efficiency.
+We activated the hardware decoder through GStreamer~\cite{gstreamer} while decoding videos from two video benchmark datasets (described in~\ref{tab:workloads}). We report normalized values averaged across the datasets.
+
+\vdoOverview
+
+\subsubsection{Experimental Energy Consumption and Runtime}
+
+At a minimum, we expected perceptual compression methods reduce energy consumption by reducing memory traffic required to read and decode the videos.
+To quantify this, \ref{fig:mot-percept-energy} characterizes the memory bandwidth and decode energy consumption characteristics when playing perceptually compressed versions of a video on a hardware decoder.
+We evaluated: (1) a baseline \hevc video, (2) the same \hevc video foveated using 16 tiles, and (3) the same \hevc video foveated using multi-layer compression.
+We normalized our measurements to decode performance under the baseline \hevc-compressed video.
+
+Though the video file size reduced by 15--85\% with perceptual compression methods, the decode energy consumption for all three methods remained nearly identical.
+This demonstrates that video decode chips do not exhibit energy consumption changes from reducing compressed video size.
+% From this, we infer that video decode accelerators do not scale with reduced compressed video size to reduce video decode energy consumption, and they do not effectively leverage tile parallelism.
+
+To further understand video decoder performance on tiles, we examined the decoder's behavior when partitioning a video into sets of tiles.
+We distributed the bitrate equally across tiles to gain insight on how the decoder core executes on tiles without introducing the  bitrate irregularity of foveated tiles.
+We experimentally measured decode energy consumption and latency, and we repeated this process for a varying number of tiles.
+
+Dividing a video into tiles effectively introduces more parallelism since the video is partitioned into more discrete parallel chunks.
+As the number of tiles increases, we expected a parallel decoder to leverage this parallelism to scale runtime or energy consumption.
+Ideally, this benefit would scale proportionally with the spatial size of the tile, so a 16-tile video will demonstrate better performance than a 4-tile one.
+
+\ref{fig:mot-tile-energy-time} shows that decode runtime and energy stayed effectively constant across all software tile sizes.
+However, energy and time reached a minima at 8 software tiles.
+% This implies that the hardware decoder can balance the row-order dependencies with an 8-tile configuration more efficiently, but only for the 8-tile configuration.
+% Moreover, this improvement does not scale linearly, but drops only for the 8-tile configuration, and then increases back to the baseline rate.
+This demonstrates decode inefficiency: the decoder used tiled parallelism to a small extent, but not nearly commensurate with memory bandwidth reduction.
+
+\subsubsection{Analysis}
+We find video decoders do not optimize decoding for VR-centric forms of video compression.
+Further, current video decoder architectures do not effectively scale energy or decode runtime with the smaller tile sizes.
+As a result, while VR video compression methods reduce memory traffic, decode performance remains effectively constant.
+This inefficiency predominantly stems from an inability both to leverage parallelism across tiles (\ref{fig:mot-percept-energy}) and to scale energy or runtime for single tiles (\ref{fig:mot-tile-energy-time}).
+These findings motivate an architecture that (1) can scale video decode for multiple tiles and (2) efficiently manage energy consumption and runtime latency for smaller video tiles.
