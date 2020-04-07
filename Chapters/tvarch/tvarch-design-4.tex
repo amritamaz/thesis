@@ -1,10 +1,12 @@
 \vfill\null
 
-\section{RABBIT: Hardware Support for Perceptual Video Decoding}
+\section{TVA: Hardware Support for Perceptual Video Decoding}
 \label{sec:vdo-hw}
 
 This section describes \nameArch, a new video decoder that optimizes for tile-level parallelism in VR video workloads and tile-proportional execution.
 It enables perceptual decoding by:(1) adding custom logic to support scalable tile decoding and (2) heterogeneous decoder cores to handle the non-uniformity of perceptually compressed videos.
+
+\vdoOverview
 
 \ref{fig:mvdo-arch} shows a prototype design for \nameArch, which builds on a recent low-power video decoder architecture for VR devices~\cite{tikekar18ijssc}.
 To rapidly explore the design space, we constructed a simulator based on this baseline architecture and added support for our custom scheduling and dual-frequency zones for the decode cores.
@@ -74,7 +76,7 @@ Even with the overhead of sorting the tile bitstream, it achieved near-optimal p
 To further optimize resource distribution on a chip with decoder units, \nameArch runs cores in multiple frequency domains to enable heterogeneous decode performance across cores.
 By operating at different frequencies, these heterogeneous cores can support different decode rates for tiles with varying bitrates or encoding complexity.
 % Supporting multiple performance targets with different decoder designs is feasible because VR videos provide a range of CTU complexities and bitrates across tiles in a VR video.
-As described in~\ref{sec:tva-characterization}, VR videos can be encoded at a range of tiling configurations, which strain a parallel video in different ways.
+VR videos can be encoded at a range of tiling configurations, which strain a parallel video in different ways.
 At one extreme, videos with tiled foveation may have 20-60 low-complexity tiles for peripheral regions and a smaller number of higher-complexity tiles for foveal regions.
 At the other extreme, a multi-layer foveated video uses only two tiles: one high-complexity tile for the foveal region, and one low-complexity tile servicing the entire peripheral region.
 Leveraging multiple frequency domains for \nameArch's decode cores allows us to explore configurations of faster, energy-consuming cores for high-resolution areas and energy-efficient cores for low-resolution regions to optimally balance energy and delay.
