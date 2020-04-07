@@ -39,6 +39,11 @@ Mobile SoCs such as TI's OMAP, Nvidia's Tegra, and Qualcomm's Snapdragon provide
 Hardware acceleration for specific vision applications is also well-explored to provide faster performance or more energy efficiency: these include face detection on FPGAs~\cite{cvpr2007, cho_parallelized_2009} and GPUs~\cite{vj_gpu}, and neural network vision accelerators on ASIC, FPGA, and GPU platforms~\cite{farabet2010, neuflow,snnap,nn_fpga,nsp_iscas,bilat_isscc,myriad15,convolution_engine,shidiannao,minerva,eyeriss,buckler2018eva2}.
 These implementations explore performance tradeoffs across parallelized configurations of processing elements, using different hardware substrates or data movement techniques to improve speed or energy efficiency.
 
+Recent work addresses energy efficiency of mobile video compression as a critical workload as well.
+Finchelstein~\etal evaluate the impact of parallel decoder cores on a \avc chip design~\cite{multicore-avc}.
+Tikekar \etal contribute a related parallel video decoder design using embedded DRAM to reduce data movement for VR devices~\cite{tikekar18ijssc}.
+Boroumand \etal evaluate executing video decode hardware with processing-in-memory (PIM) to reduce energy from data movement~\cite{google2018asplos}.
+
 Instead of designing custom hardware to support specialized vision computation, another approach is to offload image processing computation from mobile devices to the cloud, where compute resources are more plentiful and programmability is more flexible~\cite{pervasive_compute}.
 Forchheimer and Astrom~\cite{Forchheimer94} discuss in-sensor image processing as a method to reduce image sensor data to useful information by performing pre-processing.
 Cuervo et al. use computation offloading to accelerate complex processing on mobile devices~\cite{cuervo2010maui}.
@@ -128,5 +133,10 @@ Early work in human visual saliency prediction improved its accuracy~\cite{li201
 These existing solutions for video compression require custom versions of outdated compression codecs or solving costly optimization problems during each transcoding run.
 Sitzmann \etal~\cite{sitzmann2018saliency} observe the impact of leveraging saliency for VR video compression and identified key perceptual requirements for future saliency-video codesign work.
 
-More recently, multimedia and networking research optimized streaming bandwidth requirements for \threesixty and VR video by decreasing quality outside the VR field-of-view~\cite{Fan:2017:FPV:3083165.3083180,fov-cloud-ryoo,saliency-map,visualcloud2017haynes}.
-These region-of-interest (ROI) coding techniques could be considered either saliency or semantic-based optimizations.
+Foveated compression tailors video compression specifically to the attention driven by a single eye's gaze and it demonstrates significant bitrate savings \cite{geisler1998real, albert}.
+Google's foveation pipeline uses multi-resolution compression~\cite{google-foveation}.
+Furion leverages parallel cores to achieve fast tile-based perceptual rendering for games, but their decode is implemented in software and limited to four available mobile CPU cores~\cite{furion2019}.
+Tile-based streaming has become a popular method to deliver video content adapted to a VR viewer's head location~\cite{liu2018mobisys}.
+Facebook recently described an AI-based decoder for sparse foveated video, requiring machine learning infrastructure to decode frames~\cite{kaplanyan2019deepfovea}.
+More recently, streaming bandwidth requirements for \threesixty and VR video were shown to be optimized by decreasing quality outside the VR field-of-view~\cite{Fan:2017:FPV:3083165.3083180,fov-cloud-ryoo,saliency-map,visualcloud2017haynes}.
+These foveated and region-of-interest (ROI) coding techniques could be considered either saliency-based optimizations.
