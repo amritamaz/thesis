@@ -28,12 +28,12 @@ I define \textit{perceptual optimizations} as a class of optimizations that impr
 In visual computing systems, the impact of any system optimization is evaluated based on the resulting visual quality, frame rate, or resolution of the visual output.
 My work takes these quality tradeoffs for visual computing a step further, by specializing computation to take into account specific perceptual cues about the visual media being ingested to optimize the compute and storage.
 
-\section{Thesis Proposal}
-My thesis proposes \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
-While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{ch:related}), my proposal to use perceptual cues expands the design space, resulting in new accelerator designs and improved performance benefits.
+\section{Thesis Overview}
+My thesis describes \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
+While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
 
-\subsection{Thesis Overview.} My thesis argues that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
-To support this claim, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
+My thesis shows that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
+To support this, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
 The resulting works demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
 
 In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency; and use hardware-software codesign to optimize computer systems at different points in the video storage pipeline: during camera capture (\ref{ch:near-sensor}), camera processing (\ref{ch:hfbs}), cloud video streaming and storage (\ref{ch:vignette}), as well as mobile video playback (\ref{ch:mob-vdec}).
@@ -55,8 +55,7 @@ Chapter~\ref{ch:related} contextualizes my work within the areas of specialized 
 Chapter~\ref{ch:near-sensor} describes my work codesigning computer vision hardware for energy-harvesting cameras, balancing tradeoffs of accuracy and energy efficiency through the use of semantic perceptual information.
 Chapter~\ref{ch:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
 In Chapter~\ref{ch:vignette}, I describe a new storage system, designed to support applying human visual saliency information to traditional video compression, to improve storage and streaming bandwidth.
-Chapter~\ref{ch:mob-vdec} describes how new mobile device hardware can adapt for a future of these perceptually-optimized videos to improve performance and energy consumption.
-To conclude, Chapter~\ref{ch:proposed} identifies future opportunities for perceptually-optimized visual computing systems, applying perceptual information to video pipelines during video analytics in the cloud and to optimize display rendering of visual content on new devices.
+Chapter~\ref{ch:tvarch} describes how new mobile device hardware can adapt for a future of these perceptually-optimized videos to improve performance and energy consumption.
 
 
 %*****************************************
