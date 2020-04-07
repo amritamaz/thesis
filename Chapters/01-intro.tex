@@ -11,11 +11,11 @@ We are not just producing \emph{more} photos and video, but also at higher resol
 As these video and graphics applications become richer and more immersive, however, they push the limits of already-strained computer systems.
 For decades, computer architecture has leveraged the easy gains of Dennard scaling to provide exponential performance with little added complexity to general purpose computer processing units (CPUs)~\cite{esmaeilzadeh2011dark}.
 As CPU design has reached its physical limits, computer architects have looked to designing custom hardware to achieve the increased compute and memory specifications required for modern computing workloads~\cite{tpu, q100, qadeer}.
-By tailoring the design of compute infrastructure to meet the needs of specialized workloads, such as visual computing, these systems can improve speed or power consumption, leveraging hardware like graphics processing units (GPUs), general purpose GPUs (GPGPUs), field programmable gate arrays (FPGAs), and custom application specific integrated circuits (ASICs).
+By tailoring the design of compute infrastructure to meet the needs of specialized visual computing workloads, these systems can improve speed or power consumption, leveraging hardware like graphics processing units (GPUs), general purpose GPUs (GPGPUs), field programmable gate arrays (FPGAs), and custom application specific integrated circuits (ASICs).
 
 \section{Challenges for Video Processing Systems}
 Visual computing applications are a natural target for specialized custom hardware: the two-dimensional image representation is easily expressed using array and buffer primitives; many image processing filters are simple convolutional kernels easy to broadcast in parallel.
-But the cost of data movement (both within a single hardware design and across networks) for these large volumes of images and video for modern virtual reality, computer vision, and video processing workloads is much higher than the benefits of tightly optimized computation.
+But the cost of data movement (both within a single hardware design and across networks) for these large volumes of images and video for modern virtual reality and video processing workloads far exceeds the benefits of tightly optimized computation.
 Managing this data requires more holistic design approaches beyond parallel computation and stream processing.
 
 Fundamentally, images and video data use pixel-level information (RGB color at XY coordinates over time) to communicate higher-level information (motion, objects, visual importance, scene meanings).
@@ -23,18 +23,18 @@ However, past work in specialized image and video hardware accelerators~\cite{ha
 While architectural challenges have motivated system designers to push performance limits by codesigning custom systems for visual media applications, this matrix representation of visual media has remained stagnant.
 For many visual computing applications, where the application's goal is to produce results at a frame or video segment granularity, as opposed to pixel-level results, including this higher-level intent in the hardware-software codesign process introduces new opportunities for improving performance.
 
-In my thesis, I will demonstrate how leveraging new classes of higher-level information about visual media, unified under the concept of perceptual cues, can improve power efficiency, processing speed, or storage capacity for visual computing systems.
+In this thesis, I demonstrate how leveraging new classes of higher-level information about visual media, unified under the concept of perceptual cues, can improve power efficiency, processing speed, or storage capacity for visual computing systems.
 I define \textit{perceptual optimizations} as a class of optimizations that improve system performance by optimizing for a quality metric pertaining to perceptual quality of the video frame, as opposed to per-pixel quality.
 In visual computing systems, the impact of any system optimization is evaluated based on the resulting visual quality, frame rate, or resolution of the visual output.
 My work takes these quality tradeoffs for visual computing a step further, by specializing computation to take into account specific perceptual cues about the visual media being ingested to optimize the compute and storage.
 
 \section{Thesis Overview}
-My thesis describes \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
+In this thesis, I posit that \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
 While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
 
-My thesis shows that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
+This dissertation argues that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
 To support this, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
-The resulting works demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
+The resulting systems demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
 
 In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency; and use hardware-software codesign to optimize computer systems at different points in the video storage pipeline: during camera capture (\ref{ch:near-sensor}), camera processing (\ref{ch:hfbs}), cloud video streaming and storage (\ref{ch:vignette}), as well as mobile video playback (\ref{ch:mob-vdec}).
 

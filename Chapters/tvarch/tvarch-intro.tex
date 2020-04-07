@@ -33,16 +33,13 @@ To evaluate \nameArch's performance, we used two methods for compressing video p
 Perceptual compression techniques exploit constraints in the human visual system to reduce memory bandwidth and associated rendering costs.
 Our central insight is that the human eye perceives only a small portion of the VR display, \emph{the foveal region}, in high resolution, but it still requires peripheral pixels to \emph{approximate} the original image (~\ref{fig:foveal-motivation}).
 Though software developers have applied this insight to create optimizations that reduce data bandwidth, fixed-function video decoder architectures have not adopted these advances, suggesting an opportunity for up to 50-75\% improvement in decode cost commensurate with the data reduction.
-% \brandon{I think you might have gotten ahead of yourself in this paragraph.  I need to know more about your rearchitecture of the video decoder accelerator before I can pay attention to the techniques that you use in its optimization.  Maybe split into two thoughts: (i) we have a new video decoder accelerator that does X, Y, and Z; (ii) the key optimization that the VDA uses is to take advantage of the characteristics of the human eye in the context of VR video.  Most of this paragraph belongs in (ii).  You can also do the opposite and talk about (ii) and then how (i) takes advantage of it.  Actually you might want to do (ii)->(i) which leads nicely into `In this paper, we propose...'.}
 
-% In this paper, we propose \nameArch, a video decoder architecture for supporting energy efficient decoding of perceptually-compressed video.
 \nameArch's optimizations target reduced power consumption on  VR-centric mobile SoCs  for video playback.
 We reverse-engineered video decode performance for a commodity video decoder and propose new optimizations for perceptual video.
 We capture our characterizations in \nameArchprof, an open-source profiling framework for mobile video decoders.
 \nameArchprof abstracts away codec-specific complexity so compression engineers and VR application developers can more easily assess mobile energy consumption for video workloads.
 
-To our knowledge, this paper is the first to propose optimizing video decoder architectures for VR workloads.
-It makes the following contributions:
+This chapter makes the following contributions:
 \begin{itemize}
     \item \nameArch, a new video decoder architecture optimized for tile-based parallelism in VR video, using a new scheduler and heterogeneous decoder cores to improve energy efficiency
     \item \nameArchprof, an open-source profiling framework to characterize video energy consumption on real and modelled video decode hardware to help developers of new perceptual compression techniques leverage architecture-specific energy information to tune their designs
