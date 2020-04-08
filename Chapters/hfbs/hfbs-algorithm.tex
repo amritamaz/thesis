@@ -178,15 +178,15 @@ This problem is fully-described by the diffusion operator $D(\cdot)$ and the bil
 Algorithm~\ref{alg:heavy} shows pseudocode describing how optimization is performed:
 
 \begin{algorithm}[h]
-\caption{Bilateral-Space Heavy Ball Method \label{alg:heavy} \\
-\textbf{Input:}
+\caption{Bilateral-Space Heavy Ball Method \label{alg:heavy}}
+\hspace*{\algorithmicindent} \textbf{Input}:
 problem description $\{ D(\cdot), \tilde{\mathbf{b}}, \mathbf{q} \}$,
 initial state $\mathbf{z}_{\mathrm{init}}$,
 step size $\alpha = 1$,
 momentum $\beta = 0.9$,
-number of iterations $n = 256$.
-\\
-\textbf{Output:} state after $n$ iterations $\mathbf{z}$ }
+number of iterations $n = 256$. \\
+\hspace*{\algorithmicindent} \textbf{Output}:
+state after $n$ iterations $\mathbf{z}$. \\
 \begin{algorithmic}[1]
 \State $\mathbf{z} \gets \mathbf{z}_{\mathrm{init}}$
 \State $\mathbf{h} \gets \mathbf{0}$
@@ -197,6 +197,29 @@ number of iterations $n = 256$.
 \EndFor
 \end{algorithmic}
 \end{algorithm}
+
+% \begin{algorithm}
+% \caption{PSO}
+% \label{pseudoPSO}
+% \begin{algorithmic}[1]
+% \State Initialize a population of particles with random values positions
+%        and velocities from \textit{D} dimensions in the search space
+% \While{Termination condition not reached}
+% \For{Each particle $i$}
+%     \State Adapt velocity of the particle using Equation \ref{eq:1}
+%     \State Update the position of the particle using Equation \ref{eq:2}
+%     \State Evaluate the fitness {$f(\overrightarrow{X}_i)$}
+%     \If{$f(\overrightarrow{X}_i)<f(\overrightarrow{P}_i)$}
+%        \State $\overrightarrow{P}_i \gets \overrightarrow{X}_i$
+%     \EndIf
+%     \If{$f(\overrightarrow{X}_i)<f(\overrightarrow{P}_g)$}
+%        \State $\overrightarrow{P}_g \gets \overrightarrow{X}_i$
+%     \EndIf
+% \EndFor
+% \EndWhile
+% \end{algorithmic}
+% \end{algorithm}
+
 
 It can be shown that if the momentum and step size hyperparameters are set correctly, this heavy ball method has the same asymptotic performance as conjugate gradient \cite{polyak1964some}.
 Because preconditioning has been absorbed into the problem, performance approaches preconditioned conjugate gradient.

@@ -3,9 +3,41 @@
 \usepackage{libertine}
 \usepackage{libertinust1math}
 \usepackage[T1]{fontenc}
-\setlength{\textfloatsep}{5pt}
+\usepackage[square,numbers]{natbib}
+\bibliographystyle{abbrvnat}
 
-\date{May 28, 2019}
+\setlength{\textfloatsep}{5pt}
+\setfloatalignment{t}
+
+\date{May 4, 2020}
+
+\setcounter{secnumdepth}{2}
+
+% dotted toc
+\usepackage[titles]{tocloft}
+\makeatletter
+\renewcommand*\l@figure{\@dottedtocline{1}{1.5em}{2.3em}}
+\makeatother
+
+% ****************************************************************************************************
+% 2. Personal data and user ad-hoc commands (insert your own data here)
+% ****************************************************************************************************
+\newcommand{\myTitle}{Perceptual Optimizations for Video Capture, Processing, and Storage Systems\xspace}
+\newcommand{\mySubtitle}{A dissertation \\
+submitted in partial fulfillment of the \\
+requirements for the degree of\xspace}
+\newcommand{\myDegree}{Doctor of Philosophy\xspace}
+\newcommand{\myName}{Amrita Mazumdar\xspace}
+\newcommand{\myChair}{Luis Ceze\xspace}
+\newcommand{\myOtherChair}{Mark Oskin\xspace}
+\newcommand{\myFaculty}{Magda Balazinska\xspace}
+\newcommand{\myGSR}{Rebecca Cummings (Art)\xspace}
+\newcommand{\myDepartment}{Paul G. Allen School of Computer Science \& Engineering\xspace}
+\newcommand{\myUni}{University of Washington\xspace}
+\newcommand{\myLocation}{Seattle, WA\xspace}
+\newcommand{\myTime}{2020\xspace}
+\newcommand{\myVersion}{\classicthesis}
+
 
 
 % todo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,10 +90,19 @@
 \usepackage[export]{adjustbox}
 
 % colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \usepackage[svgnames,table]{xcolor}      % colors, with svg names available
+% \usepackage[dvipsnames,table]{xcolor}      % colors, with svg names available
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
 \definecolor{redstrings}{rgb}{0.9,0,0}
+\definecolor{CTsemi}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
+\definecolor{CTcitation}{rgb}{0,0.5,0} % WebGreen
+\definecolor{CTurl}{named}{Maroon} % Maroon
+\definecolor{CTtitle}{named}{Maroon} % Maroon {cmyk}{0, 0.87, 0.68, 0.32}
+\definecolor{CTlink}{named}{RoyalBlue} % RoyalBlue {cmyk}{1, 0.50, 0, 0}
+\definecolor{halfgray}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
+\definecolor{webgreen}{rgb}{0,0.5,0}
+\definecolor{webbrown}{rgb}{0.6,0,0}
+
 
 
 % math %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,8 +152,6 @@
 \def\rf{\right\rfloor}
 \def\lc{\left\lceil}
 \def\rc{\right\rceil}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
 \usepackage{mathtools}
 
 \usepackage{multirow}
@@ -130,10 +169,12 @@
 
 % graphics %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{graphicx}
-\graphicspath{{./fig/},{./plots/},{./gfx/},{./hfbs-figs/},{./nsp-figs/},{./vignette-figs/}}
+\graphicspath{{./fig/},{./plots/},{./gfx/},{./hfbs-figs/},{./nsp-figs/},{./vignette-figs/},{./graphics/}}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+
 \DeclareGraphicsExtensions{.pdf,.jpeg,.jpg,.png}
 
-\usepackage{algpseudocode,algorithm,algorithmicx}
+\usepackage{algorithm,algpseudocode}
 \makeatletter
 \def\algbackskip{\hskip\dimexpr-\algorithmicindent+\labelsep}
 \def\LState{\State \algbackskip}%
@@ -142,6 +183,9 @@
 \usepackage{array}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \usepackage[normalem]{ulem}
+
+\usepackage{subfig}
+
 
 % colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

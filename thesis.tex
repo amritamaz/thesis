@@ -1,62 +1,57 @@
-\RequirePackage{silence} % :-\
-    \WarningFilter{scrreprt}{Usage of package `titlesec'}
-    \WarningFilter{titlesec}{Non standard sectioning command detected}
-\documentclass[ twoside,openright,titlepage,numbers=noenddot,%1headlines,
-                headinclude,footinclude,cleardoublepage=empty,abstract=off,
-                BCOR=5mm,paper=a4,fontsize=11pt
-                ]{scrreprt}
+\documentclass[nobib,notoc]{tufte-book}
 
-%********************************************************************
-% Note: Make all your adjustments in here
-%*******************************************************
-\input{classicthesis-config}
-\input{thesis-userconfig}
+\hypersetup{colorlinks}% uncomment this line if you prefer colored hyperlinks (e.g., for onscreen viewing)
 
-%********************************************************************
-% Bibliographies
-%*******************************************************
-\addbibresource{thesis.bib}
+%%
+% Book metadata
+\title{A Tufte-Style Book\thanks{Thanks to Edward R.~Tufte for his inspiration.}}
+\author[The Tufte-LaTeX Developers]{The Tufte-LaTeX\ Developers}
+\publisher{Publisher of This Book}
 
-%********************************************************************
-% Hyphenation
-%*******************************************************
-%\hyphenation{put special hyphenation here}
+\input{config-tufte}
+\input{config-user}
 
-% ********************************************************************
-% Begin the document
-%*******************************************************
+% Generates the index
+\usepackage{makeidx}
+\makeindex
+
 \begin{document}
-\frenchspacing
-\raggedbottom
-\selectlanguage{american} % american ngerman
-%\renewcommand*{\bibname}{new name}
-%\setbibpreamble{}
-\pagenumbering{roman}
-\pagestyle{plain}
 
-%********************************************************************
-% Frontmatter
-%*******************************************************
+% Front matter
+\frontmatter
+
+% p1 title
 \include{FrontBackmatter/Titlepage}
+
+% p2 copyright page
 \include{FrontBackmatter/Titleback}
-\cleardoublepage\include{FrontBackmatter/Abstract}
-\cleardoublepage\include{FrontBackmatter/Dedication}
-%\cleardoublepage\include{FrontBackmatter/Foreword}
-% \cleardoublepage\include{FrontBackmatter/Publications}
-\cleardoublepage\include{FrontBackmatter/Acknowledgments}
-\cleardoublepage\include{FrontBackmatter/Contents}
 
-%********************************************************************
-% Mainmatter
-%*******************************************************
+% p3 abstract
+\include{FrontBackmatter/Abstract}
+
+% p4 blank page
+\blankpage
+
+% p5 epigraph
+\include{FrontBackmatter/Dedication}
+
+% p7 blank page
+\blankpage
+
+% p8 acks
+\include{FrontBackmatter/Acknowledgments}
+
+% p9 blank page
+\blankpage
+
+
+% p10 contents
+\tableofcontents
+
 \cleardoublepage
-\pagestyle{scrheadings}
-\pagenumbering{arabic}
 
-%\setcounter{page}{90}
-% use \cleardoublepage here to avoid problems with pdfbookmark
-\cleardoublepage
-
+% Start the main matter (normal chapters)
+\mainmatter
 \include{Chapters/01-intro}
 \include{Chapters/02-related-work}
 \cleardoublepage
@@ -68,22 +63,21 @@
 
 \include{Chapters/09-conclusion}
 
-% ********************************************************************
-% Backmatter
-%*******************************************************
-% \appendix
-%\renewcommand{\thechapter}{\alph{chapter}}
-\cleardoublepage
-% \part{Appendix}
-% \include{Chapters/Chapter0A}
-%********************************************************************
-% Other Stuff in the Back
-%*******************************************************
-\cleardoublepage\include{FrontBackmatter/Bibliography}
-% \cleardoublepage\include{FrontBackmatter/Declaration}
-\cleardoublepage\include{FrontBackmatter/Colophon}
-% ********************************************************************
-% Game Over: Restore, Restart, or Quit?
-%*******************************************************
+
+%%
+% The back matter contains appendices, bibliographies, indices, glossaries, etc.
+
+
+
+
+
+
+
+\backmatter
+
+\bibliography{thesis}
+
+
+\printindex
+
 \end{document}
-% ********************************************************************
