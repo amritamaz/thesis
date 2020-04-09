@@ -2,7 +2,7 @@
 
 \label{sec:nsp-face-auth}
 
-This section considers the design of a processing pipeline for an energy-constrained camera, the WISPCam~\cite{wispcam}, a battery-free platform which operates entirely on harvested RF energy.
+This chapter considers the design of a processing pipeline for an energy-constrained camera, the WISPCam~\cite{wispcam}, a battery-free platform which operates entirely on harvested RF energy.
 We characterize a continuous vision pipeline using face authentication (FA), a core workload in user-centric continuous mobile vision systems.
 In these systems, a camera captures image frames at a continuous frame rate, and an on-node processor performs face recognition on each frame to identify a user.
 These applications are common in biometrics and vision-based personal analytics.
@@ -14,14 +14,11 @@ We examine how leveraging progressive filtering hardware can dramatically reduce
 We construct our FA pipeline around a neural network (NN) accelerator performing face authentication, as shown in Figure~\ref{fig:face_recog_pipeline_solution}.
 
 
-\begin{figure}[h]
-\centering
-    \begin{center}
-\includegraphics[width=.4\textwidth]{nsp-figs/FA_pipeline_base_with_example.pdf}
-    \end{center}
-    \caption{Face authentication with battery-free cameras. }
-    \label{fig:face_recog_pipeline_solution}
-\end{figure}
+\begin{marginfigure}
+  \includegraphics[width=.8\textwidth]{nsp-figs/FA_pipeline_base_with_example.pdf}
+  \caption{Face authentication with battery-free cameras. }
+  \label{fig:face_recog_pipeline_solution}
+\end{marginfigure}
 
 The pipeline has one primary block, the NN, and several optional blocks.
 Given the WISP's energy constraints, we design the accelerators to be integrated on-chip with the camera sensor to minimize energy, and processed the pixels streaming through the CSI2 camera serial interface.
@@ -62,14 +59,12 @@ small set of critical features for detecting faces.
 
 \paragraph{Cascade classifier structure.} While feature computation is fast and efficient, an accurate classifier executes a large number of these computations per window. The VJ algorithm reduces the  computation overhead by ruling out ``easy-to-dismiss'' image windows quickly. This is done by constructing small classifiers from weighted combinations of features, and then grouping these classifiers into successively more complex stages in a cascade structure (Figure~\ref{fig:vj-cascade}).
 
-\begin{figure}[h]
-\centering
-    \begin{center}
-\includegraphics[width=.5\textwidth]{nsp-figs/cascade_structure.pdf}
-    \end{center}
-    \caption{Features grouped into cascading stages. }
-    \label{fig:vj-cascade}
-\end{figure}
+\begin{marginfigure}
+  \includegraphics[width=\textwidth]{nsp-figs/cascade_structure.pdf}
+  \caption{Features grouped into cascading stages.}
+  \label{fig:vj-cascade}
+\end{marginfigure}
+
 
 The first classifier stage searches the image window for a small number of critical features that exist in all the face images. If the window contains all the features, it is processed by the next stage in the sequence of classifiers. Each stage in the sequence is more complex than the last, and if any stage rejects the image window, the classifier stops processing on the window. This cascade classifier structure is similar to a degenerate decision tree.
 
@@ -140,14 +135,12 @@ A generic mobile sensor node usually consists of one or several sensors followed
 Our case study application supports a camera platform for continuous face detection and authentication. The baseline system for our implementation is the WISPCam~\cite{wispcam}, a good example of a computationally-demanding workload that would not be achievable on a general-purpose microcontroller.
 An overview of the resulting system is shown in Figure~\ref{fig:OMSP}.
 
-\begin{figure}[h]
-\centering
-    \begin{center}
-      \includegraphics[width=0.4\textwidth]{nsp-figs/system_overview.pdf}
-    \end{center}
-\caption{OpenMSP-based system overview.}
-\label{fig:OMSP}
-\end{figure}
+\begin{marginfigure}
+  \includegraphics[width=\textwidth]{nsp-figs/system_overview.pdf}
+  \caption{OpenMSP-based system overview. }
+  \label{fig:OMSP}
+\end{marginfigure}
+
 
 The WISP5.0 is based on the MSP430FR5969 microcontroller with a low-power 3D ADXL362 accelerometer. The WISPCam extends it with a OV7670 camera module that can capture a 176$\times$144 pixel gray scale image and store it in memory with a ~10mJ energy budget.
 
@@ -155,21 +148,17 @@ We envision the described face detection accelerator to be coupled with a neural
 
 \subsection{Neural network face authentication}
 
+\begin{marginfigure}
+  \includegraphics[width=\textwidth]{nsp-figs/snnap_pu_new.pdf}
+  \caption{NN microarchitecture and processing element details.}
+  \label{fig:snnap-pu}
+\end{marginfigure}
+
 NNs are considered state-of-the-art for image inference~\cite{amos2016openface}, so for our face authentication task, we employ a systolic NN design, based on SNNAP~\cite{snnap,moreau-bitwidth}.
 We train the NNs with Fast Artificial Neural Network Library (FANN)~\cite{fann}, a popular open-sourced NN library.
 Our NN microarchitecture uses a single processing unit with multiple processing elements.
 We found that,because our face authentication pipeline has wide layers, this design configuration presented enough data parallelism to keep functional unit utilization high for a single processing unit.
 Figure~\ref{fig:snnap-pu} shows the datapath of a processing unit composed of four 8-bit processing elements (PEs).
-
-\begin{figure}[h]
-\centering
-    %\begin{center}
-      \noindent
-      \includegraphics[width=0.45\textwidth]{nsp-figs/snnap_pu_new.pdf}
-    %\end{center}
-    \caption{NN microarchitecture and processing element details.}
-    \label{fig:snnap-pu}
-\end{figure}
 
 \section{In-camera face detection using Viola-Jones face detection}
 
@@ -180,8 +169,7 @@ evaluating a classifier at each x-y location, and then scales the window and rep
 the search for larger-sized faces.
 A high-level description of this algorithm is listed in Figure~\ref{fig:vj-algo}.
 
-\begin{figure}[h]
-\centering          % which should be centered
+\begin{marginfigure}
 \begin{tabular}{c}  % the tabular makes the listing as small as possible and centers it
 \begin{lstlisting}
 for x in range(0,image_width):
@@ -194,7 +182,7 @@ for x in range(0,image_width):
 \end{tabular}
 \caption{Nested loops of classifier invocations for VJ.}
 \label{fig:vj-algo}
-\end{figure}
+\end{marginfigure}
 
 
 VJ classifiers are structured to minimize computation in non-face windows: executing a full positive face detection incurs a larger computation cost, whereas deciding early that there is no face has a much lower cost.
@@ -208,16 +196,13 @@ energy cost. Viola and Jones use a scale factor of 1.25 in their original evalua
 implementation uses a scale factor of 1.1. For our implementation, we considered scale factors between 1.05
 and 2 and explored how they impacted accuracy on a fixed-size image.
 
-\begin{figure}[h]
+\begin{figure*}
 \noindent
-\centering
-    \begin{center}
-      \includegraphics[width=0.45\textwidth]{nsp-figs/vj_algo_accuracy.pdf}
-    \end{center}
+      \includegraphics[width=.8\textwidth,right]{nsp-figs/vj_algo_accuracy2.pdf}
     \caption{Impact of VJ parameters on relative accuracy.}
     \label{fig:vj-accuracy}
 
-\end{figure}
+\end{figure*}
 
 As shown in Figure~\ref{fig:vj-accuracy}, increasing the window scaling factor impacts recall but not precision,
 because the number of missed faces grows while maintaining a low false positive rate. In this experiment, accuracy is normalized to the smallest window scale factor, 1.05.
@@ -251,8 +236,7 @@ the AT\&T Database of Faces \cite{attfaces}, and evaluated their impact on accur
 frame rate. The results are compiled in Table~\ref{table:vj-clsfr-sizes}.
 
 \begin{table}[h]
-\centering
-\resizebox{.5\columnwidth}{!}{%
+  \centering
 \begin{tabular}{cccccc}
 \hline
 Stages  & Features/Stage  & Precision & Recall & Storage (KB)  \\ \hline
@@ -266,7 +250,7 @@ Stages  & Features/Stage  & Precision & Recall & Storage (KB)  \\ \hline
 30    &         50       & 0.731     & 0.66   & 80.32      \\
 \hline
 \end{tabular}
-}
+
 \caption{Accuracy and storage for Viola-Jones classifiers.}
 \label{table:vj-clsfr-sizes}
 \end{table}
@@ -285,14 +269,11 @@ Classifier $10\times 33$ has the best recall, but its precision
 is low, and its execution would not filter out many false positives. Classifier
 $20\times 50$, however, reduces the false positive rate by 50\% with only a 15\% loss in precision.
 
-\begin{figure}[h]
-\centering
-    \begin{center}
-\includegraphics[width=.4\textwidth]{nsp-figs/eval_vj_energ_acc.pdf}
-    \end{center}
+\begin{marginfigure}
+\includegraphics[width=\textwidth]{nsp-figs/eval_vj_energ_acc2.pdf}
     \caption{VJ energy-accuracy trade-off.}
     \label{fig:vj-tradeoff}
-\end{figure}
+\end{marginfigure}
 
 \paragraph{Energy-accuracy Trade-off.} The average energy expended to evaluate an image window
 is a function of both the hardware design and the accuracy of the classifier being evaluated.
@@ -314,15 +295,12 @@ This also allows us to reduce latency in delivering results to the next step in 
 
 A high-level block diagram of the microarchitecture is shown in Figure~\ref{fig:vj-block}. The accelerator consists of two functional modules: (i) the integral image accumulator, which transforms the image for easy feature extraction, and (ii) the cascade classifier implementation, which evaluates features and computes the classifier result for an image window.
 
-\begin{figure}[h]
-\centering
-    \begin{center}
-      \includegraphics[width=0.47\textwidth]{nsp-figs/vj_arch.pdf}
-    \end{center}
+\begin{marginfigure}
+      \includegraphics[width=\textwidth]{nsp-figs/vj_arch.pdf}
     \caption{Proposed Viola-Jones accelerator architecture.}
 
     \label{fig:vj-block}
-\end{figure}
+\end{marginfigure}
 
 %
 \paragraph{Integral image processing.} The integral image is computed by summing the pixels above and to the left of
@@ -390,9 +368,9 @@ and use power dissipation numbers derived from PTPX to produce energy estimates.
 
 
 \begin{table}[h]
-  \caption{Face authentication system parameters.}
+  \caption[][-30pt]{Full face authentication system parameters.}
   \label{table:fa-hardware}
- \resizebox{\linewidth}{!}{%
+ \resizebox{1.5\linewidth}{!}{%
   \centering
     {
 \begin{tabular}{llllllll}
@@ -414,92 +392,43 @@ Freq & 27.9MHz & Area & 0.06$mm\textsuperscript{2}$ & Area & 0.38$mm\textsupersc
 
 We implemented our design in Verilog, synthesized with Synopsys Design Compiler using the TSMC 65nm Gplus Standard VT library, and performed place-and-route with Synopsys IC Compiler. SRAM macros are generated with an ARM Advantage memory compiler. A layout shot of our system components is shown in Figure~\ref{fig:layout_shot}. To find the optimal system voltage, we derive the static and dynamic components of the total system energy and select the minimum-energy voltage that still satisfies system performance requirements.
 
-\begin{figure}[h]
+\begin{marginfigure}
 \centering
     \begin{center}
-      \includegraphics[width=0.4\textwidth]{nsp-figs/layout.pdf}
+      \includegraphics[width=1.2\textwidth]{nsp-figs/layout.pdf}
     \end{center}
     \caption{Layout shot of all three designs}
     \label{fig:layout_shot}
-\end{figure}
+\end{marginfigure}
 
 
 In our evaluation, system requirements constrain the baseline choice: the MSP430 is the only processor operating within the power constraints of current energy-harvesting systems.
 Higher-performance embedded processors, while able to execute our application with better performance than an MSP430, were limited by the power budget required.
 In prior NN-accelerator work, the most appropriate comparison is ShiDianNao~\cite{shidiannao}, which also operates at $ \sim$300mW, still significantly higher-power than our design.
 
-\subsection{Improvements over a single frame.}
-
-We first evaluate our hardware accelerators' performance over a software baseline.
-For this experiment, we program the MSP430 running software for face detection, either using an artificial neural network or Viola-Jones.
-We then compare latency and energy efficiency of this software implementation on the MSP430 to each hardware accelerator.
-\begin{figure}[!ht]
-  \subfloat[Accelerator speedup.]{%
-    \includegraphics[width=0.45\textwidth]{nsp-figs/software_speedup.pdf}
-  }
-  \hfill
-  \subfloat[Accelerator energy improvement.]{%
-    \includegraphics[width=0.45\textwidth]{nsp-figs/software_energy.pdf}
-  }
-  \caption{Accelerator speedup \& energy efficiency improvements of the ANN and VJ accelerators compared to software running on the MSP430.}
-  \label{fig:sw-compare}
-\end{figure}
-% 
-% % \begin{figure}[h]
-% %      \centering
-%          \begin{figure}[h]
-%          \centering
-%              \begin{center}
-%                \includegraphics[width=0.4\textwidth]{nsp-figs/software_speedup.pdf}
-%              \end{center}
-%              \caption{Accelerator speedup.}
-%              \label{fig:sw-compare:speed}
-%          \end{figure}
-%      % \quad
-%      \begin{figure}[h]
-%          \centering
-%          \begin{center}
-%          \includegraphics[width=.4\textwidth]{nsp-figs/software_energy.pdf}
-%        \end{center}
-%          \caption{Accelerator energy improvement.}
-%          \label{fig:sw-compare:energy}
-%      \end{figure}
-%      % \hfill
-% %         \caption{Accelerator speedup \& energy efficiency improvements of the ANN and VJ accelerators compared to software running on the MSP430.}
-% %         \label{fig:sw-compare}
-% % \end{figure}
-
-Overall, we find that hardware acceleration leads to substantial
-performance improvement over a software implementation on an OpenMSP430.
-As shown in Figure~\ref{fig:sw-compare}, hardware acceleration results in 9.52$\times$ and 265$\times$ speedups and 18.5$\times$
-and 442.64$\times$
-energy savings over software implementations of face detection and face authentication, respectively.
-The lower speedup for Viola-Jones face detection is a consequence of the branch-heavy
-nature of the Viola-Jones algorithm, resulting in low latency even in software. The regular nature and intrinsic parallelism of neural networks, on the other hand, compared to the sequential nature of the software program, are very amenable to hardware acceleration, resulting in significantly higher speedups.
-
 \paragraph{Comparing Viola-Jones against neural networks for face detection}
-We also compared the performance of both Viola-Jones and neural network accelerators
+We compared the performance of both Viola-Jones and neural network accelerators
 on the same task: face detection. While neural networks offer flexibility,
 which make them compelling to solve a myriad of classification problems, but the
 specialization of the Viola-Jones accelerator results in better performance and
 accuracy.
 
 For the face detection application, the Viola-Jones accelerator presents
-a 2.1$\times$ energy improvement compared to running a neural networ. On top of that energy reduction, Viola-Jones offers much improved classification performance.
+a 2.1$\times$ energy improvement compared to running a neural network. On top of that energy reduction, Viola-Jones offers much improved classification performance.
 Specifically we found in practice that Viola-Jones had substantially better
 false-positive rate than the neural network which has a more approximate nature.
 The efficiency benefit of the Viola-Jones classifier
 can attributed to its ability to spend little energy on the common case, when a
 window contains no faces.
 
-\begin{figure}[h]
+\begin{marginfigure}
 \centering
     \begin{center}
-      \includegraphics[width=0.4\textwidth]{nsp-figs/eval_vj_cdf.pdf}
+      \includegraphics[width=\textwidth]{nsp-figs/eval_vj_cdf2.pdf}
     \end{center}
 \caption{VJ energy CDF over all windows in an image.}
 \label{fig:vj-cdf}
-\end{figure}
+\end{marginfigure}
 
 Figure~\ref{fig:vj-cdf} shows the
 distribution of features across windows in a typical 176$\times$144 image with a single face -- only 0.01\%
@@ -531,14 +460,14 @@ Using these benchmarks and the power/performance characteristics of our accelera
 
 Figure~\ref{fig:full-face-auth-pipeline} shows the detailed power breakdown between computation and communication for the full system in silicon. The computation power is the sum of power at that block and the processing blocks preceding it, and the communication power is the cost to transfer the output of that block. As expected, the computation power increases as more blocks process the data while the communication power decreases, but not at the same rate. Counterintuitively, the total power increases by 28\% after performing the NN, indicating that \textit{it is more power-efficient to offload after motion and face detection, rather than performing the full pipeline.} Even though the NN only needs to communicate a 1-bit response, the cost of computation increases dramatically in comparison to the decrease in communication power. This result indicates that it is more cost-effective to offload the neural network than process it in-camera, in this power-constrained application domain.
 
-\begin{figure}[h]
+\begin{marginfigure}
 \centering
     \begin{center}
-      \includegraphics[width=.45\textwidth]{nsp-figs/FA_compute_compress_4up_fig.pdf}
+      \includegraphics[width=\textwidth]{nsp-figs/FA_compute_compress_4up_fig.pdf}
     \end{center}
-    \caption{Computation and communication power after each ASIC block in the ``full pipeline'' configuration .}
+    \caption{Computation and communication power after each ASIC block in the ``full pipeline'' configuration.}
     \label{fig:full-face-auth-pipeline}
-\end{figure}
+\end{marginfigure}
 
 So, why not always offload neural networks? We examined the extent to which different constraints in our design contributed to our results. We found that if the communication power cost per pixel grew by 2.68$\times$, it would be more power-efficient to perform the NN in-camera. Our evaluation sourced communication power data from work using a directed RFID reader, and RF-based energy harvesting systems may not always deliver consistent power.
 

@@ -18,6 +18,8 @@
 \makeatletter
 \renewcommand*\l@figure{\@dottedtocline{1}{1.5em}{2.3em}}
 \makeatother
+% \renewcommand\cftchapfont{\mdseries}
+% \renewcommand\cftchappagefont{\mdseries}
 
 % ****************************************************************************************************
 % 2. Personal data and user ad-hoc commands (insert your own data here)
@@ -38,6 +40,19 @@ requirements for the degree of\xspace}
 \newcommand{\myTime}{2020\xspace}
 \newcommand{\myVersion}{\classicthesis}
 
+\hypersetup{
+    colorlinks=false,
+    hidelinks,
+    linktoc=all,
+    breaklinks=true,
+    hypertexnames=true,
+    pdftitle={\myTitle},
+    pdfauthor={\textcopyright\ \myName, \myUni},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfcreator={pdfLaTeX},
+    pdfproducer={LaTeX with tufte-book}
+}
 
 
 % todo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
