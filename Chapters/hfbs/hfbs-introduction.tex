@@ -1,127 +1,25 @@
 Virtual reality (VR) devices are becoming widely available, from camera rigs for video capture~\cite{googlejump, facebooksurround}, to headsets for immersive viewing~\cite{oculusrift, gearvr}.
 Real-time rendering of 3D-360$\degree$ video can enable a wide range of VR applications, from live sports and concert broadcasting to telepresence.
 While the domains of VR video content capture and viewing are growing more popular, no system is capable of producing 3D-360$\degree$ VR videos in real time as of yet.
-Camera rigs like Google Jump and Facebook Surround~\cite{googlejump} allow users to capture standard 2D video and render it as 3D-360$\degree$ videos. 
+Camera rigs like Google Jump and Facebook Surround~\cite{googlejump} allow users to capture standard 2D video and render it as 3D-360$\degree$ videos.
 Real-time VR video capture, coupled with immersive headsets like Google Daydream, Oculus Rift, or Samsung Gear VR~\cite{googlecardboard, gearvr, oculusrift}, can enable a wide range of applications, from live sports and concert broadcasting to tele-presence.
 
-The Google Jump camera rig~\cite{googlejump} is one example of a commodity VR video capture device, using $16$ cameras to capture high-resolution (4K-1080p) overlapping video streams of a 360$\degree$ scene. 
-The collected video is used to estimate edge-aware flow fields, which are composited into a stereoscopic 3D-360$\degree$ video. 
-A key portion of this processing pipeline, flow estimation, is constructed around the \emph{bilateral solver}, a fast and edge-aware algorithm that combines simple bilateral filters with domain-specific optimization problems~\cite{BarronPoole2016}. 
-This flow estimation algorithm consumes the majority of the processing time, despite using one of the fastest existing algorithms across thousands of cores~\cite{googlejump}. 
+The Google Jump camera rig~\cite{googlejump} is one example of a commodity VR video capture device, using $16$ cameras to capture high-resolution (4K-1080p) overlapping video streams of a 360$\degree$ scene.
+The collected video is used to estimate edge-aware flow fields, which are composited into a stereoscopic 3D-360$\degree$ video.
+A key portion of this processing pipeline, flow estimation, is constructed around the \emph{bilateral solver}, a fast and edge-aware algorithm that combines simple bilateral filters with domain-specific optimization problems~\cite{BarronPoole2016}.
+This flow estimation algorithm consumes the majority of the processing time, despite using one of the fastest existing algorithms across thousands of cores~\cite{googlejump}.
 
 
-In this chapter, we introduce a new algorithm for this flow estimation problem, the hardware-friendly bilateral solver (HFBS). 
+In this chapter, we introduce a new algorithm for this flow estimation problem, the hardware-friendly bilateral solver (HFBS).
 HFBS achieves significant speedups over the bilateral solver with little accuracy loss.
 While Barron and Poole's bilateral solver~\cite{BarronPoole2016} is challenging to parallelize on modern hardware, our ``hardware-friendly'' algorithm can be easily parallelized on GPUs and field-programmable gate arrays (FPGAs).
 To demonstrate, we design a scalable FPGA-based hardware accelerator for HFBS, employing specialized memory layout and reduced-precision fixed-point computation to achieve real-time results.
 Compared to the original bilateral solver, HFBS is 4$\times$ faster on a CPU, 32$\times$ faster on a GPU, and 50$\times$ faster on an FPGA.
-We evaluate the accuracy of HFBS on the depth superresolution task and show that our algorithm is faster than every more accurate algorithm, and more accurate than any faster algorithm. 
+We evaluate the accuracy of HFBS on the depth superresolution task and show that our algorithm is faster than every more accurate algorithm, and more accurate than any faster algorithm.
 
-This chapter makes two contributions: an algorithm for hardware-friendly bilateral solving, and a fixed-function FPGA accelerator implementing HFBS. 
+This chapter makes two contributions: an algorithm for hardware-friendly bilateral solving, and a fixed-function FPGA accelerator implementing HFBS.
 To achieve fast performance while maintaining accuracy, we take a hardware-software codesign approach where both the algorithm and hardware substrate are developed in tandem.
 Our algorithm modifies the original bilateral solver to ensure memory access is predictable and therefore fast, and performs optimization using preconditioned gradient descent with momentum to reduce global communication and enable parallel execution.
-Our hardware accelerator explores fixed-point arithmetic and bilateral-grid-specialized memory layout to process large-resolution bilateral grids in a scalable way in real time. 
+Our hardware accelerator explores fixed-point arithmetic and bilateral-grid-specialized memory layout to process large-resolution bilateral grids in a scalable way in real time.
 Many of these performance optimizations are codependent, and we evaluate performance of the algorithm and hardware together to illustrate our results.
 Our algorithm and accelerator design make it more practical to generate real-time VR video from camera rigs, either locally at the capture device, or in the cloud to accelerate large-scale video processing.
-
-% The remainder of the paper is organized as follows: Section 2 provides background on the bilateral solver, its use in VR video, and related hardware accelerators. 
-% Section 3 formulates the HFBS algorithm and its properties, and Section 4 describes our hardware accelerator for HFBS. 
-% Section 5 evaluates the performance, power consumption, and accuracy of HFBS. 
-% In Section 6, we discuss limitations and future work for our design, and conclude. 
-
-
-
-
-%A key application highlighting this tension is real-time VR video processing.
-
-
-%These videos can be viewed on desktops or standard mobile devices, or with a mobile device paired with an immersive headset like Google Cardboard or Samsung Gear VR~\cite{googlecardboard, gearvr}.
-%5The algorithmic pipeline used to render these videos is challenging to parallelize, requiring 10 hours to render an hour of video with 1000 server-grade cores~\cite{googlejump}. 
-%These runtimes are untenable for delivering real-time 3D-360$\degree$ video streaming.
-
-
-
-% The interface of these
-% two devices is a high-performance computer or datacenter cluster, which serves as the processing
-% unit for generating VR content from the image capture rigs.
-
-%The bilateral solver is a fast and general-purpose algorithm for producing image outputs that are smooth within objects but sharp across edges. 
-%It can be applied to a range of vision and deep learning problems to produce or improve upon the quality of the resulting output.
-%As this algorithm becomes a cornerstone of modern vision pipelines, sustaining the large computational and storage requirements with modern compute substrates becomes challenging.
-
-
-%The bilateral solver is the primary bottleneck in this VR video pipeline, as shown in Figure~\ref{fig:teaser}, and is also a challenging step to parallelize.
-
-%A tightly-optimized software stack with many high-performance processors or GPU clusters could potentially meet a real-time processing requirement, but the cost of offloading this large video bandwidth to a capable data center would be prohibitive for a real-time application.
-
-%Moreover, as VR video pipelines become more popular, deploying them at scale would incur significant power consumption for the data center servers.  
-%A custom hardware accelerator enables more power-efficient and portable solutions for this application domain by reducing control-flow and balancing computation-memory access ratios for a given workload~\cite{convolution_engine}. 
-%No real-time solution for this domain of high-quality 3D-360 virtual reality video generation exists as far as we know, in software or hardware. 
-
-
-
-%In this paper, we discuss the design of a hardware accelerator for low-latency bilateral solving, specifically for use in a real-time 16-camera VR pipeline.
-%We characterize the computational requirements of running a bilateral solver for such applications, which can require high resolution and real-time frame rates. 
-%This characterization informs the design of our hardware accelerator, which we implement on an FPGA platform.
-%We compare our hardware accelerator to optimized implementations of the same modified kernel on CPU and GPU substrates, and compare the performance and power-efficiency tradeoffs of our design on different processing platforms.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Outline:
-% \begin{itemize}
-%     \item Introduction (Amrita)
-% \item Background on VR and bilateral filter (Amrita)
-% \begin{itemize}
-% \item VR
-% \item Bilteral filter
-% \item Depth estimation algorithm with bilateral solver
-% \end{itemize}
-% \item Algorithm (Armin)
-% \begin{itemize}
-% \item New algorithm is an optimization of the older work
-% \item New math from Jon
-% \end{itemize}
-% \item Hardware architecture (Armin)
-% \begin{itemize}
-% \item Design considerations
-% \begin{itemize}
-% \item Sparse grid vs dense grid on hardware
-% \item Parallel algorithm
-% \item Floating point vs. fixed point
-% \end{itemize}
-% \item Bottom-up approach
-% \begin{itemize}
-% \item Block diagram
-% \item Single worker unit design and specs
-% \item Scheduling for multiple workers
-% \item Partitioning the memory
-% \item Other optimizations (if a neighbor is zero
-% \end{itemize}
-% \item Overall architecture
-
-% \end{itemize}
-% \item Evaluation
-% \begin{itemize}
-% \item Hardware performance
-% \item Different applications
-% \item (GPU)
-% \item (Comparison with baselines)
-% \end{itemize}
-% \item Related work
-% \begin{itemize}
-% \item Other hardware implementations of the bilateral filter and sparse filtering
-% \item GPU optimized versions
-% \end{itemize}
-% \item Conclusions
-
-% \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \begin{itemize}
-% 	\item edge-aware smoothing is useful in lots of places (noisy depth maps, segmentation, etc)
-% 	\item bilateral solving makes it fast
-% 	\item simulatneously, image resolution is going up, data movement something something
-% 	\item dennard scaling something something
-% 	\item we propose bilateral solver
-% \end{itemize}

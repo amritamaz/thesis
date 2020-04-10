@@ -449,10 +449,10 @@ Using these benchmarks and the power/performance characteristics of our accelera
 \paragraph{Computation-communication tradeoffs in real-world workloads.} Figure~\ref{fig:all-face-auth-configs} shows our results for the full system of image sensor capture, motion detection, FD, and NN face authentication, comparing total power consumption on combinations of the ASIC designs described in this section. Because the CPU could not compute the face recognition kernel on even one 400-pixel window at 1 FPS, we did not consider the results in this section. The configurations including CPU face authentication consume 2-5 orders of magnitude more power overall than the full-ASIC design we implemented.
 
 
-\begin{figure*}[h]
+\begin{figure*}
 \centering
     \begin{center}
-      \includegraphics[width=1.0\textwidth]{nsp-figs/FA_compute_comp_v5.pdf}
+      \includegraphics[width=\textwidth]{nsp-figs/FA_compute_comp_v5_2.pdf}
     \end{center}
     \caption{The total power for different ASIC accelerator configurations is typically dominated by either computation or communication power. The lowest-power solution uses the motion and face detection filters and offloads the NN. }
     \label{fig:all-face-auth-configs}
@@ -460,14 +460,14 @@ Using these benchmarks and the power/performance characteristics of our accelera
 
 Figure~\ref{fig:full-face-auth-pipeline} shows the detailed power breakdown between computation and communication for the full system in silicon. The computation power is the sum of power at that block and the processing blocks preceding it, and the communication power is the cost to transfer the output of that block. As expected, the computation power increases as more blocks process the data while the communication power decreases, but not at the same rate. Counterintuitively, the total power increases by 28\% after performing the NN, indicating that \textit{it is more power-efficient to offload after motion and face detection, rather than performing the full pipeline.} Even though the NN only needs to communicate a 1-bit response, the cost of computation increases dramatically in comparison to the decrease in communication power. This result indicates that it is more cost-effective to offload the neural network than process it in-camera, in this power-constrained application domain.
 
-\begin{marginfigure}
+\begin{figure}
 \centering
     \begin{center}
-      \includegraphics[width=\textwidth]{nsp-figs/FA_compute_compress_4up_fig.pdf}
+      \includegraphics[width=\textwidth]{nsp-figs/FA_compute_compress_4up_fig_2.pdf}
     \end{center}
     \caption{Computation and communication power after each ASIC block in the ``full pipeline'' configuration.}
     \label{fig:full-face-auth-pipeline}
-\end{marginfigure}
+\end{figure}
 
 So, why not always offload neural networks? We examined the extent to which different constraints in our design contributed to our results. We found that if the communication power cost per pixel grew by 2.68$\times$, it would be more power-efficient to perform the NN in-camera. Our evaluation sourced communication power data from work using a directed RFID reader, and RF-based energy harvesting systems may not always deliver consistent power.
 
