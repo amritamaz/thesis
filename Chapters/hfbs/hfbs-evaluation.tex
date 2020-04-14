@@ -39,7 +39,7 @@ Because splatting and slicing is not accelerated on the FPGA, runtime for the en
 
 Table~\ref{table:jump_runtimes} highlights the runtime results specifically for the VR Video use-case, where $\sigma_{xy} = 12$ as in~\cite{googlejump}, as well as the power consumption of each hardware configuration. Our algorithm's speed outperforms the CPU baseline on all platforms evaluated, and our FPGA accelerator is significantly faster than the baseline while also reducing power consumption.
 
-\begin{table}[h]
+\begin{table}
 \centering
 \caption{Runtimes for different variants of the bilateral solver on different hardware for the VR video use-case. Runtimes for optimization by itself and for the entire algorithm (problem construction/splatting, optimization, and slicing) are shown independently.}
 
@@ -68,14 +68,14 @@ We also observe that HFBS significantly reduces pre-processing. This is mainly c
 
 We consider the throughput of the data output as the ``communication cost'' for offloading, and the cost to compute the pipeline block as the ``computation cost''. We treat the communication cost as fixed for each block; it is simply the cost of offloading the data from each block, as shown in Figure~\ref{fig:vr-data-scale}.
 
-\begin{figure}[h]
+\begin{marginfigure}
 \centering
     \begin{center}
-\includegraphics[width=.48\textwidth]{nsp-figs/vr_input_data.pdf}
+\includegraphics[width=\textwidth]{nsp-figs/vr_input_data.pdf}
     \end{center}
     \caption{Computation distribution and output data size for blocks in a VR video pipeline (2 of 16 cameras). }
     \label{fig:vr-data-scale}
-\end{figure}
+\end{marginfigure}
 
 For all blocks except disparity refinement, we assume the computation cost to be the compute time evaluated using the ARM CPU baseline's performance numbers. We average the compute time for the disparity refinement block over five executions of the kernel over a frame. Because this processing flow can be pipelined across frames in a video stream, the ``total cost'' of the system can be considered to be dominated by the lowest-throughput block of the system.
 
@@ -107,7 +107,7 @@ depth superresolution task of \cite{ferstl2013b}, which was the primary
 evaluation used in \cite{BarronPoole2016}. We evaluate using the same experimental
 setup and the same hyperparameters as \cite{BarronPoole2016} ($\sigma_{xy} = 8$, $\sigma_{l} = 4$), and report MSE with respect to ground truth from the Middlebury Stereo Dataset~\cite{middlebury-data}.
 
-\begin{table}[h]
+\begin{table}
 \centering
 \caption{Depth Superresolution Task \cite{ferstl2013b}}
 
@@ -145,40 +145,28 @@ Even with this reduction in error, we see that
 HFBS is significantly faster than all more-accurate techniques, and
 significantly more accurate than all faster techniques.
 
-% \begin{figure}[h]
-% \centering
-%   \subfloat[Input reference image,\\ from \cite{middlebury-data} ]{
-%     \includegraphics[width=0.235\textwidth]{hfbs-figs/super_depth/1_image.png}
-%     }
-%   \subfloat[Input noisy depth,\\ before filtering ]{
-%     \includegraphics[width=0.235\textwidth]{hfbs-figs/super_depth/1_bicubic.png}
-%     }
-%   \subfloat[Improved depth \\ from \cite{BarronPoole2016} ]{
-%     \includegraphics[width=0.235\textwidth]{hfbs-figs/super_depth/1_bsqs.png}
-%     }
-%   \subfloat[Our improved depth \\ (with HFBS) ]{
-%     \includegraphics[width=0.235\textwidth]{hfbs-figs/super_depth/1_grayscale_bs.png}
-
-\begin{figure}[!ht]
-  \subfloat[Input reference image, from \cite{middlebury-data}]{%
+\begin{marginfigure}
+  \centering
+  \subfloat[Input reference image \cite{middlebury-data}]{%
     \includegraphics[width=0.45\textwidth]{hfbs-figs/super_depth/1_image.png}
   }
   \hfill
-  \subfloat[Input noisy depth, before filtering]{%
+  \subfloat[Input noisy depth]{%
     \includegraphics[width=0.45\textwidth]{hfbs-figs/super_depth/1_bicubic.png}
-  }
-  \subfloat[Improved depth from \cite{BarronPoole2016}]{%
+  } \\
+  \subfloat[Improved depth \cite{BarronPoole2016}]{%
     \includegraphics[width=0.45\textwidth]{hfbs-figs/super_depth/1_bsqs.png}
   }
   \hfill
-  \subfloat[Our improved depth  (with HFBS)]{%
+  \subfloat[Our improved depth (HFBS)]{%
     \includegraphics[width=0.45\textwidth]{hfbs-figs/super_depth/1_grayscale_bs.png}
   }
+  \vspace{10pt}
   \caption{A qualitative comparison of HFBS's performance
   compared to the model of \cite{BarronPoole2016} on the depth superresolution
   task of \cite{ferstl2013b}. HFBS produces similar output to \cite{BarronPoole2016} and is significantly faster.}
   \label{fig:depth_superres}
-\end{figure}
+\end{marginfigure}
 
 
 We present qualitative results for this task in Figure~\ref{fig:depth_superres}.

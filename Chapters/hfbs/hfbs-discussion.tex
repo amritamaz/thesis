@@ -17,20 +17,22 @@ The board we target, Xilinx Virtex UltraScale+, supports up to 16 PCIe channels 
 While our design can execute bilateral solving under real-time constraints, the bilateral solver is just one step in the Jump VR video rendering pipeline.
 Moreover, the design we present processes the flow field from a camera pair while the VR video capture system we target processes 16 flow fields from a 16-camera rig.
 We outline the specifications and cost for a system that could process the full 16-camera input to produce virtual reality video in real-time in Table~\ref{vr-shoebox}.
-\begin{table}[h]
+\begin{table}
 \centering
-\caption{Full-system specification for an end-to-end real-time VR pipeline}
 \label{vr-shoebox}
+\caption{Full-system specification for an end-to-end real-time VR pipeline}
 
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{llrrrr}
 \toprule
-\textbf{Item}     & \textbf{Use}          & \textbf{\#} & \textbf{Unit \$} & \textbf{Total \$} & \textbf{Max. Power} \\ \midrule
+{Item}     & {Use}          & {\#} & {Unit \$} & {Total \$} & {Max. Power} \\ \midrule
 GoPro      	 & Camera      & $16$   & \$$360$       & \$$5,760$       & N/A            \\
 Virtex Ultrascale+	 & HFBS   & $16$   &  \$$2,995$    	& \$$47,920$ 		& $\approx$$400$ W   \\
 Intel i7-7700K     & Host CPU     	  & $1$     & \$$350$   	& \$$350$         &  $\approx90$ W              \\
-Nvidia Titan X    	 & Etc. acceleration  & $1$        	& \$$1,600$       & $\approx$$250$    \\ \midrule
-\midrule \textbf{Full-System} &  & & & \$55,360 & 490 W \\ \bottomrule
+Nvidia Titan X    	 & Etc. acceleration  & $1$        	& \$$1,600$       & $\approx$$250$    \\
+\midrule {Full-System} &  & & & \$55,360 & 490 W \\ \bottomrule
 \end{tabular}
+}
 
 \end{table}
 
