@@ -1,10 +1,11 @@
-\section{Video Energy Estimates with the RabbitRun Framework}
+\section{Video Energy Estimates with the TVAprof Framework}
 \label{sec:vdoprof}
 
 We now describe \nameArchprof, our profiling and simulation framework for estimating energy consumption for perceptually compressed videos.
 \nameArchprof targets mobile video decoder architectures, abstracting codec-specific complexity so creators of perceptual video compression software can evaluate the energy efficiency of their encoded videos.
 We use \nameArchprof in this paper to characterize energy-efficiency of videos using \nameArch's simulated decoder architecture. \nameArchprof can also characterize video energy on other existing architectures.
 % \nameArchprof helps VR developers optimizing video for mobile devices to tune their perceptual compression for optimal energy consumption.
+
 
 \subsection{\nameArchprof Overview}
 \nameArchprof's characterizes video decode energy and latency, taking into account new perceptual compression methods to optimize energy consumption.
@@ -15,17 +16,19 @@ This enables more efficient characterization of video decode performance across 
 
 \vdoprofOverview
 
-\textbf{\nameArchprof Hardware Decoder Profiles. } Given a new hardware decoder, \nameArchprof first automates profiling on large video workloads to construct a model of decode performance, the \emph{hardware decoder profile}.
+\subsection{Hardware Decoder Profiles}
+\label{subsec:profiles}
+
+Given a new hardware decoder, \nameArchprof first automates profiling on large video workloads to construct a model of decode performance, the \emph{hardware decoder profile}.
 This profile collects information about how a decoder performs on video benchmarks in terms of power and latency to help characterize its performance on new videos.
 It contains configuration and statistics files for \nameArchprof and can be distributed or shared to facilitate analyzing video decode performance without access to the physical accelerator.
 \nameArchprof also provides an interface to construct a model from provided parameters for research prototypes or simulated chips.
 Hardware vendors could provide \nameArchprof decoder profiles for validation, or consumer VR video application developers could build profiles for each hardware decoder their application supports.
 
-\begin{table}[t]
+\begin{table}
   \centering
   \caption{Video Workloads Evaluated}
   \label{tab:workloads}
-  \resizebox{.8\linewidth}{!}{%
 
   \begin{tabular}{l|ll}
     \toprule
@@ -35,7 +38,7 @@ Hardware vendors could provide \nameArchprof decoder profiles for validation, or
   Bitrate (Mbps) & 0.53-470        & 10-21                            \\
   Pixels / Frame & 410K - 8M       & 8M \\ \bottomrule
   \end{tabular}
-  }
+
 \end{table}
 
 To generate a hardware decoder profile from an existing design, the developer would run \nameArchprof on the device with a power-monitoring interface enabled.
@@ -50,32 +53,36 @@ A developer could then use this extrapolated hardware decoder profile to estimat
 For instance, to profile the hardware decoder on a Google Pixel 2 phone, the battery status monitor could be polled as a proxy for power consumption.
 For devices without a physical interface, e.g., next-generation decode accelerators or experimental prototypes, \nameArchprof could generate a decoder profile from a given specification or simulator that provides per-video power and latency numbers.
 
-\textbf{Video Encoding Constraints. } \nameArchprof provides optimal encoding parameters to support energy efficiency for a VR video application.
+\subsection{Video Encoding Constraints}
+\nameArchprof provides optimal encoding parameters to support energy efficiency for a VR video application.
 Some applications pre-determine or constrain the number of tiles used (to optimize video quality, or for integration with other performance optimizations) or mandate a specific codec for compatibility.
 VR video applications can specify the type of perceptual compression, such as a foveation pattern, to be explored in the simulation process.
 \nameArchprof ingests these constraints and use it to guide energy consumption estimates.
 
-\textbf{Device Playback Constraints. } \nameArchprof can optimize for a specific display device target resolution, frame rate, or potential battery life.
+\subsection{Device Playback Constraints}
+\nameArchprof can optimize for a specific display device target resolution, frame rate, or potential battery life.
 For instance, a developer seeking to optimize video encoding to ensure the entirety of the video plays within a device's battery life could specify it via playback constraints.
 If playback constraints are not set, \nameArchprof could suggest reducing playback parameters, i.e., resolution, to reduce energy consumption during playback.
 
-\textbf{Decode Energy Estimation. } \nameArchprof uses the hardware decoder profile to estimate decode energy for a specific video.
-This process involves using the same instrumentation of {FFmpeg}, but this time on a new video without power consumption details.
+\subsection{Decode Energy Estimation}
+\nameArchprof uses the hardware decoder profile to estimate decode energy for a specific video.
+This process involves using the same instrumentation of {FFmpeg} described in ~\ref{subsec:profiles}, but this time on a new video without power consumption details.
 \nameArchprof uses {FFmpeg}'s trace of the new video's structure along with the profile's logs for previous videos to estimate decode energy for the new video.
 Coupled with playback constraints, it can guide the encoding process to best optimize video decode energy consumption for a target architecture.
 
-\subsection{\nameArchprof Implementation \& Methodology}
+
+\subsection{Implementation \& Methodology}
 \nameArchprof generated the results for our evaluation using hardware decoder profiles for each of the \nameArch configurations.
 For \nameArch's custom scheduler hardware unit, we characterized performance and energy overhead from post-synthesis results from an RTL configuration.
 
-\subsection{Hardware Accelerator Design Details}
+\paragraph{Hardware Accelerator Design Details}
 We constructed a baseline video decoder simulator from~\cite{hevcThesis} to emulate a scalable parallel design.
 We implemented the \nameArch decode scheduler in RTL and synthesize the designs with Yosys~\cite{yosys}.
 Our scheduler design targeted maximally supporting 128 parallel tiles.
 % yosys output: 36942 area, in micron? so
-Mapped to the Nangate FreePDK45nm library, our scheduler incurred .035$mm^2$ and sustained a clock rate of 3.4 GHz, much more than required to maintain the 100 MHz peak clock rate of the baseline architecture.
+Mapped to the Nangate FreePDK 45nm library, our scheduler incurred .035$mm^2$ and sustained a clock rate of 3.4 GHz, much more than required to maintain the 100 MHz peak clock rate of the baseline architecture.
 
-\subsection{Workloads}
+\paragraph{Workloads}
 \nameArchprof uses two video characterization workloads to evaluate decode characteristics: \texttt{vbench}, a representative benchmark dataset from YouTube~\cite{vbench}, and \texttt{vr-360}, a representative benchmark dataset of 4K-resolution, \threesixty video~\cite{vr360-mmsys17}.
 We used the videos at their original encoded bitrate and constructed foveated tiled and multi-resolution patterns to encode them for VR consumption.
 For both compression techniques, we assumed a fixed, center-weighted foveation pattern and generated videos accordingly.

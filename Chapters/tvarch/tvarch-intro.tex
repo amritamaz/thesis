@@ -1,7 +1,9 @@
+\section{Introduction}
 
 Video decoding is a critical motivating workload for virtual reality (VR) headsets.
 The most popular VR applications, from \threesixty video tourism and sports to immersive video journalism from the New York Times and National Geographic, all require immersive VR video playback ~\cite{nytvr,nationalgeographic-vr}.
-Rendering VR video involves delivering high-resolution (up to 16$\times$ more pixels than traditional video) and high frame rate rendering (4-8$\times$ 2D video) while running energy-efficient hardware designed to accommodate head-worn video playback without heavy physical weight or heat dissipation.
+Recent trends in social VR applications motivate not only watching 3D-\threesixty VR content through these high-resolution headsets, but also streaming traditional 2D video content a VR environment (e.g., Netflix Party and social YouTube video streaming)~\cite{netflixparty}.
+Rendering video for VR displays requires delivering high-resolution (up to 16$\times$ more pixels than traditional video) and high frame rate rendering (4-8$\times$ 2D video) while running energy-efficient hardware designed to accommodate head-worn video playback without heavy physical weight or heat dissipation.
 % The mobile devices streaming compressed video, e.g., smartphones or virtual reality (VR) headsets, are constrained by traditional constraints, like a real-time throughput and high energy-efficiency for application quality, as well as minimal weight and heat dissipation to target consumer wearable devices.
 % They also must maintain a real-time decode latency, e.g., 30 frames per second (FPS) or higher, for video playback.
 To address these competing constraints, mobile architectures use tightly optimized system-on-a-chip (SoC) platforms with hardware video decode accelerators for video playback.
@@ -17,31 +19,34 @@ These optimizations produce VR video experiences with perceived 8K-quality on 4K
 Architects have proposed adding energy-efficient hardware for other aspects of the VR video pipeline to operate alongside the video decoder~\cite{evr19isca, leng2018semantic, xie2018perception, zhang2017race}.
 While this wave of innovation in software and hardware improve the stack around video decode hardware, video decoder architectures remain fixed.
 
-Prior work shows that the compute portion of the video decode accelerator alone uses 42-50\% of the energy needed,  with optimal data compression~\cite{google2018asplos, tikekar18ijssc, 8khevc-ijssc}.
+Prior work shows that the compute portion of the video decode accelerator alone uses 42-50\% of the energy needed, even with optimal data compression~\cite{google2018asplos, tikekar18ijssc, 8khevc-ijssc}.
 Despite ongoing improvements to software compression algorithms, the decode computation still consumes a significant fraction of the total energy needed for VR video playback.
 Moreover, VR hardware designs do not directly optimize for the heterogeneous characteristics of VR-specific video formats.
+As social and AI-augmented video applications become more popular in VR, reducing this fixed cost of decoding compressed video enables more complex video applications without large energy consumption.
 
-This paper revisits the performance of video decoders in the context of energy-efficient VR video, where evolving software workloads and new hardware blocks motivate flexible, application-aware video decoding.
-We rearchitect the \emph{video decoder accelerator} to close the performance gap for perceptually-compressed VR workloads with the design of \nameArch, a novel video hardware decoder.
-To reduce energy consumption, \nameArch introduces \emph{heterogeneous parallel cores} for video decode accelerators and features a novel hardware scheduler and decoder configurations optimized for VR video workloads.
+This chapter revisits the performance of video decoders in the context of energy-efficient VR video, where evolving software workloads and new hardware blocks motivate flexible, application-aware video decoding.
+We rearchitect the \emph{video decoder accelerator} to close the performance gap for perceptually-compressed VR workloads with the design of \nameArch, a new video hardware decoder.
+To reduce energy consumption, \nameArch introduces \emph{heterogeneous parallel cores} for video decode accelerators and features a new hardware scheduler and decoder configurations optimized for VR video workloads.
 We codesigned the video decoder architecture in concert with VR video data patterns, mapping peripheral video regions to decoder cores in multiple frequency domains to achieve better energy efficiency.
 To evaluate \nameArch's performance, we used two methods for compressing video perceptually: tile-based foveation and multi-layer foveation.
 \nameArch demonstrates that even small changes in the scheduling of video decoding work can improve energy efficiency for VR video workloads.
 
 \nameArch's key optimizations stem from \emph{leveraging irregularity} in perceptually compressed VR video.
 Perceptual compression techniques exploit constraints in the human visual system to reduce memory bandwidth and associated rendering costs.
-Our central insight is that the human eye perceives only a small portion of the VR display, \emph{the foveal region}, in high resolution, but it still requires peripheral pixels to \emph{approximate} the original image (~\ref{fig:foveal-motivation}).
+The central insight is that the human eye perceives only a small portion of the VR display, \emph{the foveal region}, in high resolution, but it still requires peripheral pixels to \emph{approximate} the original image (~\ref{fig:foveal-motivation}).
 Though software developers have applied this insight to create optimizations that reduce data bandwidth, fixed-function video decoder architectures have not adopted these advances, suggesting an opportunity for up to 50-75\% improvement in decode cost commensurate with the data reduction.
 
-\nameArch's optimizations target reduced power consumption on  VR-centric mobile SoCs  for video playback.
-We reverse-engineered video decode performance for a commodity video decoder and propose novel optimizations for perceptual video.
+In this chapter, we propose \nameArch, a video decoder architecture for supporting energy efficient decoding of perceptually-compressed video.
+\nameArch's optimizations target reduced power consumption on VR-centric mobile SoCs for video playback.
+We reverse-engineered video decode performance for a commodity video decoder and propose new optimizations for perceptual video.
 We capture our characterizations in \nameArchprof, an open-source profiling framework for mobile video decoders.
 \nameArchprof abstracts away codec-specific complexity so compression engineers and VR application developers can more easily assess mobile energy consumption for video workloads.
 
-This chapter makes the following contributions:
+To our knowledge, this chapter is the first to propose optimizing video decoder architectures for VR workloads.
+It makes the following contributions:
 \begin{itemize}
-    \item \nameArch, a novel video decoder architecture optimized for tile-based parallelism in VR video, using a novel scheduler and heterogeneous decoder cores to improve energy efficiency
-    \item \nameArchprof, an open-source profiling framework to characterize video energy consumption on real and modelled video decode hardware to help developers of novel perceptual compression techniques leverage architecture-specific energy information to tune their designs
+    \item \nameArch, a new video decoder architecture optimized for tile-based parallelism in VR video, using a new scheduler and heterogeneous decoder cores to improve energy efficiency
+    \item \nameArchprof, an open-source profiling framework to characterize video energy consumption on real and modelled video decode hardware to help developers of new perceptual compression techniques leverage architecture-specific energy information to tune their designs
 \end{itemize}
 
 Our evaluation demonstrates that \nameArch reduces energy consumption by up to 4$\times$ compared to traditional hardware decoders on perceptually compressed VR video and reduces the average energy expended per frame by 12-22\% on parallel, frequency-scaled cores.

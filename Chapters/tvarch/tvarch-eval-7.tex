@@ -1,11 +1,12 @@
 
-\section{Evaluating RABBIT on Video Workloads}
+\section{Experimental Evaluation}
 
 We now evaluate \nameArch's performance on video characterization workloads, using \nameArchprof to generate results.
 We first describe the energy overhead and power dedicated to \nameArch at three design points.
 We then examine \nameArch's energy consumption for regularly tiled videos, foveated tiled videos, and multi-resolution foveated videos.
 
 \evalEnergyPower
+
 
 \subsection{\nameArch Overhead}
 We first compare the energy consumption of \nameArch's design with the baseline architecture~\cite{tikekar18ijssc}.
@@ -26,7 +27,7 @@ At smaller video sizes (e.g., \texttt{vbench}'s $v1$ video) this energy-efficien
 This indicates that for small-display, resource-constrained video playback, a small number of cores can provide sufficient energy efficiency, especially for traditionally encoded video.
 The speedup and potential energy-efficiency gains provided by the Pareto or even Low-Power design point did not significantly reduce energy consumption.
 
-\textbf{Tiled, foveated video. } For tiled, foveated video, however, the results differed.
+\textbf{Tiled, foveated video.} For tiled, foveated video, however, the results differed.
 For this workload, energy consumption dropped significantly across the three designs
 This demonstrates how our heterogeneous parallel cores reduced energy consumption.
 \ref{subfig:eval-energy-fov-vbench} and \ref{subfig:eval-energy-fov-vr} demonstrate the energy consumed across all videos.
@@ -37,7 +38,7 @@ While even poor tile decode scheduling can demonstrate scalability on our design
 With the optimal decode schedule, the Low-Power design reduced energy consumption by a factor of 2, and the Pareto-optimal design achieved almost a 4$\times$ energy consumption reduction.
 Though this performance did not scale linearly, it was much more scalable than the baseline at 1-core.
 
-\textbf{Multi-resolution video. } Multi-resolution is the most extreme video compression method.
+\textbf{Multi-resolution video. }Multi-resolution is the most extreme video compression method.
 The only effective decode schedule available is for \nameArch's scheduler to map the high-resolution foveal tile to the big core and the low-resolution peripheral tile to the little core.
 This highlights a limitation in \nameArch's scheduling design: distinct decode cores cannot reclaim work from a tile and instead sit idle.
 \ref{subfig:eval-energy-multi-vbench} and \ref{subfig:eval-energy-multi-vr} graph energy consumption for the three designs, which showed similar trends.

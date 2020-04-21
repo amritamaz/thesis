@@ -1,10 +1,10 @@
-\vfill\null
 
 \section{TVA: Hardware Support for Perceptual Video Decoding}
 \label{sec:vdo-hw}
 
 This section describes \nameArch, a new video decoder that optimizes for tile-level parallelism in VR video workloads and tile-proportional execution.
 It enables perceptual decoding by:(1) adding custom logic to support scalable tile decoding and (2) heterogeneous decoder cores to handle the non-uniformity of perceptually compressed videos.
+% This additional hardware supports (i) parallel decoder cores and (ii) scaling parallelized decoders to support finely-tiled videos.
 
 \vdoOverview
 
@@ -76,13 +76,13 @@ Even with the overhead of sorting the tile bitstream, it achieved near-optimal p
 To further optimize resource distribution on a chip with decoder units, \nameArch runs cores in multiple frequency domains to enable heterogeneous decode performance across cores.
 By operating at different frequencies, these heterogeneous cores can support different decode rates for tiles with varying bitrates or encoding complexity.
 % Supporting multiple performance targets with different decoder designs is feasible because VR videos provide a range of CTU complexities and bitrates across tiles in a VR video.
-VR videos can be encoded at a range of tiling configurations, which strain a parallel video in different ways.
+As described in~\ref{sec:characterization}, VR videos can be encoded at a range of tiling configurations, which strain a parallel video in different ways.
 At one extreme, videos with tiled foveation may have 20-60 low-complexity tiles for peripheral regions and a smaller number of higher-complexity tiles for foveal regions.
 At the other extreme, a multi-layer foveated video uses only two tiles: one high-complexity tile for the foveal region, and one low-complexity tile servicing the entire peripheral region.
 Leveraging multiple frequency domains for \nameArch's decode cores allows us to explore configurations of faster, energy-consuming cores for high-resolution areas and energy-efficient cores for low-resolution regions to optimally balance energy and delay.
 
 To explore parallel designs with partitioned frequency domains, we swept the number of parallel cores and partitioned the cores between low- and high-frequency operating regions.
-The low frequency was selected to be the lowest frequency that could sustain 30 FPS throughput of a video tile, and the high frequency was constrained the be the highest operating frequency for the decoder core.
+The low frequency was selected to be the lowest frequency that could sustain 30 FPS throughput of a video tile, as that was the frame rate for the majority of tested videos. The high frequency was constrained the be the highest operating frequency for the decoder core.
 Based on the video decoder architecture we simulated, this frequency ranged from 8 - 20 MHz.
 To evaluate energy consumption, we calculated the energy needed to decode a synthetic video sequence engineered to represent the average of our video benchmarks in video frame complexity and CTU sizes.
 We computed the energy for this synthetic video and divided by the number of frames in order to report the energy consumed per frame in the synthetic video, and we evaluated across all video decoder configurations generated.
