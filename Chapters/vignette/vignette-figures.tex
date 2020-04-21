@@ -10,12 +10,12 @@
 }
 
 \newcommand{\tileVsSizeFigure}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-\includegraphics[width=.6\linewidth]{vignette-figs/tileSizeQuality2.pdf}
+\includegraphics[width=.8\linewidth]{vignette-figs/tileSizeQuality2.pdf}
   \caption{Compression ratio and PSNR at the optimal number of tiles for each video. The optimal number of tiles is video-dependent, not correlated with quality or compression ratio.}
   \label{plot:tile-vs-size}
-\end{figure}
+\end{marginfigure}
 }
 
 \newcommand{\computeTable}{
@@ -40,12 +40,12 @@
 
 \newcommand{\userStudyFigure}{
 
-\begin{figure}[h]
+\begin{figure*}
   \centering
-  \includegraphics[width=.6\linewidth]{vignette-figs/user-study.pdf}
+  \includegraphics[width=.7\linewidth]{vignette-figs/user-study.pdf}
   \caption{Results of perceived quality preference user study, averaged across participants and videos by bitrate. Participants either preferred \name or perceived no difference between 20 Mbps \hevc videos and \name videos at 5--20 Mbps.}
   \label{plot:user-study}
-\end{figure}
+\end{figure*}
 }
 \newcommand{\failureModeFigure}{
 
@@ -68,27 +68,28 @@
 }
 
 \newcommand{\saliencyTilesOverviewFigure}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-  \includegraphics[width=.6\linewidth]{vignette-figs/tiled-bitrate}
+  \includegraphics[width=\textwidth]{vignette-figs/tiled-bitrate}
   \caption{Overview of \nameCompress algorithm.}
   \label{fig:saliency-tiles-overview}
-\end{figure}
+\end{marginfigure}
 }
 
 \newcommand{\architectureOverviewFigure}{
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=.6\linewidth]{vignette-figs/high-level-architecture}
+\begin{marginfigure}
+  \includegraphics[width=\textwidth]{vignette-figs/high-level-architecture}
   \caption{\name provides two features: \nameCompress, a perceptual compression algorithm, and \nameStore, a storage manager for perceptually compressed videos.
   Integrating perceptual information with the storage manager reduces network bandwidth and storage costs.}
   \label{fig:high-level-architecture}
-\end{figure}
+\end{marginfigure}
+
+
 }
 
 \newcommand{\exampleVidSaliencyFigure}{
 
-\begin{figure*}[h]
+\begin{marginfigure}
   \centering
   % \begin{subfigure}{.32\textwidth}
   %   \centering
@@ -111,21 +112,22 @@
 
   \subfloat[Input video frame from Netflix dataset~\cite{netflix2016data}.]{
   \label{subfig:og-stil}
-  \includegraphics[width=.275\linewidth]{vignette-figs/elfuente_in.png}
+  \includegraphics[width=\linewidth]{vignette-figs/elfuente_in.png}
   }
-  \qquad
+  \\
   \subfloat[Saliency map produced by MLNet~\cite{mlnet2016}, overlaid on input.]{
   \label{subfig:sal-still}
-  \includegraphics[width=.275\linewidth]{vignette-figs/elfuente_sal.png}
+  \includegraphics[width=\linewidth]{vignette-figs/elfuente_sal.png}
   }
-  \qquad
+  \\
   \subfloat[Perceptually-compressed \name video, 85\% smaller at iso-quality.]{
   \label{subfig:sal-vign}
-  \includegraphics[width=.275\linewidth]{vignette-figs/elfuente_vignette.png}
+  \includegraphics[width=\linewidth]{vignette-figs/elfuente_vignette.png}
   }
+  \\
   \caption{Example video still, neural network-generated saliency map, and output \name perceptually compressed video.}
   \label{fig:example-vid-saliency}
-\end{figure*}
+\end{marginfigure}
 
 
 }
@@ -163,12 +165,12 @@
 }
 
 \newcommand{\videoMetadataFigure}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-  \includegraphics[width=.65\linewidth]{vignette-figs/physical-layout}
+  \includegraphics[width=\linewidth]{vignette-figs/physical-layout}
   \caption{Physical layout of video metadata in~\lightdb. \name-specific features are highlighted.}
   \label{fig:video-metadata}
-\end{figure}
+\end{marginfigure}
 }
 
 % \newcommand{\benchmarkInformationFigure}{
@@ -237,34 +239,34 @@
 }
 
 \newcommand{\avgStorageBitrateSavings}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-    \includegraphics[width=.6\linewidth]{vignette-figs/bitrate-storage-savings}
+    \includegraphics[width=\linewidth]{vignette-figs/bitrate-storage-savings}
 
   \caption{Aggregate storage savings by dataset. \nameCompress reduces videos to 1--15\% of their original size while maintaining PSNR of 34--39 dB and EWPSNR of 45-51 dB.}
 
   \label{fig:average-storage-bitrate-savings}
-\end{figure}
+\end{marginfigure}
 
 }
 
 \newcommand{\awsBreakevenFigure}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-    \includegraphics[width=.6\linewidth]{vignette-figs/aws-breakeven}
+    \includegraphics[width=\linewidth]{vignette-figs/aws-breakeven}
   \caption{Estimated AWS costs for deploying \name versus traditional video transcoding. \name's additional compute cost is amortized after $\scriptstyle\sim$2 billion video views over a 1-million video library.}
 
   \label{fig:aws-utilization}
-\end{figure}
+\end{marginfigure}
 
 }
 \newcommand{\powerFigure}{
-\begin{figure}[h]
+\begin{marginfigure}
   \centering
-    \includegraphics[width=.6\linewidth]{vignette-figs/power}
+    \includegraphics[width=\linewidth]{vignette-figs/power}
   \caption{Time to dissipate a Google Pixel 2 phone battery from 100\% to 30\% when viewing \hevc and \name videos continuously. \name videos provide 1.67$\times$ longer video playback on mobile phones.}
 
   \label{fig:power}
-\end{figure}
+\end{marginfigure}
 
 }

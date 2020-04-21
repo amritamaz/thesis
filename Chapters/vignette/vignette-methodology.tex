@@ -6,6 +6,7 @@
 We implement \name by extending \lightdb~\cite{lightdb}, a database management system for VR videos.
 \lightdb{} lets developers declaratively express queries over large-scale video and uses a rule-based optimizer to maximize performance.
 Developers can easily express \hevc-based saliency encoding in \lightdb's query language by combining its \texttt{Encode}, \texttt{Partition}, and \texttt{Subquery} operators:
+\begin{marginfigure}
 % \vspace{-0.5em}
 \begin{lstlisting}[style=VRQL]
 Decode("rtp://...")
@@ -14,6 +15,7 @@ Decode("rtp://...")
         return Encode(partition, $saliency\_mapping$(partition) })
   >> Store("output");
 \end{lstlisting}
+\end{marginfigure}
 % \vspace{-0.5em}
 
 \noindent In this example, \texttt{Partition} divides the input video into tiles, \texttt{Encode} transcodes each tile with the corresponding \texttt{saliency\_mapping} value as an argument, and  \texttt{Subquery} executes the given operation over all the partitioned tiles.
