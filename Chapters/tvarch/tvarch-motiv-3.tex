@@ -78,7 +78,7 @@ This demonstrates that video decode chips do not exhibit energy consumption chan
 
 To further understand video decoder performance on tiles, we examined how the video decoder hardwaree scaled performance when decoding videos with increasing numbers of tiles.
 We produced versions of our benchmarks with 4 and 8-tiles, distributing the bitrate equally across tiles to isolate how the decoder core executes on tiles without considering the irregularity of foveated tiles.
-We measured energy consumption of the CPU decoding the videos using \texttt{FFmpeg}'s software \hevc decoder on the 1-, 4- and 8-tile videeos.
+We measured energy consumption of the CPU decoding the videos using \texttt{FFmpeg}'s software \hevc decoder on the 1-, 4- and 8-tile videos.
 We compared this performance scalability to performance of the hardware decode accelerator on the same workload.
 For this characterization, we compared the Jetson's on-board hardware decoder with its on-board Quad-Core ARM Cortex-A57 MPCore.
 To ensure a fair comparison, we include the controlling CPU energy consumption in the hardware decoder experiment's total energy consumption count.
