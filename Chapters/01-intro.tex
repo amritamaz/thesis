@@ -29,14 +29,14 @@ In visual computing systems, the impact of any system optimization is evaluated 
 My work takes these quality tradeoffs for visual computing a step further, by specializing computation to take into account specific perceptual cues about the visual media being ingested to optimize the compute and storage.
 
 \section{Thesis Overview}
-In this thesis, I posit that \emph{codesigning video-focused systems with perceptual information} to maximize performance and energy efficiency while maintaining application quality of service.
-While hardware-software codesign is an active area of research for the visual computing domains of computational video capture, processing, and storage (\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
+In this thesis, I posit that \emph{codesigning video-focused systems with perceptual information} improves performance and energy efficiency while maintaining application quality of service.
+While hardware-software codesign alone can improve performance in the domains of computational video capture, processing, and storage (\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
 
 This dissertation argues that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
 To support this, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
 The resulting systems demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
 
-In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency; and use hardware-software codesign to optimize computer systems at different points in the video storage pipeline: during camera capture (\ref{ch:near-sensor}), camera processing (\ref{ch:hfbs}), cloud video streaming and storage (\ref{ch:vignette}), as well as mobile video playback (\ref{ch:tvarch}).
+In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency. To explore these perceptual cues, I use hardware-software codesign to optimize computer systems at different points in the visual media pipeline: during camera capture (\ref{ch:near-sensor}), camera processing (\ref{ch:hfbs}), cloud video streaming and storage (\ref{ch:vignette}), as well as mobile video playback (\ref{ch:tvarch}).
 
 \begin{itemize}
 \item \textbf{Structure.} I use structural information about color and depth in captured video to design an algorithm for fast, accurate 3D-\threesixty video generation (\ref{ch:hfbs}).
