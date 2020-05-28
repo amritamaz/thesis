@@ -377,13 +377,13 @@
 % chapters
 \ifthenelse{\boolean{ct@linedheaders}}%
 {% lines above and below, number right
-    \titleformat{\chapter}[display]%
-    {\relax}{\raggedleft{\color{CTsemi}\chapterNumber\thechapter} \\ }{0pt}%
-    {\titlerule\vspace*{.9\baselineskip}\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
+\titleformat{\chapter}[display]%
+  {\relax}{\vspace*{-3\baselineskip}\makebox[\linewidth][r]{\color{halfgray}\chapterNumber\thechapter}}{0pt}%
+  {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
 }{% something like Bringhurst
-    \titleformat{\chapter}[display]%
-    {\relax}{\mbox{}\oldmarginpar{\vspace*{-3\baselineskip}\color{CTsemi}\chapterNumber\thechapter}}{0pt}%
-    {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
+\titleformat{\chapter}[display]%
+  {\relax}{\vspace*{-3\baselineskip}\makebox[\linewidth][r]{\color{halfgray}\chapterNumber\thechapter}}{0pt}%
+  {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\titlerule]%
 }
 % sections \FloatBarrier
 \titleformat{\section}
