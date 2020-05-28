@@ -3,20 +3,17 @@
 %*******************************************************
 %\renewcommand{\abstractname}{Abstract}
 \pdfbookmark[1]{Abstract}{Abstract}
-
 % \addcontentsline{toc}{chapter}{\tocEntry{Abstract}}
 \begingroup
-\begin{fullwidth}
-
 \let\clearpage\relax
 \let\cleardoublepage\relax
 \let\cleardoublepage\relax
 
 \thispagestyle{empty}
 \begin{center}
-    \smallcaps{Abstract} \\
+    \spacedlowsmallcaps{Abstract} \\
     \bigskip
-    {\color{CTtitle}\allcaps{\myTitle} \\ \bigskip
+    {\color{CTtitle}\spacedallcaps{\myTitle} \\ \bigskip
     }
     \bigskip
     \myName \\
@@ -38,6 +35,6 @@ This thesis uses perceptual information to optimize the design of video capture,
 I describe system optimizations using three classes of perceptual cues: structure (e.g., color, depth); semantics (e.g., faces, objects); and saliency (e.g., human visual saliency, neural network feature saliency).
 This thesis demonstrates how perceptual information can be used in hardware accelerator designs on ASICs and FPGAs, and in cloud video storage infrastructure.
 
-\end{fullwidth}
 \endgroup
+
 \vfill

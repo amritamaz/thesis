@@ -68,14 +68,14 @@ We also observe that HFBS significantly reduces pre-processing. This is mainly c
 
 We consider the throughput of the data output as the ``communication cost'' for offloading, and the cost to compute the pipeline block as the ``computation cost''. We treat the communication cost as fixed for each block; it is simply the cost of offloading the data from each block, as shown in Figure~\ref{fig:vr-data-scale}.
 
-\begin{marginfigure}
+\begin{figure}
 \centering
     \begin{center}
 \includegraphics[width=\textwidth]{nsp-figs/vr_input_data.pdf}
     \end{center}
     \caption{Computation distribution and output data size for blocks in a VR video pipeline (2 of 16 cameras). }
     \label{fig:vr-data-scale}
-\end{marginfigure}
+\end{figure}
 
 For all blocks except disparity refinement, we assume the computation cost to be the compute time evaluated using the ARM CPU baseline's performance numbers. We average the compute time for the disparity refinement block over five executions of the kernel over a frame. Because this processing flow can be pipelined across frames in a video stream, the ``total cost'' of the system can be considered to be dominated by the lowest-throughput block of the system.
 
@@ -145,7 +145,7 @@ Even with this reduction in error, we see that
 HFBS is significantly faster than all more-accurate techniques, and
 significantly more accurate than all faster techniques.
 
-\begin{marginfigure}
+\begin{figure}
   \centering
   \subfloat[Input reference image \cite{middlebury-data}]{%
     \includegraphics[width=0.45\textwidth]{hfbs-figs/super_depth/1_image.png}
@@ -166,7 +166,7 @@ significantly more accurate than all faster techniques.
   compared to the model of \cite{BarronPoole2016} on the depth superresolution
   task of \cite{ferstl2013b}. HFBS produces similar output to \cite{BarronPoole2016} and is significantly faster.}
   \label{fig:depth_superres}
-\end{marginfigure}
+\end{figure}
 
 
 We present qualitative results for this task in Figure~\ref{fig:depth_superres}.

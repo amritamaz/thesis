@@ -20,9 +20,7 @@
 ###
 
 PDFLATEX	?= pdflatex -halt-on-error -file-line-error
-BIBTEX		?= bibtex
-BIBER			?= biber
-TEXINDX   ?= texindy
+BIBTEX		?= biber
 
 ifneq ($(QUIET),)
 PDFLATEX	+= -interaction=batchmode

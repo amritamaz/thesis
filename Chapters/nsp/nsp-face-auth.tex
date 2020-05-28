@@ -14,11 +14,11 @@ We examine how leveraging progressive filtering hardware can dramatically reduce
 We construct our FA pipeline around a neural network (NN) accelerator performing face authentication, as shown in Figure~\ref{fig:face_recog_pipeline_solution}.
 
 
-\begin{marginfigure}
+\begin{figure}
   \includegraphics[width=.8\textwidth]{nsp-figs/FA_pipeline_base_with_example.pdf}
   \caption{Face authentication with battery-free cameras. }
   \label{fig:face_recog_pipeline_solution}
-\end{marginfigure}
+\end{figure}
 
 The pipeline has one primary block, the NN, and several optional blocks.
 Given the WISP's energy constraints, we design the accelerators to be integrated on-chip with the camera sensor to minimize energy, and processed the pixels streaming through the CSI2 camera serial interface.
@@ -59,11 +59,11 @@ small set of critical features for detecting faces.
 
 \paragraph{Cascade classifier structure.} While feature computation is fast and efficient, an accurate classifier executes a large number of these computations per window. The VJ algorithm reduces the  computation overhead by ruling out ``easy-to-dismiss'' image windows quickly. This is done by constructing small classifiers from weighted combinations of features, and then grouping these classifiers into successively more complex stages in a cascade structure (Figure~\ref{fig:vj-cascade}).
 
-\begin{marginfigure}
+\begin{figure}
   \includegraphics[width=\textwidth]{nsp-figs/cascade_structure.pdf}
   \caption{Features grouped into cascading stages.}
   \label{fig:vj-cascade}
-\end{marginfigure}
+\end{figure}
 
 
 The first classifier stage searches the image window for a small number of critical features that exist in all the face images. If the window contains all the features, it is processed by the next stage in the sequence of classifiers. Each stage in the sequence is more complex than the last, and if any stage rejects the image window, the classifier stops processing on the window. This cascade classifier structure is similar to a degenerate decision tree.
@@ -135,11 +135,11 @@ A generic mobile sensor node usually consists of one or several sensors followed
 Our case study application supports a camera platform for continuous face detection and authentication. The baseline system for our implementation is the WISPCam~\cite{wispcam}, a good example of a computationally-demanding workload that would not be achievable on a general-purpose microcontroller.
 An overview of the resulting system is shown in Figure~\ref{fig:OMSP}.
 
-\begin{marginfigure}
+\begin{figure}
   \includegraphics[width=\textwidth]{nsp-figs/system_overview.pdf}
   \caption{OpenMSP-based system overview. }
   \label{fig:OMSP}
-\end{marginfigure}
+\end{figure}
 
 
 The WISP5.0 is based on the MSP430FR5969 microcontroller with a low-power 3D ADXL362 accelerometer. The WISPCam extends it with a OV7670 camera module that can capture a 176$\times$144 pixel gray scale image and store it in memory with a ~10mJ energy budget.
@@ -148,11 +148,11 @@ We envision the described face detection accelerator to be coupled with a neural
 
 \subsection{Neural network face authentication}
 
-\begin{marginfigure}
+\begin{figure}
   \includegraphics[width=\textwidth]{nsp-figs/snnap_pu_new.pdf}
   \caption{NN microarchitecture and processing element details.}
   \label{fig:snnap-pu}
-\end{marginfigure}
+\end{figure}
 
 NNs are considered state-of-the-art for image inference~\cite{amos2016openface}, so for our face authentication task, we employ a systolic NN design, based on SNNAP~\cite{snnap,moreau-bitwidth}.
 We train the NNs with Fast Artificial Neural Network Library (FANN)~\cite{fann}, a popular open-sourced NN library.
@@ -169,7 +169,7 @@ evaluating a classifier at each x-y location, and then scales the window and rep
 the search for larger-sized faces.
 A high-level description of this algorithm is listed in Figure~\ref{fig:vj-algo}.
 
-\begin{marginfigure}
+\begin{figure}
 \begin{tabular}{c}  % the tabular makes the listing as small as possible and centers it
 \begin{lstlisting}
 for x in range(0,image_width):
@@ -182,7 +182,7 @@ for x in range(0,image_width):
 \end{tabular}
 \caption{Nested loops of classifier invocations for VJ.}
 \label{fig:vj-algo}
-\end{marginfigure}
+\end{figure}
 
 
 VJ classifiers are structured to minimize computation in non-face windows: executing a full positive face detection incurs a larger computation cost, whereas deciding early that there is no face has a much lower cost.
@@ -269,11 +269,11 @@ Classifier $10\times 33$ has the best recall, but its precision
 is low, and its execution would not filter out many false positives. Classifier
 $20\times 50$, however, reduces the false positive rate by 50\% with only a 15\% loss in precision.
 
-\begin{marginfigure}
+\begin{figure}
 \includegraphics[width=\textwidth]{nsp-figs/eval_vj_energ_acc2.pdf}
     \caption{VJ energy-accuracy trade-off.}
     \label{fig:vj-tradeoff}
-\end{marginfigure}
+\end{figure}
 
 \paragraph{Energy-accuracy Trade-off.} The average energy expended to evaluate an image window
 is a function of both the hardware design and the accuracy of the classifier being evaluated.
@@ -295,12 +295,12 @@ This also allows us to reduce latency in delivering results to the next step in 
 
 A high-level block diagram of the microarchitecture is shown in Figure~\ref{fig:vj-block}. The accelerator consists of two functional modules: (i) the integral image accumulator, which transforms the image for easy feature extraction, and (ii) the cascade classifier implementation, which evaluates features and computes the classifier result for an image window.
 
-\begin{marginfigure}
+\begin{figure}
       \includegraphics[width=\textwidth]{nsp-figs/vj_arch.pdf}
     \caption{Proposed Viola-Jones accelerator architecture.}
 
     \label{fig:vj-block}
-\end{marginfigure}
+\end{figure}
 
 %
 \paragraph{Integral image processing.} The integral image is computed by summing the pixels above and to the left of
@@ -392,14 +392,14 @@ Freq & 27.9MHz & Area & 0.06$mm\textsuperscript{2}$ & Area & 0.38$mm\textsupersc
 
 We implemented our design in Verilog, synthesized with Synopsys Design Compiler using the TSMC 65nm Gplus Standard VT library, and performed place-and-route with Synopsys IC Compiler. SRAM macros are generated with an ARM Advantage memory compiler. A layout shot of our system components is shown in Figure~\ref{fig:layout_shot}. To find the optimal system voltage, we derive the static and dynamic components of the total system energy and select the minimum-energy voltage that still satisfies system performance requirements.
 
-\begin{marginfigure}
+\begin{figure}
 \centering
     \begin{center}
       \includegraphics[width=1.2\textwidth]{nsp-figs/layout.pdf}
     \end{center}
     \caption{Layout shot of all three designs}
     \label{fig:layout_shot}
-\end{marginfigure}
+\end{figure}
 
 
 In our evaluation, system requirements constrain the baseline choice: the MSP430 is the only processor operating within the power constraints of current energy-harvesting systems.
@@ -421,14 +421,14 @@ The efficiency benefit of the Viola-Jones classifier
 can attributed to its ability to spend little energy on the common case, when a
 window contains no faces.
 
-\begin{marginfigure}
+\begin{figure}
 \centering
     \begin{center}
       \includegraphics[width=\textwidth]{nsp-figs/eval_vj_cdf2.pdf}
     \end{center}
 \caption{VJ energy CDF over all windows in an image.}
 \label{fig:vj-cdf}
-\end{marginfigure}
+\end{figure}
 
 Figure~\ref{fig:vj-cdf} shows the
 distribution of features across windows in a typical 176$\times$144 image with a single face -- only 0.01\%

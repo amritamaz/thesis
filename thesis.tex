@@ -1,57 +1,62 @@
-\documentclass[nobib,notoc]{tufte-book}
+\RequirePackage{silence} % :-\
+    \WarningFilter{scrreprt}{Usage of package `titlesec'}
+    \WarningFilter{titlesec}{Non standard sectioning command detected}
+\documentclass[ twoside,openright,titlepage,numbers=noenddot,%1headlines,
+                headinclude,footinclude,cleardoublepage=empty,abstract=off,
+                BCOR=5mm,paper=a4,fontsize=11pt
+                ]{scrreprt}
 
-\hypersetup{colorlinks}% uncomment this line if you prefer colored hyperlinks (e.g., for onscreen viewing)
+%********************************************************************
+% Note: Make all your adjustments in here
+%*******************************************************
+\input{classicthesis-config}
+\input{thesis-userconfig}
 
-%%
-% Book metadata
-\title{Perceptual Optimizations for Video Capture, Processing, and Storage Systems}
-\author[Amrita Mazumdar]{Amrita Mazumdar}
-\publisher{University of Washington}
+%********************************************************************
+% Bibliographies
+%*******************************************************
+\addbibresource{thesis.bib}
 
-\input{config-tufte}
-\input{config-user}
+%********************************************************************
+% Hyphenation
+%*******************************************************
+%\hyphenation{put special hyphenation here}
 
-% Generates the index
-\usepackage{makeidx}
-\makeindex
-
+% ********************************************************************
+% Begin the document
+%*******************************************************
 \begin{document}
+\frenchspacing
+\raggedbottom
+\selectlanguage{american} % american ngerman
+%\renewcommand*{\bibname}{new name}
+%\setbibpreamble{}
+\pagenumbering{roman}
+\pagestyle{plain}
 
-% Front matter
-\frontmatter
-
-% p1 title
+%********************************************************************
+% Frontmatter
+%*******************************************************
 \include{FrontBackmatter/Titlepage}
-
-% p2 copyright page
 \include{FrontBackmatter/Titleback}
+\cleardoublepage\include{FrontBackmatter/Abstract}
+\cleardoublepage\include{FrontBackmatter/Dedication}
+%\cleardoublepage\include{FrontBackmatter/Foreword}
+% \cleardoublepage\include{FrontBackmatter/Publications}
+\cleardoublepage\include{FrontBackmatter/Acknowledgments}
+\cleardoublepage\include{FrontBackmatter/Contents}
 
-% p3 abstract
-\include{FrontBackmatter/Abstract}
+%********************************************************************
+% Mainmatter
+%*******************************************************
+\cleardoublepage
+\pagestyle{scrheadings}
+\pagenumbering{arabic}
 
-% p4 blank page
-\blankpage
-
-% p5 epigraph
-\include{FrontBackmatter/Dedication}
-
-% p7 blank page
-\blankpage
-
-% p8 acks
-\include{FrontBackmatter/Acknowledgments}
-
-% p9 blank page
-\blankpage
-
-
-% p10 contents
-\tableofcontents
-
+%\setcounter{page}{90}
+% use \cleardoublepage here to avoid problems with pdfbookmark
 \cleardoublepage
 
-% Start the main matter (normal chapters)
-\mainmatter
 \include{Chapters/01-intro}
 \include{Chapters/02-related-work}
 \cleardoublepage
@@ -63,14 +68,22 @@
 
 \include{Chapters/09-conclusion}
 
-
-%%
-% The back matter contains appendices, bibliographies, indices, glossaries, etc.
-
-\backmatter
-
-\bibliography{thesis}
-
-\printindex
-
+% ********************************************************************
+% Backmatter
+%*******************************************************
+% \appendix
+%\renewcommand{\thechapter}{\alph{chapter}}
+\cleardoublepage
+% \part{Appendix}
+% \include{Chapters/Chapter0A}
+%********************************************************************
+% Other Stuff in the Back
+%*******************************************************
+\cleardoublepage\include{FrontBackmatter/Bibliography}
+% \cleardoublepage\include{FrontBackmatter/Declaration}
+\cleardoublepage\include{FrontBackmatter/Colophon}
+% ********************************************************************
+% Game Over: Restore, Restart, or Quit?
+%*******************************************************
 \end{document}
+% ********************************************************************

@@ -33,7 +33,7 @@ Neighboring bank access is controlled with MUXes.
 This data is splatted onto the grid and transferred to the accelerator via direct memory access (DMA).
 The transferred data includes $\hat{\mathbf{b}}$, $\mathbf{q}$, and the initial solution $\mathbf{z}_{\mathrm{init}}$ shown in Algorithm~\ref{alg:heavy}.
 
-\begin{marginfigure}
+\begin{figure}
 \includegraphics[width=.75\columnwidth]{hfbs-figs/worker_microarchitecture.pdf}
 
 \caption{Block diagram of a single worker in our design.
@@ -41,7 +41,7 @@ Each worker receives the data for a grid vertex's stencil computation through an
 }
 \label{fig:microarch-single-worker}
 
-\end{marginfigure}
+\end{figure}
 
 First-in-first-out queues (FIFOs) buffer data transfers at the input and output of the accelerator.
 During transfer, the memory controller of Figure~\ref{fig:sys-overview} interleaves the data corresponding to each bilateral grid vertex, and partitions the data into memory banks.
@@ -69,12 +69,12 @@ If more parallel workers are necessary, the memory should be partition along mul
 \paragraph{Number of workers}
 The number of workers is affected by several parameters such as run time requirements, power budget, and available resources. Figure~\ref{fig:worker-perf} shows how performance scales with the number of workers. Assuming we want the fastest design and have not power constraint, the number of workers will be determined by the available FPGA resources including digital signal processing units (DSPs), look-up tables (LUTs), and memory banks.
 
-\begin{marginfigure}
+\begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{hfbs-figs/worker_scaling.pdf}
 \caption{Performance scales almost linearly with increased numbers of workers.}
 \label{fig:worker-perf}
-\end{marginfigure}
+\end{figure}
 
 
 
@@ -86,12 +86,12 @@ Using the cheaper fixed-point multiplier, however, required us to evaluate three
 If less than $12$ bits were used for the integer portion, the bilateral grid data would quickly populate with overflow values.
 If less than $24$ bits were used for the fractional component of the number, the bilateral solver would not converge, because grid vertices would not have enough precision to capture the change in a value after blurring.
 
-\begin{marginfigure}
+\begin{figure}
   \centering
   \includegraphics[width=\columnwidth]{hfbs-figs/fixed_point.pdf}
   \caption{MSE of fixed-point implementations at varied fractional widths, for different bitwidths. MSE is reported relative to 32-bit floating-point. We chose a configuration with 31 bits of fractional precision to reduce chance of overflow in the integer portion.}
   \label{fig:fixed-point}
-\end{marginfigure}
+\end{figure}
 
 These constraints prevented us from using 32-bit fixed-point numbers, as highlighted by the high mean squared error (MSE) shown in Figure~\ref{fig:fixed-point} across integer-fraction-ratio configurations.
 We delineate a maximum error threshold of $\sim 0.00001$, because any errors exceeding that precision eliminate the positive benefits of using an $\epsilon$-value to reduce zero-propagation.

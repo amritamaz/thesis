@@ -1,6 +1,6 @@
 \newcommand{\foveatedExampleFigure}{
 
-\begin{marginfigure}
+\begin{figure}
   \centering
 
   \subfloat[The human eye only perceives the foveal region at full resolution~\cite{foveated-coding}.]{
@@ -15,33 +15,33 @@
 
   \caption{When viewing a VR display at close distance, only a small fraction of pixels ($<10\%$) are foveal and viewed at high resolution. VR video compression exploits this feature with \emph{foveated compression}.}
   \label{fig:foveal-motivation}
-\end{marginfigure}
+\end{figure}
 }
 
 \newcommand{\vdecBaselineArchFigure}{
-\begin{marginfigure}
+\begin{figure}
   \centering
 \includegraphics[width=\linewidth]{tvarch-figs/system-arch.pdf}
 \caption{System architecture of typical video playback flow on mobile/VR SoC.}
 \label{fig:vdec-arch}
-\end{marginfigure}
+\end{figure}
 }
 
 \newcommand{\vdecCTUTimingFigure}{
 
-\begin{marginfigure}
+\begin{figure}
         \centering
         \includegraphics[width=\linewidth]{tvarch-figs/decode-ctu-timing.pdf}
         \caption{Decoding \emph{tiles} in parallel, rather than \emph{rows}, removes row-dependencies.}
         \label{fig:ctu-timing}
-\end{marginfigure}
-\begin{marginfigure}
+\end{figure}
+\begin{figure}
         \centering
         \includegraphics[width=\linewidth]{tvarch-figs/optimal-scheduling.pdf}
         \caption{Optimal scheduling for tiled video with heterogeneous bitrates. Knowledge of per-tile decode complexity can improve performance.}
         \label{fig:tile-schedule}
 
-\end{marginfigure}
+\end{figure}
 }
 
 
@@ -56,11 +56,11 @@
 }
 
 \newcommand{\vdoprofOverview}{
-\begin{marginfigure}
+\begin{figure}
 \includegraphics[width=\linewidth]{tvarch-figs/vdoprof2.pdf}
 \caption{The \nameArchprof framework flow helps VR developers optimize energy consumption of their videos for hardware decoders. \nameArchprof generates energy profiles for video decode architectures and suggests energy-optimal tile configurations for playback constraints.}
 \label{fig:vdo-prof}
-\end{marginfigure}
+\end{figure}
 }
 
 \newcommand{\perceptualCompressionEnergyFigure}{
@@ -73,12 +73,12 @@
 }
 
 \newcommand{\coresVsDecodeSpeedupFigure}{
-  \begin{marginfigure}
+  \begin{figure}
     \centering
       \includegraphics[width=\linewidth]{tvarch-figs/cores-v-decode-speedup.pdf}
       \caption{Decode performance for in-order and \nameArch's parallel decoding, with and without optimal scheduling.}
       \label{fig:cores-decode}
-      \end{marginfigure}%
+      \end{figure}%
 }
 
 \newcommand{\coresVsEnergySpeedup}{
@@ -92,7 +92,7 @@
 
 \newcommand{\motivationComputeMemEnergyTime}{
 
-\begin{marginfigure}
+\begin{figure}
 \centering
 \subfloat[Energy consumption decoding 1-, 4-, and 8-tile videos on a 4-core CPU, normalized to 1-tile energy. ]{
 \label{subfig:motiv-cpu}
@@ -106,7 +106,7 @@
   \caption{When decoding videos with multiple tiles, hardware accelerators are not as capable as CPUs at capturing this tile parallelism to improve performance.}
   \label{fig:motiv-energy-cpu-soc}
 
-\end{marginfigure}
+\end{figure}
 
 }
 \newcommand{\motPerceptualEnergy}{
@@ -163,7 +163,7 @@
 }
 
 \newcommand{\dvfsEnergySpeedup}{
-\begin{marginfigure}
+\begin{figure}
     \centering
 
       \subfloat[\nameArch energy consumption and speedup, sweeping across 2000 multi-core, heterogeneous frequency configurations. ]{
@@ -179,35 +179,35 @@
 
       \caption{We swept over heterogeneous parallel configurations for our video decoder, varying the number of cores from 4 - 128 and the number of fast and slow cores for each core count. We find a Pareto-frontier of optimal energy-speedup configurations (a). After filtering based on power consumption (b), the spread of optimal energy-speedup configurations shifts. The best Pareto-optimal point under 50 mW is a 52-core design. }
       \label{fig:dvfs-exploration}
-\end{marginfigure}
+\end{figure}
 }
 
 \newcommand{\evalEnergyPower}{
-  \begin{marginfigure}
+  \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-breakdown.pdf}
     \caption{Energy breakdown of \nameArch components. }
     \label{subfig:eval-energy-percent}
-    \end{marginfigure}%
+    \end{figure}%
 
-    \begin{marginfigure}
+    \begin{figure}
       \centering
       \includegraphics[width=\linewidth]{tvarch-figs/eval-power-energy-total.pdf}
       \caption{Energy consumption and total power consumption on a single video. Our 4-, 8-, and 52-core designs improve decode latency by .25 - 25$\times$ while keeping power under 15 mW.}
       \label{subfig:eval-power-energy}
-    \end{marginfigure}%
+    \end{figure}%
 }
 
 \newcommand{\evalRegularTileEnergy}{
 \begin{figure*}
 \centering
-  \subfloat[\texttt{vbench} energy consumption results for regularly distributed tiles.]{
-    \label{subfig:eval-energy-regular-vbench}
+  \subfloat[\texttt{vbench} energy consumption results for regularly distributed tiles.\label{subfig:eval-energy-regular-vbench}]{
+
     \includegraphics[width=.5\linewidth]{tvarch-figs/eval-energy-regular-vbench.pdf}
   }
   \quad
-  \subfloat[\texttt{vr-360} energy consumption results for regularly distributed tiles.]{
-    \label{subfig:eval-energy-regular-vr}
+  \subfloat[\texttt{vr-360} energy consumption results for regularly distributed tiles.\label{subfig:eval-energy-regular-vr}]{
+
     \includegraphics[width=.35\linewidth]{tvarch-figs/eval-energy-regular-vr.pdf}
   }
   \\
@@ -216,18 +216,18 @@
     \includegraphics[width=.5\linewidth]{tvarch-figs/eval-energy-fov-vbench.pdf}
   }
   \quad
-  \subfloat[\texttt{vr-360} energy consumption results for irregular foveated tiles.]{
-    \label{subfig:eval-energy-fov-vr}
+  \subfloat[\texttt{vr-360} energy consumption results for irregular foveated tiles.  \label{subfig:eval-energy-fov-vr}]{
+
     \includegraphics[width=.35\linewidth]{tvarch-figs/eval-energy-fov-vr.pdf}
   }
   \\
-  \subfloat[\texttt{vbench} energy consumption results for multi-resolution foveation.]{
-    \label{subfig:eval-energy-multi-vbench}
+  \subfloat[\texttt{vbench} energy consumption results for multi-resolution foveation.\label{subfig:eval-energy-multi-vbench}]{
+
     \includegraphics[width=.5\linewidth]{tvarch-figs/eval-energy-multi-vbench.pdf}
   }
   \quad
-  \subfloat[\texttt{vr-360} energy consumption results for multi-resolution foveation.]{
-    \label{subfig:eval-energy-multi-vr}
+  \subfloat[\texttt{vr-360} energy consumption results for multi-resolution foveation.\label{subfig:eval-energy-multi-vr}]{
+
     \includegraphics[width=.35\linewidth]{tvarch-figs/eval-energy-multi-vr.pdf}
   }
   \\
