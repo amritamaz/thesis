@@ -15,7 +15,8 @@ We construct our FA pipeline around a neural network (NN) accelerator performing
 
 
 \begin{figure}
-  \includegraphics[width=.8\textwidth]{nsp-figs/FA_pipeline_base_with_example.pdf}
+  \centering
+  \includegraphics[width=.6\textwidth]{nsp-figs/FA_pipeline_base_with_example.pdf}
   \caption{Face authentication with battery-free cameras. }
   \label{fig:face_recog_pipeline_solution}
 \end{figure}
@@ -60,7 +61,8 @@ small set of critical features for detecting faces.
 \paragraph{Cascade classifier structure.} While feature computation is fast and efficient, an accurate classifier executes a large number of these computations per window. The VJ algorithm reduces the  computation overhead by ruling out ``easy-to-dismiss'' image windows quickly. This is done by constructing small classifiers from weighted combinations of features, and then grouping these classifiers into successively more complex stages in a cascade structure (Figure~\ref{fig:vj-cascade}).
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{nsp-figs/cascade_structure.pdf}
+  \centering
+  \includegraphics[width=.6\textwidth]{nsp-figs/cascade_structure.pdf}
   \caption{Features grouped into cascading stages.}
   \label{fig:vj-cascade}
 \end{figure}
@@ -104,14 +106,14 @@ to the left of it.
 This representation allows us to obtain the sum of any rectangular subset
 of the image in constant time:
 
-\begin{equation}
+\begin{align}
 I_\Sigma (x,y) =   \sum_{\substack{x' \leq x \\ y' \leq y}}I(x,y)
-\end{equation}
+\end{align}
 
 The sum of the pixels in within the rectangle defined by $x_0,x_1,y_0,y_1$ can be obtained by
-\begin{equation}
+\begin{align}
 \sum_{\substack{ x_0 < x \leq x_1\\ y_0 < y \leq y_1} }I(x,y) = I_\Sigma(x_0,y_0) - I_\Sigma(x_1,y_0)-I_\Sigma(x_0,y_1)+I_\Sigma(x_1,y_1)
-\end{equation}
+\end{align}
 Furthermore, constructing the data structure is also efficient, because it can be calculated incrementally. If
 all the value of $I_\Sigma(x,y)$ are know for the points left and above $(x,y)$, we can
 calculate $I_\Sigma(x,y)$ by
