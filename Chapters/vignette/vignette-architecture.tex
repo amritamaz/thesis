@@ -6,7 +6,7 @@ We designed \name to be easily deployed in existing video storage systems and tr
 % \name consists of two components: \nameCompress
 % which operates atop any standard video codec to provide smaller videos at similar quality,
 % and \nameStore. %, which we describe next.
-\ref{fig:high-level-architecture} shows how \name can be deployed on a typical video storage system, with \nameCompress used during the transcoding pipeline, and \nameStore managing the integration of perceptual information with video data.
+Figure~\ref{fig:high-level-architecture} shows how \name can be deployed on a typical video storage system, with \nameCompress used during the transcoding pipeline, and \nameStore managing the integration of perceptual information with video data.
 
 \architectureOverviewFigure
 
@@ -24,7 +24,7 @@ Our implementation of \nameCompress produces videos that work out-of-the-box wit
 % \nameStore is a storage manager that allows systems to trigger perceptual compression when needed and further optimize saliency-based compression as perceptual information is refined.
 \nameCompress perceptually compresses videos by enumerating configurations of video tiles and saliency-quality correspondences to maximize quality while minimizing video size.
 % We implement \nameCompress on top of \hevc.
-The algorithm has three high-level steps: generate a perceptual data map (e.g., saliency map) for a given video file (\ref{subsec:supersal}), determine the optimal number of rows and columns, which we call a ``tile configuration'', to spatially partition the video into (\ref{subsec:tiles}), and select a mapping of saliency values to encoder qualities, for each tile (\ref{subsec:mapping}).
+The algorithm has three high-level steps: generate a perceptual data map (e.g., saliency map) for a given video file (Section~\ref{subsec:supersal}), determine the optimal number of rows and columns, which we call a ``tile configuration'', to spatially partition the video into (Section~\ref{subsec:tiles}), and select a mapping of saliency values to encoder qualities, for each tile (Section~\ref{subsec:mapping}).
 
 % \vspace{.5em}
 \paragraph{\nameStore} manages perceptual information as simple metadata embedded within videos or maintained in the storage system.
@@ -33,4 +33,4 @@ This reduces storage complexity for data management and ensures \name data is tr
 \nameStore can use a neural network to generate saliency information or collect them from end-user video viewing devices.
 % \brandon{These modes aren't clearly defined here, so maybe just omit until later?}
 %where video is perceptually compressed once based on automatically generated saliency maps, and a ``closed loop'' mode, where perceptually compressed video can be updated based on cues from user-end viewing devices.
-The storage manager supports the following features: low-overhead perceptual metadata transmitted alongside video content, without impeding the functionality of applications that choose not to use it (\ref{sec:system:metadata}), storage management policies to trigger one-time perceptual compression during ``open loop'' mode, support for refining perceptual video compression with cues from user viewing devices in a ``closed loop'' mode (\ref{sec:system:interface}), and a heuristic-based search for faster perceptual compression (\ref{subsec:search-algo}).
+The storage manager supports the following features: low-overhead perceptual metadata transmitted alongside video content, without impeding the functionality of applications that choose not to use it (Section~\ref{sec:system:metadata}), storage management policies to trigger one-time perceptual compression during ``open loop'' mode, support for refining perceptual video compression with cues from user viewing devices in a ``closed loop'' mode (Section~\ref{sec:system:interface}), and a heuristic-based search for faster perceptual compression (Section~\ref{subsec:search-algo}).

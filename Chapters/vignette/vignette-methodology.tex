@@ -19,7 +19,7 @@ Decode("rtp://...")
 % \vspace{-0.5em}
 
 \noindent In this example, \texttt{Partition} divides the input video into tiles, \texttt{Encode} transcodes each tile with the corresponding \texttt{saliency\_mapping} value as an argument, and  \texttt{Subquery} executes the given operation over all the partitioned tiles.
-We also wrote our object recognition queries for \ref{subsec:qos} in \lightdb to simulate video analytics workloads.
+We also wrote our object recognition queries for Section~\ref{subsec:qos} in \lightdb to simulate video analytics workloads.
 To generate saliency maps, we used MLNet~\cite{mlnet2016} with publicly-available weights trained on the SALICON~\cite{huang2015salicon}, which achieves 94\% accuracy on the MIT300 saliency benchmark.
 
 \paragraph{Baseline: } We compare \name against the HEVC encoding implementations included with \texttt{FFmpeg}.
@@ -51,7 +51,7 @@ PSNR is popular for video encoding research, but researchers acknowledge that it
 Acceptable PSNR values fall between 30 and 50 dB, with values above 50 dB considered to be lossless~\cite{vbench}.
 For saliency prediction evaluations, researchers developed eye-weighted PSNR to more accurately represent human perception~\cite{li2011visual}.
 EWPSNR prioritizes errors perceived by the human visual system rather than evaluating PSNR uniformly across a video frame.
-We computed EWPSNR using the per-video saliency maps described in~\ref{sec:tiled-compression} as ground truth.
+We computed EWPSNR using the per-video saliency maps described in Section~\ref{sec:tiled-compression} as ground truth.
 % This metric uses the same core metric as PSNR; however, it accommodates more perceptual qualities but still fails to capture perceptual artifacts.
 
 % Using the VMAF phone model is more generous to distortions from comparing to an already-encoded video.

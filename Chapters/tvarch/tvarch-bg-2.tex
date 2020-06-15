@@ -1,14 +1,14 @@
 \section{Background: Video Compression and Hardware Decoders}
 \vdecBaselineArchFigure
 
-This paper focuses on playing video in VR distributed using traditional 2D video compression methods, e.g., \hevc or \vpnine, in accordance with VR video distributors like YouTube and Oculus.
-In this section, we explain in detail VR video perceptual compression using a traditional codec(\hevc~\cite{hevc}).
+This chapter focuses on playing video in VR distributed using traditional 2D video compression methods, e.g., \hevc or \vpnine, in accordance with VR video distributors like YouTube and Oculus.
+In this section, we explain in detail VR video perceptual compression using a traditional codec (\hevc~\cite{hevc}).
 We focus on \hevc because of its relationship with the baseline hardware architecture used, but our analysis and insights also apply to other codecs, like \vpnine~\cite{mukherjee2015technical}, \avc~\cite{h264spec}, and \avone~\cite{avone}.
 Although specific performance and implementation details vary across codecs, each uses similar data structures and decoding processes.
 % The following section describes mobile video decoder architectures for VR video playback.
-We first discuss the compressed video data structures used (\ref{subsec:hevc}).
-We then give an overview of a generic video decode accelerator architecture at a high level (\ref{subsec:vd-arch}).
-We finally provide some design details of \emph{video tiles}, a codec feature used heavily for perceptual compression (\ref{subsec:tiles}).
+We first discuss the compressed video data structures used (Section~\ref{subsec:hevc}).
+We then give an overview of a generic video decode accelerator architecture at a high level (Section~\ref{subsec:vd-arch}).
+We finally provide some design details of \emph{video tiles}, a codec feature used heavily for perceptual compression (Section~\ref{subsec:tiles}).
 
 \subsection{HEVC Data Structure Overview}
 \label{subsec:hevc}
@@ -16,27 +16,27 @@ We finally provide some design details of \emph{video tiles}, a codec feature us
 Compressed \hevc videos consist of individual blocks, called coding tree units (CTUs)~\cite{hevc}.
 These CTUs constitute the core representational unit in \hevc.
 They can vary in size from 16$\times$16 pixels to 64$\times$64 pixels and internally contain units of different types and sizes, such as motion predictions.
-More detail on the \hevc data structure can be found in ~\cite{hevc}.
+More detail on the \hevc data structure can be found in the codec specification~\cite{hevc}.
 
 Some CTUs reference earlier CTUs in the encoded bitstream for a frame to represent motion or a repeating block.
 For instance, some motion predictions can reference earlier instantiations in other CTUs.
 This dependency can occur only in raster order; i.e., CTUs can only reference other CTUs that are spatially above and to the left of them.
 To accommodate this dependency, CTUs are decoded in row-order.
 In video decoder architectures with multiple cores, CTUs can be split into parallel rows, or slices, to be decoded simultaneously.
-Parallel decoding incurs an added delay to account for the spatial dependencies~\cite{hevcThesis}; we analyze further in~\ref{sec:vdo-hw}.
+Parallel decoding incurs an added delay to account for the spatial dependencies~\cite{hevcThesis}; we analyze further in Section~\ref{sec:vdo-hw}.
 
 \subsection{Video decode accelerator microarchitecture}
 \label{subsec:vd-arch}
 Video decoder chips ingest a compressed video bitstream and decode the bitstream into discrete video frames for display or GPU processing.
 Video decoders are typically deployed on mobile devices as a fixed-function ASIC.
-\ref{fig:vdec-arch} presentsa high-level video decode accelerator architecture for \hevc
+Figure~\ref{fig:vdec-arch} presentsa high-level video decode accelerator architecture for \hevc
 
 The video decoder initially reads compressed video data from memory.
 An arithmetic entropy decoder then decodes the compressed data.
 It produces syntax elements, or individual data elements (e.g., motion predictions, other coding units), to be processed by the appropriate processing unit.
-Processing units can be grouped together and considered to be a single ``decoder core'' that operates at a per-CTU granularity, as shown in~\ref{fig:vdec-arch}.
+Processing units can be grouped together and considered to be a single ``decoder core'' that operates at a per-CTU granularity, as shown in Figure~\ref{fig:vdec-arch}.
 Some hardware decoders instantiate multiple decoder cores to execute in parallel~\cite{tikekar18ijssc} or run a single decoder core at a high clock frequency~\cite{8khevc-ijssc} to decode large videos at fast speeds.
-CTU decoding is typically pipelined across the stages shown in~\ref{fig:vdec-arch}'s decoder core~\cite{8khevc-ijssc}, but a decoder core must wait for any CTU dependencies to finish before decoding.
+CTU decoding is typically pipelined across the stages shown in Figure~\ref{fig:vdec-arch}'s decoder core~\cite{8khevc-ijssc}, but a decoder core must wait for any CTU dependencies to finish before decoding.
 After an entire frame is decoded, the video decoder chip writes it back to the frame buffer, where it can be read by the GPU for further processing or written to the display frame buffer for rendering.
 
 \subsection{Video Tile Design Details}
@@ -50,7 +50,7 @@ Software developers intend for these videos to be decoded by hardware decoders o
 
 The \hevc standard specifies that splitting an encoded video into tiles effectively constructs multiple neighboring video streams, encoded separately, from a single compressed video.
 Each tile has its own contiguous set of CTUs.
-THough CTUs in a video stream can reference earlier CTUs, tiling constraints break this dependency: CTUs within one tile cannot reference CTUs in any other tile.
+Though CTUs in a video stream can reference earlier CTUs, tiling constraints break this dependency: CTUs within one tile cannot reference CTUs in any other tile.
 This constraint imposes overhead in video coding by making tiles duplicate motion vectors or blocks that appear across tiles, reducing compression opportunities.
 
 Despite overheads, tiling features also introduce new opportunities for parallelism.
@@ -58,4 +58,4 @@ Despite overheads, tiling features also introduce new opportunities for parallel
 By partitioning a single video stream into multiple tiles, both video encoding and decoding can be executed with parallel cores.
 Software decoders can decode tiled video streams in parallel, by using, multiple threads or cores, but hardware decoders cannot decode in parallel unless they have multiple cores to enable parallelism.
 To facilitate parallel hardware decoding, the \hevc standard includes a bitstream with the locations and entry points for each tile in the compressed video.
-We leverage this bitstream in the design of \name.
+We leverage this bitstream in the design of \nameArch.

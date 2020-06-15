@@ -5,12 +5,13 @@ We now evaluate \nameArch's performance on video characterization workloads, usi
 We first describe the energy overhead and power dedicated to \nameArch at three design points.
 We then examine \nameArch's energy consumption for regularly tiled videos, foveated tiled videos, and multi-resolution foveated videos.
 
-\evalEnergyPower
 
 
 \subsection{\nameArch Overhead}
-We first compare the energy consumption of \nameArch's design with the baseline architecture~\cite{tikekar18ijssc}.
-\ref{subfig:eval-energy-percent} shows the distribution of energy consumption by different aspects of the memory system when decoding a baseline 1920$\times$1080 video.
+We first compare the energy consumption of \nameArch's design with the baseline architecture~\cite{tikekar18ijssc}. Figure~\ref{subfig:eval-energy-percent} shows the distribution of energy consumption by different aspects of the memory system when decoding a baseline 1920$\times$1080 video.
+
+\evalEnergyPower
+
 Even with the overhead from \nameArch's hardware scheduler, \nameArch shows a decrease in decode energy consumption compared to the baseline. We attribute this efficiency improvement to \nameArch's ability to leverage parallelism with no inter-line dependencies.
 Since \nameArch does not require line buffers to interface between cores, its per-core energy consumption decreases by 8\%.
 In terms of area, our scheduler takes up $\sim1\%$ of the area, and incurs only a few cycles of latency at the initiation of the decode pipeline.
@@ -20,17 +21,17 @@ To characterize \nameArch's energy efficiency, we evaluated on our three \nameAr
 
 \evalRegularTileEnergy
 
-\textbf{Regularly tiled video. } \ref{subfig:eval-energy-regular-vbench} and \ref{subfig:eval-energy-regular-vr} show the results of \nameArch's architecture on a regularly tiled workload.
+\paragraph{Regularly tiled video. } Figure~\ref{subfig:eval-energy-regular-vbench} and Figure~\ref{subfig:eval-energy-regular-vr} show the results of \nameArch's architecture on a regularly tiled workload.
 Compared to the 4-core design, the 8- and 52-core designs provided a 6-15\% energy-efficiency benefit.
 This benefit is more pronounced for the larger, high-resolution videos in \texttt{vr-360}.
 At smaller video sizes (e.g., \texttt{vbench}'s $v1$ video) this energy-efficiency benefit is negligible.
 This indicates that for small-display, resource-constrained video playback, a small number of cores can provide sufficient energy efficiency, especially for traditionally encoded video.
 The speedup and potential energy-efficiency gains provided by the Pareto or even Low-Power design point did not significantly reduce energy consumption.
 
-\textbf{Tiled, foveated video.} For tiled, foveated video, however, the results differed.
+\paragraph{Tiled, foveated video.} For tiled, foveated video, however, the results differed.
 For this workload, energy consumption dropped significantly across the three designs
 This demonstrates how our heterogeneous parallel cores reduced energy consumption.
-\ref{subfig:eval-energy-fov-vbench} and \ref{subfig:eval-energy-fov-vr} demonstrate the energy consumed across all videos.
+Figure~\ref{subfig:eval-energy-fov-vbench} and Figure~\ref{subfig:eval-energy-fov-vr} demonstrate the energy consumed across all videos.
 
 We observe that energy consumption was particularly sensitive to the distribution of tiles across the two frequency domains.
 \nameArch's scheduler found an optimal balance between the two cores, but a poor allocation of tiles to decoder cores results in much higher energy consumption for the three \nameArch designs.
@@ -38,9 +39,9 @@ While even poor tile decode scheduling can demonstrate scalability on our design
 With the optimal decode schedule, the Low-Power design reduced energy consumption by a factor of 2, and the Pareto-optimal design achieved almost a 4$\times$ energy consumption reduction.
 Though this performance did not scale linearly, it was much more scalable than the baseline at 1-core.
 
-\textbf{Multi-resolution video. }Multi-resolution is the most extreme video compression method.
+\paragraph{Multi-resolution video. }Multi-resolution is the most extreme video compression method.
 The only effective decode schedule available is for \nameArch's scheduler to map the high-resolution foveal tile to the big core and the low-resolution peripheral tile to the little core.
 This highlights a limitation in \nameArch's scheduling design: distinct decode cores cannot reclaim work from a tile and instead sit idle.
-\ref{subfig:eval-energy-multi-vbench} and \ref{subfig:eval-energy-multi-vr} graph energy consumption for the three designs, which showed similar trends.
+Figure~\ref{subfig:eval-energy-multi-vbench} and Figure~\ref{subfig:eval-energy-multi-vr} graph energy consumption for the three designs, which showed similar trends.
 Like the regularly-tiled use case, the multi-resolution approach demonstrated a small energy-efficiency benefit, 6--15\%.
 However, the energy consumed to decode a multi-resolution video was 200$\times$ lower than that consumed for regularly-tiled video, highlighting the benefits of using perceptually compressed video.

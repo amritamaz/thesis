@@ -33,7 +33,7 @@ To evaluate \nameArch's performance, we used two methods for compressing video p
 
 \nameArch's key optimizations stem from \emph{leveraging irregularity} in perceptually compressed VR video.
 Perceptual compression techniques exploit constraints in the human visual system to reduce memory bandwidth and associated rendering costs.
-The central insight is that the human eye perceives only a small portion of the VR display, \emph{the foveal region}, in high resolution, but it still requires peripheral pixels to \emph{approximate} the original image (~\ref{fig:foveal-motivation}).
+The central insight is that the human eye perceives only a small portion of the VR display, \emph{the foveal region}, in high resolution, but it still requires peripheral pixels to \emph{approximate} the original image (Figure~\ref{fig:foveal-motivation}).
 Though software developers have applied this insight to create optimizations that reduce data bandwidth, fixed-function video decoder architectures have not adopted these advances, suggesting an opportunity for up to 50-75\% improvement in decode cost commensurate with the data reduction.
 
 In this chapter, we propose \nameArch, a video decoder architecture for supporting energy efficient decoding of perceptually-compressed video.
@@ -42,7 +42,7 @@ We reverse-engineered video decode performance for a commodity video decoder and
 We capture our characterizations in \nameArchprof, an open-source profiling framework for mobile video decoders.
 \nameArchprof abstracts away codec-specific complexity so compression engineers and VR application developers can more easily assess mobile energy consumption for video workloads.
 
-To our knowledge, this chapter is the first to propose optimizing video decoder architectures for VR workloads.
+This chapter proposes optimizing video decoder architectures for VR workloads.
 It makes the following contributions:
 \begin{itemize}
     \item \nameArch, a new video decoder architecture optimized for tile-based parallelism in VR video, using a new scheduler and heterogeneous decoder cores to improve energy efficiency

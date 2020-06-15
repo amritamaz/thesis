@@ -12,7 +12,7 @@ It uses only the native features of the \hevc codec to ensure compatibility with
 \label{subsec:supersal}
 
 We use MLNet (\cite{mlnet2016}) to automatically generate a corresponding saliency map for a video input.
-\ref{fig:saliency-tiles-overview} shows the saliency map generated for a video frame and how the generated maps capture the visual importance of a given video frame.
+Figure~\ref{fig:saliency-tiles-overview} shows the saliency map generated for a video frame and how the generated maps capture the visual importance of a given video frame.
 MLNet uses Keras with Theano~\cite{chollet2015keras, theano} to perform saliency prediction from video frames.
 The process requires decoding the video and processing each frame through the neural network to produce output saliency maps.
 We accumulate the per-frame saliency maps into a single map by collecting the maximum saliency for each pixel in the frame across the video file.
@@ -31,7 +31,7 @@ To produce saliency-based tiled video encoding, we divide a video segment spatia
 The saliency map's value at each tile determines the tile's quality setting.
 For simplicity and generality, the tiling patterns we use are rectangular tiles with uniform width and height across the video frame.
 We use the same tile configuration throughout the entire 10-20 second video segment for coding simplicity.
-We select the number of rows and columns in each a tiling pattern based on either an exhaustive search of all tile configurations or a heuristic-guided search, described in \ref{subsec:search-algo}.
+We select the number of rows and columns in each a tiling pattern based on either an exhaustive search of all tile configurations or a heuristic-guided search, described in Section~\ref{subsec:search-algo}.
 
 While tiling is simple and provides coding benefits, a given tile configuration can incur overheads from introducing suboptimal encoding boundaries.
 Tiles are self-contained video units that can be decoded separately.
@@ -62,29 +62,5 @@ The highest-saliency tiles in the video are assigned the target bitrate, and til
 % The intermediate bitrate points are a linear mapping betwee
 % We use a target bitrate to weight the visual salience of each tile. \alvin{how is the target chosen?}
 % Specifying a bitrate in CBR mode holds bitrate constant across video length and makes video size predictable, but it can waste bits and may reduce quality.
-As shown in ~\ref{fig:saliency-tiles-overview}, we encode a 0-255 saliency map as discrete bitrates corresponding linearly from a minimum value to the target bitrate or quality, which is the maximum.
+As shown in Figure~\ref{fig:saliency-tiles-overview}, we encode a 0-255 saliency map as discrete bitrates corresponding linearly from a minimum value to the target bitrate or quality, which is the maximum.
 Because \name supports standard codec features, target bitrate could be replaced with a codec's quality control, i.e. constant rate factor, as well.
-
-\begin{comment}
-  As shows, \nameCompress offers users multiple compression mappings: a linear mapping, a high quality mapping, and a small file size mapping.
-  \begin{itemize}
-  \item \textbf{Linear mapping.} The linear mapping distributes the 256 saliency values from the input map across a bitrate range that is 20-100\% of the original bitrate size.
-  This mapping provides compression at good quality without sacrificing significant quality in low-saliency regions.
-
-  \item \textbf{Small file size mapping.}For increased bitrate savings, the small file size mapping scales the bottom half of saliency values to the 10-30\% original bitrate region.
-  The top half of saliency values are then mapped linearly from 30-100\% of the original bitrate.
-  This scheme more aggressively reduces the bitrate in less-salient regions.
-
-  \item \textbf{High quality mapping.} The high quality mapping, on the other hand, maintains a higher base bitrate for low-saliency regions and a smaller distribution of bitrates overall.
-  The full mapping scales from 50-100\% of the original bitrate and evenly distributes saliency values across this condensed bitrate spread.
-  This mapping helps those who seek perceptual compression for storage gains but require minimal quality loss, even in less-salient regions.
-  \end{itemize}
-  These mappings cover multiple use cases for perceptual compression and serve to highlight tradeoffs between compression opportunity and video quality.
-
-  Using the \hevc tiles to encode a saliency map provides a number of benefits for a video storage system.
-  \hevc is a popular and well-supported codec, and many systems and devices already support hardware-accelerated transcoding for \hevc.
-  Moreover, any future codec that extends or supports the scalable video coding feature that we build our compression around will be able to use this scheme.
-  Developing our scheme around an established codec ensures our techniques can be adapted to newer codecs without much development time or overhead.
-
-
-\end{comment}

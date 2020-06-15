@@ -16,8 +16,8 @@ We designed our evaluation to answer the following questions:
 
 \subsection{Storage and Bandwidth Savings}
 \label{subsec:storage}
-To evaluate the storage and bandwidth benefits of \name, we applied \nameCompress to the corpus of videos described in \ref{sec:vignette-methodology}.
-We transcoded our video library at iso-bitrate in salient regions and decreased bitrate linearly with saliency to a minimum 10\% target bitrate in the lowest saliency tiles, as illustrated in~\ref{fig:saliency-tiles-overview}.
+To evaluate the storage and bandwidth benefits of \name, we applied \nameCompress to the corpus of videos described in Section~\ref{sec:vignette-methodology}.
+We transcoded our video library at iso-bitrate in salient regions and decreased bitrate linearly with saliency to a minimum 10\% target bitrate in the lowest saliency tiles, as illustrated in Figure~\ref{fig:saliency-tiles-overview}.
 In these experiments, we examine how our transcoding performs across a range of resolutions and workloads, as is expected in a video storage system.
 
 
@@ -30,12 +30,12 @@ Some videos benefited from many small tiles, while others performed best with fe
 \tileVsSizeFigure
 
 The smallest tile size we evaluated were 64 pixels in breadth, but most videos performed best with tiles having a breadth of 300--400 pixels.
-As \ref{plot:tile-vs-size} shows, this experiment indicated that the optimal tile configuration for a video is content-dependent and can vary from four tiles to forty, and that tile configuration is an important component of tile-based compression.
+As Figure~\ref{plot:tile-vs-size} shows, this experiment indicated that the optimal tile configuration for a video is content-dependent and can vary from four tiles to forty, and that tile configuration is an important component of tile-based compression.
 
 
 \paragraph{Overall Compression, Bandwidth, Quality: }We next explored peak compression, bandwidth, and quality savings by applying \name to our video corpus and evaluating compression and quality savings.
 We used the results of our exhaustive tile search to identify the best compression-quality configurations for each video.
-\ref{fig:average-storage-bitrate-savings} shows aggregate storage savings, partitioned by  dataset.
+Figure~\ref{fig:average-storage-bitrate-savings} shows aggregate storage savings, partitioned by  dataset.
 
 \avgStorageBitrateSavings
 
@@ -46,7 +46,7 @@ The vbench dataset, which is algorithmically chosen to have a wide variance in r
 Of the videos with the lowest storage reduction, we find that each tends to have low entropy, large text, or other 2D graphics that are already efficiently encoded.
 
 
-\ref{table:dataset-quality} shows the average reduction in bitrate and resulting quality, measured in PSNR and EWPSNR.
+Table~\ref{table:dataset-quality} shows the average reduction in bitrate and resulting quality, measured in PSNR and EWPSNR.
 Our results show that EWPSNR results are near-lossless for each benchmark dataset.
 The PSNR values---which do not take the human visual processing system into account--- are lower, but still above the 35 dB threshold, and so remain acceptable for viewing.
 
@@ -70,7 +70,7 @@ The PSNR values---which do not take the human visual processing system into acco
 
 
 
-\ref{fig:example-vid-saliency} highlights a \name video frame from the Netflix dataset, with an output PSNR of 36 dB and EWPSNR of 48 dB.
+Figure~\ref{fig:example-vid-saliency} highlights a \name video frame from the Netflix dataset, with an output PSNR of 36 dB and EWPSNR of 48 dB.
 Overall, the results indicate that \nameCompress provides acceptable quality for its compression benefit.
 
 
@@ -95,7 +95,7 @@ Each video was encoded at a target bitrate (1Mbps, 5Mbps, 10Mbps, or 20Mbps), an
 We distributed the questionnaire as a web survey and ensured videos played correctly in all browsers by losslessly re-encoding to \avc.
 
 We recruited 35 naive participants aged 20--62 (51\% women, 49\% men) from a college campus to participate in the study.
-\ref{plot:user-study} shows the results averaged across subjects and videos.
+Figure~\ref{plot:user-study} shows the results averaged across subjects and videos.
 When \name videos are encoded at 1 Mbps in the most salient regions, 72\% users preferred the \hevc baseline.
 However, for \name videos encoded at 5, 10, and 20 Mbps, users either could not tell the difference between \hevc and \name, or preferred \name videos 60\%, 79\%, and 81\% of the time, respectively.
 This suggests that video systems can deliver \name-encoded videos at 50-75\% lower bitrate with little perceived impact.
@@ -119,7 +119,7 @@ We compare against baseline \hevc-encoded videos to evaluate if \name incurs any
 \end{tabular}
 \end{table}
 
-\ref{table:yolo} shows that using \name-compressed videos provides some speedup when decoding videos for object recognition, but this benefit is overshadowed by the cost of running YOLO.
+Table~\ref{table:yolo} shows that using \name-compressed videos provides some speedup when decoding videos for object recognition, but this benefit is overshadowed by the cost of running YOLO.
 Examining accuracy, we find that \name videos maintain 84\% accuracy on average, compared to the baseline \hevc videos.
 % \todo{break out table by benchmark suite}
 We find that accuracy on the YOLO task is lowest for the videos in the VR360 suite, and tends to correspond to the areas where the video is distorted from the equirectangular projection.
@@ -129,11 +129,11 @@ While saliency-compressed videos can provide slight benefits for video analytics
 \subsection{Compute Overhead}
 \nameCompress bears the additional processing overhead of executing a neural network to generate or update saliency maps.
 \nameStore can switch between an exhaustive or more computationally-efficient heuristic tile configuration search to uncover optimal tile configurations for a video.
-We benchmarked the latency of the combined saliency and transcoding pipeline in two modes: exhaustive, which generates saliency maps per frame and exhaustively evaluates tiling, and heuristic, which uses the heuristic search algorithm to select a tile configuration within 0.25 dB of the best-PSNR choice (\ref{subsec:search-algo}).
+We benchmarked the latency of the combined saliency and transcoding pipeline in two modes: exhaustive, which generates saliency maps per frame and exhaustively evaluates tiling, and heuristic, which uses the heuristic search algorithm to select a tile configuration within 0.25 dB of the best-PSNR choice (Section~\ref{subsec:search-algo}).
 
 \computeTable
 
-\ref{table:compute} shows generating saliency maps in either mode dominates computation time for \name, and that our heuristic search is 33$\times$ faster than an exhaustive search.
+Table~\ref{table:compute} shows generating saliency maps in either mode dominates computation time for \name, and that our heuristic search is 33$\times$ faster than an exhaustive search.
 This step, however, is only executed once per video and off the critical path for video streaming workloads.
 
 
@@ -153,7 +153,7 @@ We use a \texttt{c5.xlarge} instance's costs for compute, S3 for storage, and va
 We assume a video library of 1 million videos that are 10 MB each, encoded at 100 different resolution-bitrate settings (as in~\cite{huang2017sve,netflix2018dynamicopt}) to produce $\sim$500 TB of video data.
 We estimate baseline compute cost to be a two-pass encoding for each video at $\$0.212$ / sec and \name's transcode computation to be $5\times$ a baseline transcode.
 Larger companies likely use Reserved or Spot Instance offerings, which provide better value for years-long reservation slots or non-immediate jobs; they are 36\% and 73\% cheaper, respectively.
-For storage, we estimate costs to be \$0.023 / GB on S3 and assume Vignette-compressed videos would be 10\% of the original videos (\ref{subsec:storage}).
+For storage, we estimate costs to be \$0.023 / GB on S3 and assume Vignette-compressed videos would be 10\% of the original videos (Section~\ref{subsec:storage}).
 Transferring data out from S3 costs \$0.05 / GB; this cost is where \name achieves the majority of its savings.
 
 
@@ -162,7 +162,7 @@ Transferring data out from S3 costs \$0.05 / GB; this cost is where \name achiev
 % S(videos) = videos*video_size*encoding_options
 % Network(views) = views*video_size
 
-\ref{fig:aws-utilization} shows how different compute pricing models produce different savings at small numbers of video library views, but that \name becomes cost-effective at large video viewing rates.
+Figure~\ref{fig:aws-utilization} shows how different compute pricing models produce different savings at small numbers of video library views, but that \name becomes cost-effective at large video viewing rates.
 For all compute pricing levels, a system would need to service $\sim$2 billion views across a million-video library before \name's compute overhead would be amortized across transmission and storage savings.
 This number is easily reached by large video services; Facebook reported 8 billion daily views in 2016~\cite{fbviews}.
 
@@ -183,7 +183,7 @@ We disabled nonessential display and button backlights, as well as any configura
 We logged battery statistics each minute using 3C Battery Monitor Widget v3.21.8.
 We conducted three trials, playing the 93-file video library in a loop until battery charge dissipated from 100\% to 30\%, for our \hevc baseline and \name videos.
 
-\ref{fig:power} shows our results.
+Figure~\ref{fig:power} shows our results.
 We found that \name video enabled 1.6$\times$ longer video playback time with the same power consumption, or, $\sim$50\% better battery life while viewing a fixed number of videos.
 While hardware decoder implementations are typically proprietary, these results indicate that perceptual compression has benefits for mobile viewers, as well as cloud video infrastructure.
 
@@ -192,7 +192,7 @@ While hardware decoder implementations are typically proprietary, these results 
 \paragraph{Using \name in Other Storage Systems.}
 We crafted the policies, metadata extensions, and encoder design to make the ideas behind \nameStore{} compatible with pre-existing video storage or transcoding systems.
 \name can easily be implemented for other codecs, like the upcoming \avone,
-For instance, an Amazon MediaConvert instance with a storage layer in Amazon EBS and Glacier can easily use the policies and metadata in \ref{sec:system} to implement \name.
+For instance, an Amazon MediaConvert instance with a storage layer in Amazon EBS and Glacier can easily use the policies and metadata in Section~\ref{sec:system} to implement \name.
 We could further improve \name by building on other optimizations that work with off-the-shelf video standards.
 For instance, \name's heuristic search algorithm could include power and performance information from open-source video transcoding ASICs~\cite{asicclouds, zhang2017racetosleep} to target more power-efficient tiling configurations.
 VideoCoreCluster~\cite{liu2016greenvid} demonstrated energy-efficient adaptive bitrate streaming in real-time using a cluster of low-cost transcoding ASICs, which \name could leverage for better server transcoding performance.

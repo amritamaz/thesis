@@ -29,15 +29,15 @@
 
 \newcommand{\vdecCTUTimingFigure}{
 
-\begin{figure}
+\begin{figure}[h]
         \centering
         \includegraphics[width=.6\linewidth]{tvarch-figs/decode-ctu-timing.pdf}
         \caption{Decoding \emph{tiles} in parallel, rather than \emph{rows}, removes row-dependencies.}
         \label{fig:ctu-timing}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
         \centering
-        \includegraphics[width=.6\linewidth]{tvarch-figs/optimal-scheduling.pdf}
+        \includegraphics[width=\linewidth]{tvarch-figs/optimal-scheduling.pdf}
         \caption{Optimal scheduling for tiled video with heterogeneous bitrates. Knowledge of per-tile decode complexity can improve performance.}
         \label{fig:tile-schedule}
 
@@ -47,7 +47,7 @@
 
 
 \newcommand{\vdoOverview}{
-\begin{figure*}
+\begin{figure*}[h]
   \centering
 \includegraphics[width=.9\linewidth]{tvarch-figs/mvdo-extended.pdf}
 \caption{\nameArch accelerator with heterogeneous parallel decoder cores. \nameArch uses a custom scheduler optimized for processing tiled VR video to efficiently distribute work to decode cores. \nameArch maps video tiles to decode cores in different frequency regions to further improve energy consumption, allocating tiles based on the complexity of the video tile.}
@@ -124,36 +124,71 @@
 
 
 \newcommand{\perceptualCompressionExampleFigure}{
+% \begin{figure}
+% \centering
+%   \subfloat[Input 4K frame from VR-360 dataset~\cite{vr360-mmsys17}. Original size is 19 MB.
+%     \label{subfig:og-stil}]{
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/diving.png}
+%   }
+%   \quad
+%   \subfloat[CDF of quality target for pixels in frame.
+%     \label{subfig:og-cdf}]{
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-baseline.pdf}
+%   }
+%   \\
+%   \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.     \label{subfig:tiled-stil}]{
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/tiled-example.pdf}
+%   }
+%   \quad
+%   \subfloat[CDF of quality target for pixels in frame.
+%     \label{subfig:tiled-cdf}]{
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-baseline.pdf}
+%   }
+%   \\
+%   \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.    \label{subfig:fov-still}]{
+%
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/multi-scale.pdf}
+%   }
+%   \quad
+%   \subfloat[CDF of quality target for pixels in frame.]{
+%     \label{subfig:layered-cdf}
+%     \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-layered.pdf}
+%   }
+%   \\
+%
+%     \caption{Example video still and visualizations of tiled and multi-resolution video compression. These VR video compression methods use 40-75\% less storage by distributing quality across video tiles.}
+%     \label{fig:example-vid-compressed}
+% \end{figure}
+
 \begin{figure}
 \centering
-  \subfloat[Input 4K frame from VR-360 dataset~\cite{vr360-mmsys17}. Original size is 19 MB.]{
-    \label{subfig:og-stil}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/diving.png}
+  \subfloat[Input 4K frame from VR-360 dataset~\cite{vr360-mmsys17}. Original size is 19 MB.
+    \label{subfig:og-still}]{
+    \includegraphics[width=.3\linewidth]{tvarch-figs/perceptualCompressionExample/diving.png}
   }
-  \quad
-  \subfloat[CDF of quality target for pixels in frame.]{
-    \label{subfig:og-cdf}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-baseline.pdf}
+  \hfill
+  \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.     \label{subfig:tiled-still}]{
+    \includegraphics[width=.3\linewidth]{tvarch-figs/perceptualCompressionExample/tiled-example.pdf}
   }
-  \\
-  \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.]{
-    \label{subfig:tiled-stil}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/tiled-example.pdf}
+  \hfill
+  \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.    \label{subfig:fov-still}]{
+
+    \includegraphics[width=.3\linewidth]{tvarch-figs/perceptualCompressionExample/multi-scale.pdf}
   }
-  \quad
-  \subfloat[CDF of quality target for pixels in frame.]{
-    \label{subfig:tiled-cdf}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-baseline.pdf}
+\\
+  \subfloat[CDF of quality target for pixels in frame.
+    \label{subfig:og-cdf}]{
+    \includegraphics[width=.3\linewidth]{tvarch-figs/cdf-baseline.pdf}
   }
-  \\
-  \subfloat[Tiled compression, centered around the fovea. Video size is 11 MB.]{
-    \label{subfig:fov-stil}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/multi-scale.pdf}
+  \hfill
+  \subfloat[CDF of quality target for pixels in frame.
+    \label{subfig:tiled-cdf}]{
+    \includegraphics[width=.3\linewidth]{tvarch-figs/cdf-baseline.pdf}
   }
-  \quad
+  \hfill
   \subfloat[CDF of quality target for pixels in frame.]{
     \label{subfig:layered-cdf}
-    \includegraphics[width=.35\linewidth]{tvarch-figs/cdf-layered.pdf}
+    \includegraphics[width=.3\linewidth]{tvarch-figs/cdf-layered.pdf}
   }
   \\
 
@@ -184,14 +219,14 @@
 }
 
 \newcommand{\evalEnergyPower}{
-  \begin{figure}
+  \begin{figure}[h]
     \centering
     \includegraphics[width=.6\linewidth]{tvarch-figs/eval-energy-breakdown.pdf}
     \caption{Energy breakdown of \nameArch components. }
     \label{subfig:eval-energy-percent}
     \end{figure}%
 
-    \begin{figure}
+    \begin{figure}[h]
       \centering
       \includegraphics[width=.6\linewidth]{tvarch-figs/eval-power-energy-total.pdf}
       \caption{Energy consumption and total power consumption on a single video. Our 4-, 8-, and 52-core designs improve decode latency by .25 - 25$\times$ while keeping power under 15 mW.}

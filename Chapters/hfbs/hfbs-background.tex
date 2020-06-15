@@ -29,7 +29,7 @@ Figure~\ref{fig:teaser} describes how we map our optical flow problem to the bil
 \end{figure*}
 
 To solve the optimization problem, the bilateral solver resamples the problem into \emph{bilateral space}, which is a multi-dimensional space that allows edge-aware operations to be performed on an image.
-Figure ~\ref{fig:bilateral_grid_3d} illustrates a simplified version of bilateral space and its use in our problem.
+Figure~\ref{fig:bilateral_grid_3d} illustrates a simplified version of bilateral space and its use in our problem.
 We begin with the noisy flow field of Figure~\ref{fig:bilateral_grid_3d}a-i, where color corresponds to some flow value.
 If we attempt to denoise this noisy flow field by applying a simple smoothing kernel, the result will present undesirable blurring at color edges.
 In Figure~\ref{fig:bilateral_grid_3d}a-ii, for instance, the green region is successfully denoised, but the blue and red regions (which likely belong to different objects) blend around the edges, producing incorrect flow values there.
