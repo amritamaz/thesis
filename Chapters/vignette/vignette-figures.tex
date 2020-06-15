@@ -3,14 +3,14 @@
 \newcommand{\videoDataVsStorageFigure}{
 \begin{figure}[h]
   \centering
-\includegraphics[width=\linewidth]{vignette-figs/storage-video-growth.pdf}
+\includegraphics[width=.7\linewidth]{vignette-figs/storage-video-growth.pdf}
   \caption{Normalized growth of total storage produced and video data captured since 2008~\cite{cisco2016zettabyte,fontana2018storage}. Video data is outgrowing  storage capacity, taxing storage system capacity.}
   \label{plot:video-data-vs-storage}
 \end{figure}
 }
 
 \newcommand{\tileVsSizeFigure}{
-\begin{figure}
+\begin{figure}[h]
   \centering
 \includegraphics[width=.8\linewidth]{vignette-figs/tileSizeQuality2.pdf}
   \caption{Compression ratio and PSNR at the optimal number of tiles for each video. The optimal number of tiles is video-dependent, not correlated with quality or compression ratio.}
@@ -40,7 +40,7 @@
 
 \newcommand{\userStudyFigure}{
 
-\begin{figure*}
+\begin{figure*}[h]
   \centering
   \includegraphics[width=.7\linewidth]{vignette-figs/user-study.pdf}
   \caption{Results of perceived quality preference user study, averaged across participants and videos by bitrate. Participants either preferred \name or perceived no difference between 20 Mbps \hevc videos and \name videos at 5--20 Mbps.}
@@ -68,17 +68,18 @@
 }
 
 \newcommand{\saliencyTilesOverviewFigure}{
-\begin{figure}
+\begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{vignette-figs/tiled-bitrate}
+  \includegraphics[width=.8\textwidth]{vignette-figs/tiled-bitrate}
   \caption{Overview of \nameCompress algorithm.}
   \label{fig:saliency-tiles-overview}
 \end{figure}
 }
 
 \newcommand{\architectureOverviewFigure}{
-\begin{figure}
-  \includegraphics[width=\textwidth]{vignette-figs/high-level-architecture}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{vignette-figs/high-level-architecture}
   \caption{\name provides two features: \nameCompress, a perceptual compression algorithm, and \nameStore, a storage manager for perceptually compressed videos.
   Integrating perceptual information with the storage manager reduces network bandwidth and storage costs.}
   \label{fig:high-level-architecture}
@@ -89,7 +90,7 @@
 
 \newcommand{\exampleVidSaliencyFigure}{
 
-\begin{figure}
+\begin{figure}[h]
   \centering
   % \begin{subfigure}{.32\textwidth}
   %   \centering
@@ -112,19 +113,18 @@
 
   \subfloat[Input video frame from Netflix dataset~\cite{netflix2016data}.]{
   \label{subfig:og-stil}
-  \includegraphics[width=\linewidth]{vignette-figs/elfuente_in.png}
+  \includegraphics[width=.25\linewidth]{vignette-figs/elfuente_in.png}
   }
-  \\
+  \quad
   \subfloat[Saliency map produced by MLNet~\cite{mlnet2016}, overlaid on input.]{
   \label{subfig:sal-still}
-  \includegraphics[width=\linewidth]{vignette-figs/elfuente_sal.png}
+  \includegraphics[width=.25\linewidth]{vignette-figs/elfuente_sal.png}
   }
-  \\
+  \quad
   \subfloat[Perceptually-compressed \name video, 85\% smaller at iso-quality.]{
   \label{subfig:sal-vign}
-  \includegraphics[width=\linewidth]{vignette-figs/elfuente_vignette.png}
+  \includegraphics[width=.25\linewidth]{vignette-figs/elfuente_vignette.png}
   }
-  \\
   \caption{Example video still, neural network-generated saliency map, and output \name perceptually compressed video.}
   \label{fig:example-vid-saliency}
 \end{figure}
@@ -135,69 +135,23 @@
 
 \newcommand{\systemOverviewFigure}{
 \begin{figure*}[h]
-% \begin{subfigure}{.48\textwidth}
-%   \centering
-%   \includegraphics[width=.9\linewidth]{vignette-figs/system-overview-open.pdf}
-%   \caption{Open-loop offline saliency compression:~\name automatically generates saliency maps to include perceptual data during video transcoding.}
-%   \label{fig:system-overview-open}
-% \end{subfigure}\hfill%
-% \begin{subfigure}{.48\textwidth}
-%   \centering
-%   \includegraphics[width=.9\linewidth]{vignette-figs/system-overview-closedloop.pdf}
-%   \caption{Closed-loop re-compression:~\name~can leverage perceptual cues from VR headsets and other eyetracking devices to improve compression.}
-%   \label{fig:sub2}
-% \end{subfigure}
-\caption{High-level architecture of~\name~system design.}
-
   \centering
-  \subfloat[Open-loop offline saliency compression:~\name automatically generates saliency maps to include perceptual data during video transcoding.]{
-    \label{fig:system-overview-open}
-    \includegraphics[width=.46\textwidth]{system-overview-open.pdf}
-  }
-  \qquad
-  \subfloat[Closed-loop re-compression:~\name~can leverage perceptual cues from VR headsets and other eyetracking devices to improve compression.]{
-    \label{fig:system-overview-closed}
-    \includegraphics[width=.46\textwidth]{system-overview-closedloop.pdf}
-  }
-  \caption{High-level architecture of~\name~system design.}
+    \includegraphics[width=\textwidth]{system-overview-open.pdf}
+  \caption{High-level architecture of~\name~system design. \name automatically generates saliency maps to include perceptual data during video transcoding.}
   \label{fig:system-overview}
 \end{figure*}
 }
 
 \newcommand{\videoMetadataFigure}{
-\begin{figure}
+\begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{vignette-figs/physical-layout}
+  \includegraphics[width=.7\linewidth]{vignette-figs/physical-layout}
   \caption{Physical layout of video metadata in~\lightdb. \name-specific features are highlighted.}
   \label{fig:video-metadata}
 \end{figure}
 }
 
-% \newcommand{\benchmarkInformationFigure}{
-% \begin{figure}[t]
-%   \centering
-%    \subfloat[Benchmarks used for video profiling]{
-%      	\label{table:benchmarks}
-%        \resizebox{\linewidth}{!}{%
-%        \begin{tabular}{l|l l l l}
-%        Type                      & Benchmark & Description & Bitrate (Mbps) & Size (MB)        \\\hline
-%        \multirow{2}{*}{Standard} & vbench~\cite{vbench}    & YouTube dataset & 0.53 - 470 & 757  \\
-%                                  & Netflix~\cite{netflix2016data}   & Netflix dataset & 52 - 267 & 1123 \\
-%        \multirow{2}{*}{VR}       & VR-360~\cite{saliency-map}    & 4K-360 dataset & 10 - 21 & 1400   \\
-%                                  & Blender~\cite{blender}   & UHD / 3D movies & 10 - 147 & 6817 \\
-%        \end{tabular}
-%        }
-%      } \\
-%  \subfloat[Resolution and entropy distribution]{
-%  \label{subfig:benchmark-entropy-res}
-%   \includegraphics[width=\linewidth]{resolution-entropy2}
-%
-%  }
-%   \caption{Characteristics of benchmark videos used to characterize \name. }
-%   \label{fig:benchmark-info}
-% \end{figure}
-%
-% }
+
 
 \newcommand{\benchmarkInformationFigure}{
 \begin{table}[h]
@@ -239,9 +193,9 @@
 }
 
 \newcommand{\avgStorageBitrateSavings}{
-\begin{figure}
+\begin{figure}[h]
   \centering
-    \includegraphics[width=\linewidth]{vignette-figs/bitrate-storage-savings}
+    \includegraphics[width=.6\linewidth]{vignette-figs/bitrate-storage-savings}
 
   \caption{Aggregate storage savings by dataset. \nameCompress reduces videos to 1--15\% of their original size while maintaining PSNR of 34--39 dB and EWPSNR of 45-51 dB.}
 
@@ -251,9 +205,9 @@
 }
 
 \newcommand{\awsBreakevenFigure}{
-\begin{figure}
+\begin{figure}[h]
   \centering
-    \includegraphics[width=\linewidth]{vignette-figs/aws-breakeven}
+    \includegraphics[width=.6\linewidth]{vignette-figs/aws-breakeven}
   \caption{Estimated AWS costs for deploying \name versus traditional video transcoding. \name's additional compute cost is amortized after $\scriptstyle\sim$2 billion video views over a 1-million video library.}
 
   \label{fig:aws-utilization}
@@ -261,9 +215,9 @@
 
 }
 \newcommand{\powerFigure}{
-\begin{figure}
+\begin{figure}[h]
   \centering
-    \includegraphics[width=\linewidth]{vignette-figs/power}
+    \includegraphics[width=.6\linewidth]{vignette-figs/power}
   \caption{Time to dissipate a Google Pixel 2 phone battery from 100\% to 30\% when viewing \hevc and \name videos continuously. \name videos provide 1.67$\times$ longer video playback on mobile phones.}
 
   \label{fig:power}

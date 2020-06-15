@@ -71,7 +71,7 @@ We consider the throughput of the data output as the ``communication cost'' for 
 \begin{figure}
 \centering
     \begin{center}
-\includegraphics[width=\textwidth]{nsp-figs/vr_input_data.pdf}
+\includegraphics[width=.7\textwidth]{nsp-figs/vr_input_data.pdf}
     \end{center}
     \caption{Computation distribution and output data size for blocks in a VR video pipeline (2 of 16 cameras). }
     \label{fig:vr-data-scale}
@@ -149,19 +149,16 @@ significantly more accurate than all faster techniques.
   \centering
   \subfloat[Input reference image \cite{middlebury-data}]{%
     \includegraphics[width=0.2\textwidth]{hfbs-figs/super_depth/1_image.png}
-  }
-  \hfill
+  } \hfill
   \subfloat[Input noisy depth]{%
     \includegraphics[width=0.2\textwidth]{hfbs-figs/super_depth/1_bicubic.png}
-  }
+  } \hfill
   \subfloat[Improved depth \cite{BarronPoole2016}]{%
     \includegraphics[width=0.2\textwidth]{hfbs-figs/super_depth/1_bsqs.png}
-  }
-  \hfill
+  } \hfill
   \subfloat[Our improved depth (HFBS)]{%
     \includegraphics[width=0.2\textwidth]{hfbs-figs/super_depth/1_grayscale_bs.png}
   }
-  \vspace{10pt}
   \caption{A qualitative comparison of HFBS's performance
   compared to the model of \cite{BarronPoole2016} on the depth superresolution
   task of \cite{ferstl2013b}. HFBS produces similar output to \cite{BarronPoole2016} and is significantly faster.}

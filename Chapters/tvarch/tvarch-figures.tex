@@ -5,12 +5,12 @@
 
   \subfloat[The human eye only perceives the foveal region at full resolution~\cite{foveated-coding}.]{
   \label{subfig:eye}
-  \includegraphics[width=\linewidth]{tvarch-figs/foveated-eye.pdf}
+  \includegraphics[width=.44\linewidth]{tvarch-figs/foveated-eye.pdf}
   }
-  \\
+  \qquad
   \subfloat[Foveal region of display devices~\cite{patney2017perceptual}.]{
   \label{subfig:breakdown}
-  \includegraphics[width=\linewidth]{tvarch-figs/peripheral-pixels.pdf}
+  \includegraphics[width=.34\linewidth]{tvarch-figs/peripheral-pixels.pdf}
   }
 
   \caption{When viewing a VR display at close distance, only a small fraction of pixels ($<10\%$) are foveal and viewed at high resolution. VR video compression exploits this feature with \emph{foveated compression}.}
@@ -21,7 +21,7 @@
 \newcommand{\vdecBaselineArchFigure}{
 \begin{figure}
   \centering
-\includegraphics[width=\linewidth]{tvarch-figs/system-arch.pdf}
+\includegraphics[width=.6\linewidth]{tvarch-figs/system-arch.pdf}
 \caption{System architecture of typical video playback flow on mobile/VR SoC.}
 \label{fig:vdec-arch}
 \end{figure}
@@ -31,13 +31,13 @@
 
 \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{tvarch-figs/decode-ctu-timing.pdf}
+        \includegraphics[width=.6\linewidth]{tvarch-figs/decode-ctu-timing.pdf}
         \caption{Decoding \emph{tiles} in parallel, rather than \emph{rows}, removes row-dependencies.}
         \label{fig:ctu-timing}
 \end{figure}
 \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{tvarch-figs/optimal-scheduling.pdf}
+        \includegraphics[width=.6\linewidth]{tvarch-figs/optimal-scheduling.pdf}
         \caption{Optimal scheduling for tiled video with heterogeneous bitrates. Knowledge of per-tile decode complexity can improve performance.}
         \label{fig:tile-schedule}
 
@@ -49,7 +49,7 @@
 \newcommand{\vdoOverview}{
 \begin{figure*}
   \centering
-\includegraphics[width=.7\linewidth]{tvarch-figs/mvdo-extended.pdf}
+\includegraphics[width=.9\linewidth]{tvarch-figs/mvdo-extended.pdf}
 \caption{\nameArch accelerator with heterogeneous parallel decoder cores. \nameArch uses a custom scheduler optimized for processing tiled VR video to efficiently distribute work to decode cores. \nameArch maps video tiles to decode cores in different frequency regions to further improve energy consumption, allocating tiles based on the complexity of the video tile.}
 \label{fig:mvdo-arch}
 \end{figure*}
@@ -57,7 +57,8 @@
 
 \newcommand{\vdoprofOverview}{
 \begin{figure}
-\includegraphics[width=\linewidth]{tvarch-figs/vdoprof2.pdf}
+\centering
+\includegraphics[width=.6\linewidth]{tvarch-figs/vdoprof2.pdf}
 \caption{The \nameArchprof framework flow helps VR developers optimize energy consumption of their videos for hardware decoders. \nameArchprof generates energy profiles for video decode architectures and suggests energy-optimal tile configurations for playback constraints.}
 \label{fig:vdo-prof}
 \end{figure}
@@ -75,7 +76,7 @@
 \newcommand{\coresVsDecodeSpeedupFigure}{
   \begin{figure}
     \centering
-      \includegraphics[width=\linewidth]{tvarch-figs/cores-v-decode-speedup.pdf}
+      \includegraphics[width=.6\linewidth]{tvarch-figs/cores-v-decode-speedup.pdf}
       \caption{Decode performance for in-order and \nameArch's parallel decoding, with and without optimal scheduling.}
       \label{fig:cores-decode}
       \end{figure}%
@@ -96,12 +97,12 @@
 \centering
 \subfloat[Energy consumption decoding 1-, 4-, and 8-tile videos on a 4-core CPU, normalized to 1-tile energy. ]{
 \label{subfig:motiv-cpu}
-\includegraphics[width=\linewidth]{tvarch-figs/motiv-energy-cpu.pdf}
+\includegraphics[width=.46\linewidth]{tvarch-figs/motiv-energy-cpu.pdf}
 }
-\\
+\hfill
 \subfloat[Energy consumption decoding 1-, 4-, and 8-tile videos on a hardware video decoder, normalized to 1-tile energy.]{
 \label{subfig:motiv-soc}
-\includegraphics[width=\linewidth]{tvarch-figs/motiv-energy-soc.pdf}
+\includegraphics[width=.46\linewidth]{tvarch-figs/motiv-energy-soc.pdf}
 }
   \caption{When decoding videos with multiple tiles, hardware accelerators are not as capable as CPUs at capturing this tile parallelism to improve performance.}
   \label{fig:motiv-energy-cpu-soc}
@@ -115,7 +116,7 @@
 \begin{figure*}
     \centering
         \centering
-        \includegraphics[width=.75\linewidth]{tvarch-figs/motiv-energy-filesize.pdf}
+        \includegraphics[width=\linewidth]{tvarch-figs/motiv-energy-filesize.pdf}
         \caption{Perceptually compressd video file size and decode energy consumption on a Nvidia Jetson TX2 hardware decoder. Perceptually compressed video files are 5-65\% of standard videos, but the energy consumed on a hardware video decoder, however, does not scale commensurately with file size reduction.}
         \label{fig:mot-percept-energy}
 \end{figure*}
@@ -124,7 +125,7 @@
 
 \newcommand{\perceptualCompressionExampleFigure}{
 \begin{figure}
-
+\centering
   \subfloat[Input 4K frame from VR-360 dataset~\cite{vr360-mmsys17}. Original size is 19 MB.]{
     \label{subfig:og-stil}
     \includegraphics[width=.35\linewidth]{tvarch-figs/perceptualCompressionExample/diving.png}
@@ -168,12 +169,12 @@
 
       \subfloat[\nameArch energy consumption and speedup, sweeping across 2000 multi-core, heterogeneous frequency configurations. ]{
       \label{subfig:dvfs-all}
-      \includegraphics[width=\linewidth]{tvarch-figs/dvfs-energy-speedup-all.pdf}
+      \includegraphics[width=.44\linewidth]{tvarch-figs/dvfs-energy-speedup-all.pdf}
       }
-      \\
+      \hfill
       \subfloat[Energy consumption and speedup of \nameArch, now filtered to only show results under 50 mW.]{
       \label{subfig:dvfs-sub50}
-      \includegraphics[width=\linewidth]{tvarch-figs/dvfs-energy-speedup-sub50mw.pdf}
+      \includegraphics[width=.44\linewidth]{tvarch-figs/dvfs-energy-speedup-sub50mw.pdf}
       }
 
 
@@ -185,14 +186,14 @@
 \newcommand{\evalEnergyPower}{
   \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{tvarch-figs/eval-energy-breakdown.pdf}
+    \includegraphics[width=.6\linewidth]{tvarch-figs/eval-energy-breakdown.pdf}
     \caption{Energy breakdown of \nameArch components. }
     \label{subfig:eval-energy-percent}
     \end{figure}%
 
     \begin{figure}
       \centering
-      \includegraphics[width=\linewidth]{tvarch-figs/eval-power-energy-total.pdf}
+      \includegraphics[width=.6\linewidth]{tvarch-figs/eval-power-energy-total.pdf}
       \caption{Energy consumption and total power consumption on a single video. Our 4-, 8-, and 52-core designs improve decode latency by .25 - 25$\times$ while keeping power under 15 mW.}
       \label{subfig:eval-power-energy}
     \end{figure}%

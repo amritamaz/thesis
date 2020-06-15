@@ -138,7 +138,8 @@ Our case study application supports a camera platform for continuous face detect
 An overview of the resulting system is shown in Figure~\ref{fig:OMSP}.
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{nsp-figs/system_overview.pdf}
+  \centering
+  \includegraphics[width=.7\textwidth]{nsp-figs/system_overview.pdf}
   \caption{OpenMSP-based system overview. }
   \label{fig:OMSP}
 \end{figure}
@@ -199,8 +200,8 @@ implementation uses a scale factor of 1.1. For our implementation, we considered
 and 2 and explored how they impacted accuracy on a fixed-size image.
 
 \begin{figure*}
-\noindent
-      \includegraphics[width=.8\textwidth,right]{nsp-figs/vj_algo_accuracy2.pdf}
+\centering
+      \includegraphics[width=\textwidth]{nsp-figs/vj_algo_accuracy2.pdf}
     \caption{Impact of VJ parameters on relative accuracy.}
     \label{fig:vj-accuracy}
 
@@ -272,7 +273,8 @@ is low, and its execution would not filter out many false positives. Classifier
 $20\times 50$, however, reduces the false positive rate by 50\% with only a 15\% loss in precision.
 
 \begin{figure}
-\includegraphics[width=\textwidth]{nsp-figs/eval_vj_energ_acc2.pdf}
+  \centering
+\includegraphics[width=.6\textwidth]{nsp-figs/eval_vj_energ_acc2.pdf}
     \caption{VJ energy-accuracy trade-off.}
     \label{fig:vj-tradeoff}
 \end{figure}
@@ -370,11 +372,10 @@ and use power dissipation numbers derived from PTPX to produce energy estimates.
 
 
 \begin{table}[h]
-  \caption[][-30pt]{Full face authentication system parameters.}
+  \caption{Full face authentication system parameters.}
   \label{table:fa-hardware}
- \resizebox{1.5\linewidth}{!}{%
   \centering
-    {
+  \resizebox{\textwidth}{!}{%
 \begin{tabular}{llllllll}
 \multicolumn{2}{c}{\textbf{Experimental Parameters}} & \multicolumn{2}{c}{\textbf{VJ Accelerator}} & \multicolumn{2}{c}{\textbf{NN Accelerator}} & \multicolumn{2}{c}{\textbf{OpenMSP430~\cite{OpenMSP430}}}  \\ \midrule
 Technology & 65nm TSMC GP HVT & Memory & 1kB frame buffer & Memory & 512kB IM, 4kB DM & Memory & 2kB IM, 2kB DM \\
@@ -385,7 +386,7 @@ Vdd & Low-voltage, 0.7V & Power & 337\textmu W & Power & 393\textmu W &  &  \\
 Freq & 27.9MHz & Area & 0.06$mm\textsuperscript{2}$ & Area & 0.38$mm\textsuperscript{2}$ &  &  \\ \midrule
 \end{tabular}
 
-    }
+
     }
 
 \end{table}
@@ -396,9 +397,7 @@ We implemented our design in Verilog, synthesized with Synopsys Design Compiler 
 
 \begin{figure}
 \centering
-    \begin{center}
-      \includegraphics[width=1.2\textwidth]{nsp-figs/layout.pdf}
-    \end{center}
+      \includegraphics[width=.8\textwidth]{nsp-figs/layout.pdf}
     \caption{Layout shot of all three designs}
     \label{fig:layout_shot}
 \end{figure}
@@ -423,18 +422,17 @@ The efficiency benefit of the Viola-Jones classifier
 can attributed to its ability to spend little energy on the common case, when a
 window contains no faces.
 
-\begin{figure}
+Figure~\ref{fig:vj-cdf} shows the
+distribution of features across windows in a typical 176$\times$144 image with a single face -- only 0.01\%
+of windows need to compute the full classifier.
+
+\begin{figure}[h]
 \centering
-    \begin{center}
-      \includegraphics[width=\textwidth]{nsp-figs/eval_vj_cdf2.pdf}
-    \end{center}
+      \includegraphics[width=.6\textwidth]{nsp-figs/eval_vj_cdf2.pdf}
 \caption{VJ energy CDF over all windows in an image.}
 \label{fig:vj-cdf}
 \end{figure}
 
-Figure~\ref{fig:vj-cdf} shows the
-distribution of features across windows in a typical 176$\times$144 image with a single face -- only 0.01\%
-of windows need to compute the full classifier.
 
 \subsection{Tradeoffs in computation and communication.} To improve energy efficiency, we evaluate hybrid approaches, which first use VJ-based face-detection
 to filter out the windows that do not contain faces, to only feed the small fraction of frames that do contain faces to the neural network that performs face identification.
@@ -465,7 +463,7 @@ Figure~\ref{fig:full-face-auth-pipeline} shows the detailed power breakdown betw
 \begin{figure}
 \centering
     \begin{center}
-      \includegraphics[width=\textwidth]{nsp-figs/FA_compute_compress_4up_fig_2.pdf}
+      \includegraphics[width=.7\textwidth]{nsp-figs/FA_compute_compress_4up_fig_2.pdf}
     \end{center}
     \caption{Computation and communication power after each ASIC block in the ``full pipeline'' configuration.}
     \label{fig:full-face-auth-pipeline}

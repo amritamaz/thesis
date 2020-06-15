@@ -17,7 +17,7 @@ In this scheme, a software application splats the optimization problem defined i
 Figure~\ref{fig:sys-overview} shows a high-level overview of how application functionality is distributed across the system.
 The figure also illustrates details of our design's microarchitecture.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{hfbs-figs/system_architecture.pdf}
 
@@ -33,7 +33,17 @@ Neighboring bank access is controlled with MUXes.
 This data is splatted onto the grid and transferred to the accelerator via direct memory access (DMA).
 The transferred data includes $\hat{\mathbf{b}}$, $\mathbf{q}$, and the initial solution $\mathbf{z}_{\mathrm{init}}$ shown in Algorithm~\ref{alg:heavy}.
 
-\begin{figure}
+First-in-first-out queues (FIFOs) buffer data transfers at the input and output of the accelerator.
+During transfer, the memory controller of Figure~\ref{fig:sys-overview} interleaves the data corresponding to each bilateral grid vertex, and partitions the data into memory banks.
+After the data transfer is complete, a pool of parallel workers iteratively solve the optimization problem by running the loop of Algorithm~\ref{alg:heavy}.
+Multiple grid vertices are processed in parallel and the results are updated in place.
+After some number of iterations (we chose 256 iterations for our experiments to ensure convergence), the CPU reads back the final solution and slices it into a 2D result.
+
+
+Each worker (shown in in Figure~\ref{fig:microarch-single-worker}) performs the inner loop of Algorithm~\ref{alg:heavy} on one grid cell.
+
+\begin{figure}[h]
+  \centering
 \includegraphics[width=.75\columnwidth]{hfbs-figs/worker_microarchitecture.pdf}
 
 \caption{Block diagram of a single worker in our design.
@@ -43,14 +53,6 @@ Each worker receives the data for a grid vertex's stencil computation through an
 
 \end{figure}
 
-First-in-first-out queues (FIFOs) buffer data transfers at the input and output of the accelerator.
-During transfer, the memory controller of Figure~\ref{fig:sys-overview} interleaves the data corresponding to each bilateral grid vertex, and partitions the data into memory banks.
-After the data transfer is complete, a pool of parallel workers iteratively solve the optimization problem by running the loop of Algorithm~\ref{alg:heavy}.
-Multiple grid vertices are processed in parallel and the results are updated in place.
-After some number of iterations (we chose 256 iterations for our experiments to ensure convergence), the CPU reads back the final solution and slices it into a 2D result.
-
-
-Each worker (shown in in Figure~\ref{fig:microarch-single-worker}) performs the inner loop of Algorithm~\ref{alg:heavy} on one grid cell.
 It computes the result by streaming in the data from the neighboring cells (required for the ``blur'' operation), as well as the normalization factors required for the optimization process.
 For each grid cell, a total of 6 add/subtract operations and 3 multiplications are performed. The updated result is written back to the memory.
 The workers compute their local stencil operations synchronously, interfacing primarily with an assigned memory bank and occasionally the neighboring memory banks to access grid blocks that may be stored across banks.
@@ -69,9 +71,9 @@ If more parallel workers are necessary, the memory should be partition along mul
 \paragraph{Number of workers}
 The number of workers is affected by several parameters such as run time requirements, power budget, and available resources. Figure~\ref{fig:worker-perf} shows how performance scales with the number of workers. Assuming we want the fastest design and have not power constraint, the number of workers will be determined by the available FPGA resources including digital signal processing units (DSPs), look-up tables (LUTs), and memory banks.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=\columnwidth]{hfbs-figs/worker_scaling.pdf}
+\includegraphics[width=.6\columnwidth]{hfbs-figs/worker_scaling.pdf}
 \caption{Performance scales almost linearly with increased numbers of workers.}
 \label{fig:worker-perf}
 \end{figure}
@@ -86,9 +88,9 @@ Using the cheaper fixed-point multiplier, however, required us to evaluate three
 If less than $12$ bits were used for the integer portion, the bilateral grid data would quickly populate with overflow values.
 If less than $24$ bits were used for the fractional component of the number, the bilateral solver would not converge, because grid vertices would not have enough precision to capture the change in a value after blurring.
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
-  \includegraphics[width=\columnwidth]{hfbs-figs/fixed_point.pdf}
+  \includegraphics[width=.7\columnwidth]{hfbs-figs/fixed_point.pdf}
   \caption{MSE of fixed-point implementations at varied fractional widths, for different bitwidths. MSE is reported relative to 32-bit floating-point. We chose a configuration with 31 bits of fractional precision to reduce chance of overflow in the integer portion.}
   \label{fig:fixed-point}
 \end{figure}
@@ -99,7 +101,7 @@ Qualitatively, we also observed that a low MSE correlated with visually similar 
 Using 64-bit fixed-point numbers resulted in very low MSE, but, as seen in Table~\ref{table:dsp-workers}, required 16 DSPs per worker, limiting the number of parallel workers we could deploy with these configurations.
 
 
-\begin{table}[h]
+\begin{table}[h!]
   \centering
   \caption{Worker resource utilization and maximum workers at varied bitwidths. Reported MSE is relative to 32-bit floating-point.}
 
@@ -130,7 +132,7 @@ This fixed-point configuration has a MSE of $3.17\times10^{-7}$ compared to the 
 \begin{figure}[h]
 \centering
     \begin{center}
-\includegraphics[width=.45\textwidth]{nsp-figs/vr_res_qual.pdf}
+\includegraphics[width=.7\textwidth]{nsp-figs/vr_res_qual.pdf}
     \end{center}
     \caption{Using a smaller bilateral grid is cheaper to compute but degrades the quality of the output depth map, even at high image resolutions. }
     \label{fig:vr-res-qual}

@@ -22,14 +22,14 @@ Decode("rtp://...")
 We also wrote our object recognition queries for \ref{subsec:qos} in \lightdb to simulate video analytics workloads.
 To generate saliency maps, we used MLNet~\cite{mlnet2016} with publicly-available weights trained on the SALICON~\cite{huang2015salicon}, which achieves 94\% accuracy on the MIT300 saliency benchmark.
 
-\noindent\textbf{Baseline: } We compare \name against the HEVC encoding implementations included with \texttt{FFmpeg}.
+\paragraph{Baseline: } We compare \name against the HEVC encoding implementations included with \texttt{FFmpeg}.
 We configure \texttt{FFmpeg} with support for NVENCODE~\cite{nvenc} GPU-based encoding of \hevc video, as it is supported by large-scale video services and devices~\cite{de2016large}.
 We also implement \nameCompress on top of \texttt{FFmpeg} version \texttt{n4.1-dev}, and use the GPU-based NVENC HEVC encoder for tiled encoding.
 Unless otherwise specified, we target a constrained bitrate using maximum bitrate mode (VBV) to rapidly generate results.
 
 We performed all experiments on a single-node server running Ubuntu 16.04 and containing an Intel i7-6800K processor (3.4 Ghz, 6 cores, 15 MB cache), 32 GB DDR4 RAM at 2133 MHz, a 256 GB SSD drive (ext4 file system), and a Nvidia P5000 GPU with two discrete NVENCODE chipsets.
 
-\noindent \textbf{Video Workload Datasets}: We use a collection of video datasets, listed in Table~\ref{table:benchmarks}, to evaluate the impact of our techniques across different classes of video.
+\paragraph{Video Workload Datasets}: We use a collection of video datasets, listed in Table~\ref{table:benchmarks}, to evaluate the impact of our techniques across different classes of video.
 Standard video formats and emerging VR formats comprise our evaluation datasets.
 The former include representative workloads from Netflix~\cite{netflix2016data} and YouTube~\cite{vbench}.
 The VR and emerging video datasets highlight demands of ultra high-definition (UHD) formats such as 360$^\circ$ video~\cite{saliency-map} and the Blender stereoscopic and UHD open source films~\cite{blender}.
@@ -41,7 +41,7 @@ In this collection of datasets, we found that the \texttt{vbench} ``desktop'' vi
 % We discuss this style of video in relation to \name further in \ref{sec:related}.
 We also replaced Netflix's single ``Big Buck Bunny'' video segment with the same video content from Blender's stereoscopic, 4K, 60 frames-per-second version of the video.
 
-\noindent \textbf{Quantitative Quality Metrics}:
+\paragraph{Quantitative Quality Metrics}:
 We measured video encoding quality using two quality metrics, peak signal-to-noise ratio (PSNR) and eye-weighted PSNR (EWPSNR).
 % While manual inspection or user studies are the ideal metric for user satisfaction, they are unsustainable to deploy for large-scale video encoding systems.
 % Instead, researchers use quantitative metrics to approximate quality.

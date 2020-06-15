@@ -64,7 +64,7 @@ We activated the hardware decoder through \texttt{FFmpeg}~\cite{ffmpeg} while de
 
 \motivationComputeMemEnergyTime
 
-\textbf{Comparing Foveated Video Decode Energy Consumption and File Size:} We first compared the video decode energy consumption and file size of perceptually compressed videos with their traditionally compressed baselines.
+\paragraph{Comparing Foveated Video Decode Energy Consumption and File Size:} We first compared the video decode energy consumption and file size of perceptually compressed videos with their traditionally compressed baselines.
 We tested a 16-tile tile-based foveation pattern, with one tile at 100\% bitrate, four tiles at 75\% bitrate, and the rest at 50\% bitrate.
 We then tested decoding the videos with the hardware decode accelerator on the Jetson TX2, measuring energy consumption.
 We report energy consumption averaged over three trials.
@@ -74,7 +74,7 @@ This demonstrates that video decode chips do not exhibit energy consumption chan
 
 \motPerceptualEnergy
 
-\textbf{Comparing Foveated Video Decode Energy Consumption on CPUs and Accelerators}
+\paragraph{Comparing Foveated Video Decode Energy Consumption on CPUs and Accelerators}
 
 To further understand video decoder performance on tiles, we examined how the video decoder hardwaree scaled performance when decoding videos with increasing numbers of tiles.
 We produced versions of our benchmarks with 4 and 8-tiles, distributing the bitrate equally across tiles to isolate how the decoder core executes on tiles without considering the irregularity of foveated tiles.
@@ -100,7 +100,7 @@ Given that the CPU only has four cores, this reduced scaling makes sense.
 Decode energy consumption only increased by over 50\% in 23\% of videos tested.
 This demonstrates decode inefficiency: the decoder improved slightly from the introduction of tiled parallelism, but not nearly commensurate with the improvement a multi-core CPU demonstrated.
 
-\textbf{Analysis: } We find video decoders do not optimize decoding for VR-centric forms of video compression.
+\paragraph{Analysis: } We find video decoders do not optimize decoding for VR-centric forms of video compression.
 Further, current video decoder architectures do not effectively scale energy with increasd numbers of tiles.
 As a result, while VR video compression methods reduce memory traffic, decode performance cannot leverage these improvements.
 % This inefficiency predominantly stems from an inability both to leverage parallelism across tiles (\ref{fig:mot-percept-energy}) and to scale energy or runtime for single tiles (\ref{fig:mot-tile-energy-time}).

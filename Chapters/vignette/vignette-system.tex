@@ -50,7 +50,6 @@ Each API operation ingests a video and some required parameters and outputs a vi
 
 \begin{table*}[h]
 \centering
-\label{table:policies}
 \rowcolors{2}{gray!20}{white}
 
 \resizebox{\textwidth}{!}{%
@@ -62,7 +61,7 @@ Function           & Compression Type & Data required                           
 \texttt{vignette\_update}    & Perceptual       & \texttt{\textless{}IN video, IN fixation map, OUT video, OUT saliency metadata\textgreater{}} \\ \bottomrule
 \end{tabular}
 }
-\caption{\name API}
+\caption{\name API \label{table:policies}}
 
 \end{table*}
 
@@ -71,7 +70,7 @@ System developers using \nameStore to manage video data can write storage polici
 For instance, a social media service could apply perceptual compression as videos decrease in popularity to reduce storage capacity.
 A VR video-on-demand service that ingested eye tracking information could apply perceptual compression as new perceptual information is collected for certain videos.
 
-\noindent\textbf{Transcode Functions.}
+\paragraph{Transcode Functions.}
 Transcode operations express the most basic \nameStore function, video transcoding.
 When a new video is uploaded to the storage system, the storage manager triggers the general-purpose \texttt{transcode()} function to transcode the video to any specified bitrates and formats for content delivery.
 This function takes as input a video and target quality parameter, expressed either by CRF or bitrate, and produces a regularly transcoded video.
@@ -83,7 +82,7 @@ When \texttt{vignette\_transcode} is triggered, \nameStore generates new salienc
 \nameStore's transcode functions use similar signatures, letting the system easily switch between regular and perceptual compression when storage system pressure changes.
 Including saliency information as a metadata stream included in the video file container makes it transparent to saliency-agnostic applications or commands like \texttt{mediainfo} or \texttt{ffprobe}.
 
-\noindent\textbf{Quality Modulation Functions.}
+\paragraph{Quality Modulation Functions.}
 As noted in \ref{subsec:mapping}, \nameCompress maps saliency to quality levels for each tile.
 A \texttt{vignette\_squeeze()} call will re-compress a video using a specified, reduced bitrate or quality threshold.
 It takes in a video, target bitrate, and saliency mapping and produces the newly compressed video.
@@ -92,7 +91,7 @@ The \texttt{vignette\_squeeze()} function will recompress videos from a higher q
 This function only executes transcoding and compression with pre-generated saliency metadata, but does not update or generate new saliency metadata.
 A system can invoke \texttt{vignette\_squeeze()} before video data is sent to smaller cache or in preparation for distribution to devices with smaller displays.
 
-\noindent\textbf{Functions for Updating Perceptual Maps.}
+\paragraph{Functions for Updating Perceptual Maps.}
 \nameStore also supports a ``closed-loop'' mode, where saliency maps are updated with new information from eye tracking devices.
 To invoke this mode, \nameStore uses the \texttt{vignette\_update()} function to ingest and re-process videos with new perceptual information.
 A 2-dimensional eye tracker map is easy to convert to the saliency map input used in \nameCompress.
