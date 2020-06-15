@@ -3,17 +3,9 @@
 ## Generals document -> Thesis transition
 + edit intro
 + edit related work
-+ edit future work
-  + add broad ideas, near-term projects
-+ edit near-sensor
-+ edit hfbs
-+ edit vignette
-+ edit tvarch
 + edit conclusion
 
 ## Polishing, aesthetics
-+ fix how Cref's show up
-+ edit near-sensor figs
 + edit hfbs figs
 + edit vignette figs
 + edit mob-vdec figs
@@ -24,6 +16,16 @@
 + clean out bib file
 
 ## Final things
++ write colophon
+
+## Done
 + write acknowledgements
 + write dedication
-+ write colophon
++ edit near-sensor figs
++ fix how Cref's show up
++ edit near-sensor
++ edit hfbs
++ edit vignette
++ edit tvarch
++ edit future work
+  + add broad ideas, near-term projects
