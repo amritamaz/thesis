@@ -141,8 +141,8 @@ This step, however, is only executed once per video and off the critical path fo
 \label{subsec:datacentermobile}
 We use our evaluation results to model \name's system costs at scale for data center storage and end-user mobile power consumption. While these results are a first-order analysis, they suggest the potential benefit of deploying \name.
 
-% \vspace{.25cm}
-\paragraph{Data center compute, storage, and network costs. }
+
+\paragraph{Data center compute, storage, network costs. }
 Given the high compute cost of \name, we evaluate the break-even point for systems that store and deliver video content.
 We used Amazon Web Services (AWS) prices from July 2018 in the Northern California region to characterize costs.
 We use a \texttt{c5.xlarge} instance's costs for compute, S3 for storage, and vary the number of videos transferred to the Internet as a proxy for video views.
@@ -168,7 +168,7 @@ This number is easily reached by large video services; Facebook reported 8 billi
 
 \powerFigure
 
-% \vspace{.25cm}
+
 \paragraph{Mobile Power Consumption.}
 We explicitly designed \name to work with the \hevc{} standard so off-the-shelf software and hardware codecs could decompress \name videos.
 \nameCompress's tiling strategy, however, makes video bitstream density highly non-uniform across the visual plane.
