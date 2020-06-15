@@ -1,9 +1,9 @@
 \RequirePackage{silence} % :-\
     \WarningFilter{scrreprt}{Usage of package `titlesec'}
     \WarningFilter{titlesec}{Non standard sectioning command detected}
-\documentclass[ twoside,openright,titlepage,numbers=noenddot,%1headlines,
+\documentclass[ twoside=off,openright,titlepage,numbers=noenddot,%1headlines,
                 headinclude,footinclude,cleardoublepage=empty,abstract=off,
-                BCOR=5mm,paper=a4,fontsize=11pt
+                BCOR=0mm,paper=a4,fontsize=11pt
                 ]{scrreprt}
 
 %********************************************************************
@@ -16,6 +16,7 @@
 % Bibliographies
 %*******************************************************
 \addbibresource{thesis.bib}
+\usepackage[left=1.5in,right=1.5in,top=1.5in,bottom=1.5in]{geometry}
 
 %********************************************************************
 % Hyphenation
@@ -34,9 +35,9 @@
 \pagenumbering{roman}
 \pagestyle{plain}
 
-%********************************************************************
+% ********************************************************************
 % Frontmatter
-%*******************************************************
+% *******************************************************
 \include{FrontBackmatter/Titlepage}
 \include{FrontBackmatter/Titleback}
 \cleardoublepage\include{FrontBackmatter/Abstract}
@@ -57,15 +58,15 @@
 % use \cleardoublepage here to avoid problems with pdfbookmark
 \cleardoublepage
 
-\include{Chapters/01-intro}
-\include{Chapters/02-related-work}
-\cleardoublepage
-
-\include{Chapters/03-near-sensor}
-\include{Chapters/04-vignette}
+% \include{Chapters/01-intro}
+% \include{Chapters/02-related-work}
+% \cleardoublepage
+%
+% \include{Chapters/03-near-sensor}
+% \include{Chapters/04-vignette}
 \include{Chapters/05-tvarch}
-\cleardoublepage
-
+% \cleardoublepage
+%
 \include{Chapters/09-conclusion}
 
 % ********************************************************************
