@@ -8,7 +8,7 @@ Although specific performance and implementation details vary across codecs, eac
 % The following section describes mobile video decoder architectures for VR video playback.
 We first discuss the compressed video data structures used (Section~\ref{subsec:hevc}).
 We then give an overview of a generic video decode accelerator architecture at a high level (Section~\ref{subsec:vd-arch}).
-We finally provide some design details of \emph{video tiles}, a codec feature used heavily for perceptual compression (Section~\ref{subsec:tiles}).
+We finally provide some design details of \emph{video tiles}, a codec feature used heavily for perceptual compression (Section~\ref{subsec:mv-tiles}).
 
 \subsection{HEVC Data Structure Overview}
 \label{subsec:hevc}
@@ -40,7 +40,7 @@ CTU decoding is typically pipelined across the stages shown in Figure~\ref{fig:v
 After an entire frame is decoded, the video decoder chip writes it back to the frame buffer, where it can be read by the GPU for further processing or written to the display frame buffer for rendering.
 
 \subsection{Video Tile Design Details}
-\label{subsec:tiles}
+\label{subsec:mv-tiles}
 
 Recent codecs introduced the notion of \emph{tiling} video content~\cite{misra2013tiles}.
 With the growth in popularity of virtual reality headsets and \threesixty streaming, tiled video has reduced streaming bandwidth and data movement on mobile devices.

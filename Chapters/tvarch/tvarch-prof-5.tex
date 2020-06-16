@@ -1,3 +1,5 @@
+\vdoprofOverview
+
 \section{Video Energy Estimates with the {mVDOprof} Framework}
 \label{sec:vdoprof}
 
@@ -15,8 +17,6 @@ Current approaches to these characterizations involve running exhaustive experim
 \nameArchprof automates and codifies this process, decoupling the relationship between hardware decoders, input videos, and playback constraints.
 This enables more efficient characterization of video decode performance across more decode devices, yielding more energy-efficient VR video applications.
 Figure~\ref{fig:vdo-prof} shows a high-level \nameArchprof architecture.
-
-\vdoprofOverview
 
 \subsection{Hardware Decoder Profiles}
 \label{subsec:profiles}
@@ -44,7 +44,7 @@ For devices without a physical interface, e.g., next-generation decode accelerat
 \nameArchprof provides optimal encoding parameters to support energy efficiency for a VR video application.
 Some applications pre-determine or constrain the number of tiles used (to optimize video quality, or for integration with other performance optimizations) or mandate a specific codec for compatibility.
 VR video applications can specify the type of perceptual compression, such as a foveation pattern, to be explored in the simulation process.
-\nameArchprof ingests these constraints and use it to guide energy consumption estimates.
+\nameArchprof ingests these constraints and uses it to guide energy consumption estimates.
 
 \subsection{Device Playback Constraints}
 \nameArchprof can optimize for a specific display device target resolution, frame rate, or potential battery life.
