@@ -23,12 +23,14 @@ However, past work in specialized image and video hardware accelerators~\cite{ha
 While architectural challenges have motivated system designers to push performance limits by codesigning custom systems for visual media applications, this matrix representation of visual media has remained stagnant.
 For many visual computing applications, where the application's goal is to produce results at a frame or video segment granularity, as opposed to pixel-level results, including this higher-level intent in the hardware-software codesign process introduces new opportunities for improving performance.
 
+\section{Perceptual Optimizations for Visual Computing Systems}
 In this thesis, I define \textit{perceptual optimizations} as a class of optimizations that improve system performance by optimizing for a quality metric pertaining to perceptual quality of the video frame, as opposed to per-pixel quality.
 I demonstrate how leveraging this new class of higher-level information about visual media can improve power efficiency, processing speed, or storage capacity for visual computing systems.
+
 In visual computing systems, the impact of any system optimization is evaluated based on the resulting visual quality, frame rate, or resolution of the visual output.
 My work takes these quality tradeoffs for visual computing a step further, by specializing computation to take into account specific perceptual cues about the visual media being ingested to optimize the compute and storage.
 
-\section{Thesis Overview}
+\subsection{Thesis Overview}
 In this thesis, I posit that \emph{codesigning video-focused systems with perceptual information} improves performance and energy efficiency while maintaining application quality of service.
 While hardware-software codesign alone can improve performance in the domains of computational video capture, processing, and storage (Chapter~\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
 
@@ -57,6 +59,16 @@ Chapter~\ref{ch:near-sensor} describes my work codesigning computer vision hardw
 Chapter~\ref{ch:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
 In Chapter~\ref{ch:vignette}, I describe a new storage system, designed to support applying human visual saliency information to traditional video compression, to improve storage and streaming bandwidth.
 Chapter~\ref{ch:tvarch} describes how new mobile device hardware can adapt for a future of these perceptually-optimized videos to improve performance and energy consumption.
+
+\subsection{Previously Published Material}
+
+This dissertation includes work published as conference papers:
+
+\begin{itemize}
+  \item Chapter~\ref{ch:near-sensor}: \bibentry{amazumdar_iiswc17}
+  \item Chapter~\ref{ch:hfbs}: \bibentry{amazumdar_hpg17}
+  \item Chapter~\ref{ch:vignette}: \bibentry{vignette}
+\end{itemize}
 
 
 %*****************************************
