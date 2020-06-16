@@ -4,7 +4,7 @@ Nevertheless, we observe that our design can be practically deployed at both the
 
 
 \subsection{Accelerator optimizations.}
-There are many opportunites to further optimize our hardware design.
+There are many opportunities to further optimize our hardware design.
 For instance, our design only accelerates the iterative optimization portion of HFBS.
 Integrating splat and slice operations into our accelerator, as in~\cite{bilat_isscc}, would reduce transfer costs from GB-large bilateral grid to smaller MB-sized images and further reduce runtimes.
 Also, many vertices of the dense bilateral grid begin as zeros and do not need to be processed;  intelligently ignoring these zero-valued grid vertices can reduce wasted computation and potentially improve the runtime.

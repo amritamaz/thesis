@@ -19,7 +19,7 @@ The point where the eye gaze is centered is the \emph{fixation point}, and the r
 True foveated videos are significantly smaller than conventional videos.
 They use sparse samples and upsampling to best emulate a true foveated viewing experience~\cite{patney2017perceptual}.
 However, they require custom hardware or high-energy GPU processing to decompress and still present challenges related to temporal aliasing and visual artifacts~\cite{kaplanyan2019deepfovea}.
-As an alternative, video distribution services have designed different ways to approximatae a true foveated user experience.
+As an alternative, video distribution services have designed different ways to approximate a true foveated user experience.
 These perceptual compression methods discard or downscale visually unimportant areas of the image, e.g., peripheral areas of the video frame outside the foveal region~\cite{google-foveation,fov-cloud-ryoo, visualcloud2017haynes}.
 In this chapter, we use the term \emph{perceptual compression} to describe any technique that mimics a foveated viewing experience.
 
@@ -37,7 +37,7 @@ For a set number of quality levels $l$, the bitrate is distributed as
 \begin{equation}B = w_{1}B_{1} + w_{2}B_{2} + ... + w_{l}B_{l}
 \end{equation}
 where $w_{1} ... w_{l}$ are weights corresponding to the number of tiles allocating that bitrate.
-For instance, the toy example inFigure~Figure~\ref{subfig:tiled-still} has $l=4$ foveation quality levels, and $c_r = {1.0, .75, .5, .1}$.
+For instance, the toy example in Figure~\ref{subfig:tiled-still} has $l=4$ foveation quality levels, and $c_r = {1.0, .75, .5, .1}$.
 
 Foveated tiling (Figure~\ref{subfig:tiled-still}) produces larger videos than true foveation, but it can be decoded using traditional video decoder hardware.
 Tile-based compression can be considered a coarse mode of foveated compression; instead of dropping single pixels in a continuous function, it downscales contiguous tiles and compresses at different scales.
@@ -76,7 +76,7 @@ This demonstrates that video decode chips do not exhibit energy consumption chan
 
 \paragraph{Comparing Foveated Video Decode Energy Consumption on CPUs and Accelerators}
 
-To further understand video decoder performance on tiles, we examined how the video decoder hardwaree scaled performance when decoding videos with increasing numbers of tiles.
+To further understand video decoder performance on tiles, we examined how the video decoder hardware scaled performance when decoding videos with increasing numbers of tiles.
 We produced versions of our benchmarks with 4 and 8-tiles, distributing the bitrate equally across tiles to isolate how the decoder core executes on tiles without considering the irregularity of foveated tiles.
 We measured energy consumption of the CPU decoding the videos using \texttt{FFmpeg}'s software \hevc decoder on the 1-, 4- and 8-tile videos.
 We compared this performance scalability to performance of the hardware decode accelerator on the same workload.
@@ -101,7 +101,7 @@ Decode energy consumption only increased by over 50\% in 23\% of videos tested.
 This demonstrates decode inefficiency: the decoder improved slightly from the introduction of tiled parallelism, but not nearly commensurate with the improvement a multi-core CPU demonstrated.
 
 \paragraph{Analysis: } We find video decoders do not optimize decoding for VR-centric forms of video compression.
-Further, current video decoder architectures do not effectively scale energy with increasd numbers of tiles.
+Further, current video decoder architectures do not effectively scale energy with increased numbers of tiles.
 As a result, while VR video compression methods reduce memory traffic, decode performance cannot leverage these improvements.
 % This inefficiency predominantly stems from an inability both to leverage parallelism across tiles (\ref{fig:mot-percept-energy}) and to scale energy or runtime for single tiles (\ref{fig:mot-tile-energy-time}).
 These findings motivate an architecture that (1) can scale video decode for multiple tiles and (2) efficiently manage energy consumption and runtime latency for smaller video tiles.

@@ -62,7 +62,7 @@ Compared to a theoretically optimal speedup, in-order decoding was consistently 
 The Parallel-Naive design broke row dependencies by decoding tiles, but it maintained the naive scheduling pattern.
 On average, this design outperformed in-order decoding, but poor load distribution degraded performance as the number of cores grew to 128.
 The Parallel-Sched design added \nameArch's optimal scheduler algorithm to the parallel cores.
-Even with the overhead of sorting the tile bitstream, it achieved near-optimal performance at low numbers of cores and the closest-to-optimal performanc as the number of cores grew significantly.
+Even with the overhead of sorting the tile bitstream, it achieved near-optimal performance at low numbers of cores and the closest-to-optimal performance as the number of cores grew significantly.
 
 \dvfsEnergySpeedup
 
@@ -87,12 +87,12 @@ Based on the video decoder architecture we simulated, this frequency ranged from
 To evaluate energy consumption, we calculated the energy needed to decode a synthetic video sequence engineered to represent the average of our video benchmarks in video frame complexity and CTU sizes.
 We computed the energy for this synthetic video and divided by the number of frames in order to report the energy consumed per frame in the synthetic video, and we evaluated across all video decoder configurations generated.
 
-Figure~\ref{fig:dvfs-exploration} shows the results. In~Figure~\ref{subfig:dvfs-all}, we consider all architectural design points between 4 and 128 cores and all partitions of these cores across the high- and low-frequency domains; we did not eliminate any datapoints.
+Figure~\ref{fig:dvfs-exploration} shows the results. In Figure~\ref{subfig:dvfs-all}, we consider all architectural design points between 4 and 128 cores and all partitions of these cores across the high- and low-frequency domains; we did not eliminate any data points.
 We found a Pareto-frontier of optimal energy-speedup configurations that allowed for 60-100$\times$ decode latency improvement, typically requiring over 100 cores.
 
 We used this information to select target configurations on which to evaluate \nameArch performance.
 Keeping in mind our VR target hardware, we constrained the design space to only those designs that were under a 50 mW power budget~\cite{tikekar18ijssc}.
-This resulted in the configurations shown in~Figure~\ref{subfig:dvfs-sub50}.
+This resulted in the configurations shown in Figure~\ref{subfig:dvfs-sub50}.
 Though more sparse, the design space still showed performance-optimal points.
 
 \dvfsConfigTable
