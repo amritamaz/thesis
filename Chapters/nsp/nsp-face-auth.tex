@@ -30,7 +30,7 @@ We first discuss the hardware accelerators required for the camera pipeline, pre
 We then evaluate them together on a real-world face authentication workload using real video we collected.
 Our evaluation discusses the performance and power improvements, specifically exploring the tradeoffs in power consumption arising from considering the total cost of computation and communication.
 
-\section{Background: Face Detection and Machine Learning Metrics}
+\section{Background: Face Detection \& Machine Learning Metrics}
 \label{sec:backvj}
 
 \subsection{Viola-Jones algorithm for face detection}
@@ -76,32 +76,6 @@ A data structure called an \emph{integral image} expedites these sum calculation
 data structure, the value at any pixel position is the sum of all the pixels value above and
 to the left of it.
 
-% \begin{figure}[h]
-%      \centering
-%      \begin{subfigure}[b]{0.25\textwidth}
-%          \centering
-%          \includegraphics[width=\textwidth]{nsp-figs/integral_image_access.pdf}
-%          \caption{Pixels in an integral image are the sum of all the preceding ones.}
-%          \label{fig:integral:a}
-%      \end{subfigure}
-%      \hfill
-%      \begin{subfigure}[b]{0.25\textwidth}
-%          \centering
-%          \includegraphics[width=\textwidth]{nsp-figs/integral_feature.pdf}
-%          \caption{The rectangular area D can be computed in 4 accesses by the formula: D = 4 + 1 - 2 - 3.}
-%          \label{fig:integral:c}
-%      \end{subfigure}
-%      \hfill
-%      \begin{subfigure}[b]{0.25\textwidth}
-%          \centering
-%          \includegraphics[width=\textwidth]{nsp-figs/integral_image_compute.pdf}
-%          \caption{Integral image pixel computation.}
-%          \label{fig:integral:b}
-%      \end{subfigure}
-%         \caption{Computing an integral image.}
-%         \label{fig:integral}
-% \end{figure}
-
 
 This representation allows us to obtain the sum of any rectangular subset
 of the image in constant time:
@@ -130,7 +104,7 @@ We can unify precision and recall into one metric, an \textit{\fscore}, which qu
 This combined metric
 gives a good first-order assessment of a design choice's impact on ``accuracy'', but because the \fscore  weights precision and recall equally, the score may skew towards the metric that performs worse, obfuscating the impact of an optimization on the individual metrics.
 
-\section{On-chip hardware acceleration for energy harvesting cameras}
+\section{Hardware Acceleration for Energy-Harvested Cameras}
 
 A generic mobile sensor node usually consists of one or several sensors followed by analog-to-digital converters (ADCs), processing elements and wireless communication interfaces. We focus discussion on energy constrained systems, such as the WISP \cite{wisp}, a battery-less system that  harvests energy from RFID reader signals to perform sampling, processing and communication tasks. Our ideas, however, also apply to battery-powered systems with small footprint and very long battery-lifes (e.g., home automation/alarm systems, and other camera-based sensor nodes).
 
@@ -163,7 +137,7 @@ Our NN microarchitecture uses a single processing unit with multiple processing 
 We found that,because our face authentication pipeline has wide layers, this design configuration presented enough data parallelism to keep functional unit utilization high for a single processing unit.
 Figure~\ref{fig:snnap-pu} shows the datapath of a processing unit composed of four 8-bit processing elements (PEs).
 
-\section{In-camera face detection using Viola-Jones face detection}
+\section{In-camera Detection using Viola-Jones}
 
 \subsection{VJ algorithm tradeoffs.}
 We first tune the parameters of the VJ algorithm in search of the optimal point in the energy-accuracy tradeoff space.
@@ -366,7 +340,7 @@ We also included a unit to transform face windows from integral image form to st
 
 % With the terms described above we derive the dynamic and leakage energy per cycle for a full ANN, VJ, and OpenMSP430 combination. While there is an energy minima at 0.5V for the leakage energy (Figure~\ref{fig:system_voltage}), the dynamic and total energies continue to decrease into the sub-threshold region. Hence, the optimal the system voltage is determined by the minimum voltage at which performance constraints are satisfied. For our application, we select the 0.7V/28 MHz operating point, which satisfies the application performance constraint of 1 FPS.
 
-\section{Experimental results}
+\section{Evaluation}
 Table~\ref{table:fa-hardware} describes the details of our evaluation. We compared the performance and energy of our accelerator configuration against a software baseline running on an MSP430, a low-power microprocessor on the WISPCam. We wrote an NN micro-benchmark trained for face authentication, and emulated execution on a synthesized OpenMSP430 design. We then compared the performance of the NN and face detection (FD) accelerators. To obtain accurate energy estimates, we measure the initiation interval of the hardware pipelines in functional simulation
 and use power dissipation numbers derived from PTPX to produce energy estimates.
 
