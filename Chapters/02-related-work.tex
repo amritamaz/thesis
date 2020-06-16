@@ -8,7 +8,7 @@ This document describes perceptually optimized video processing systems, ranging
 \begin{figure*}[h]
 \centering
     \begin{center}
-\includegraphics[width=\textwidth]{hfbs-figs/generals-related-work.pdf}
+\includegraphics[width=\textwidth]{hfbs-figs/related-work.pdf}
     \end{center}
     \caption{This document's related work covers research in visual computing systems spanning capture, processing, and storage. Prior work related to camera capture hardware, including near-sensor accelerators, vision-centric accelerators, and on-camera acceleration, is discussed in Sections~\ref{sec:related:camera},\ref{sec:related:vision-hw}, and \ref{sec:related:vr-hw}. Related work on cloud datacenter infrastructure for visual computing is discused in Section~\ref{sec:related:streaming} and Section~\ref{sec:related:vdbms}. A key concern for this thesis is minimizing data movement and overall data bandwidth both within the delineated platforms and across them.}
     \label{fig:related-work}
@@ -116,7 +116,7 @@ This structural information allows for algorithms to process visual data while m
 The original bilateral grid was proposed as a solution for fast, parallelizable bilateral filtering on GPUs~\cite{Chen2007}.
 Towards more hardware-efficient execution on GPUs, Yang~\cite{pami_gpu_stereo14} proposed a hierarchical bilateral filter technique, but their approach is too error-prone for the high-resolution content used in high-resolution or virtual reality video today.
 
-Another example of structural perception optimization leverages perceptual color and light tradeoffs in viewing digital content. Recent work like Crayon \cite{crayon} and Ishihara \cite{stanley2018perceived} proposes replacing power-hungry colors with perceptually similar ones to achieve better power consumption on mobile displays, while ShutPix (\cite{Yan:2017:TMP:3123266.3123344}) proposes to turn some pixels off entirely. These structure-based optimizations use existing information (e.g., edges, depth, color space) in a video frame to uncover opportunities for perceptual optimization, rather than using newly-generated perceptual information.
+Another example of structural perception optimization leverages perceptual color and light tradeoffs in viewing digital content. Recent work like Crayon \cite{crayon} and Ishihara~\cite{stanley2018perceived} proposes replacing power-hungry colors with perceptually similar ones to achieve better power consumption on mobile displays, while ShutPix~\cite{Yan:2017:TMP:3123266.3123344} proposes to turn some pixels off entirely. These structure-based optimizations use existing information (e.g., edges, depth, color space) in a video frame to uncover opportunities for perceptual optimization, rather than using newly-generated perceptual information.
 
 \subsection{Semantics-based video optimization}
 Semantics-based video optimizations concentrate effort on areas where objects or regions of defined importance are identified in video frames.
