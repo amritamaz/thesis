@@ -13,61 +13,105 @@ For decades, computer architecture has leveraged the easy gains of Dennard scali
 As CPU design has reached its physical limits, computer architects have looked to designing custom hardware to achieve the increased compute and memory specifications required for modern computing workloads~\cite{tpu, q100, qadeer}.
 By tailoring the design of compute infrastructure to meet the needs of specialized visual computing workloads, these systems can improve speed or power consumption, leveraging hardware like graphics processing units (GPUs), general purpose GPUs (GPGPUs), field programmable gate arrays (FPGAs), and custom application specific integrated circuits (ASICs).
 
-\section{Challenges for Video Processing Systems}
+\section{Challenges for Visual Computing Systems}
 Visual computing applications are a natural target for specialized custom hardware: the two-dimensional image representation is easily expressed using array and buffer primitives; many image processing filters are simple convolutional kernels easy to broadcast in parallel.
-But the cost of data movement (both within a single hardware design and across networks) for these large volumes of images and video for modern virtual reality and video processing workloads far exceeds the benefits of tightly optimized computation.
-Managing this data requires more holistic design approaches beyond parallel computation and stream processing.
+But the cost of data movement (both within a single hardware design and across networks to different chips, modules, or computers in a datacenter) for these large volumes of visual media for VR and video processing workloads far exceeds the benefits of tightly optimized parallel algorithms.
+Managing this data requires more holistic design approaches beyond parallel compute patterns and stream processing.
 
 Fundamentally, images and video data use pixel-level information (RGB color at XY coordinates over time) to communicate higher-level information (motion, objects, visual importance, scene meanings).
-However, past work in specialized image and video hardware accelerators~\cite{hauswald2014hybrid, convolution_engine, adams2010frankencamera} typically only optimizes hardware at the pixel level, processing every pixel uniformly and measuring tradeoffs in designs by evaluating pixel-level metrics.
+However, past work in specialized image and video hardware accelerators~\cite{hauswald2014hybrid, convolution_engine, adams2010frankencamera} only optimizes hardware at the pixel level, processing every pixel uniformly and measuring tradeoffs in designs by evaluating pixel-level metrics.
+
 While architectural challenges have motivated system designers to push performance limits by codesigning custom systems for visual media applications, this matrix representation of visual media has remained stagnant.
-For many visual computing applications, where the application's goal is to produce results at a frame or video segment granularity, as opposed to pixel-level results, including this higher-level intent in the hardware-software codesign process introduces new opportunities for improving performance.
+On the other hand, many visual computing applications produce results at a frame or video segment granularity, as opposed to pixel-level results.
+For these applications, integrating this higher-level intent in the hardware-software codesign process introduces new opportunities for improving performance as well as new challenges in system design.
 
 \section{Perceptual Optimizations for Visual Computing Systems}
-In this thesis, I define \textit{perceptual optimizations} as a class of optimizations that improve system performance by optimizing for a quality metric pertaining to perceptual quality of the video frame, as opposed to per-pixel quality.
-I demonstrate how leveraging this new class of higher-level information about visual media can improve power efficiency, processing speed, or storage capacity for visual computing systems.
+This dissertation seeks to optimize performance of a visual computing system by using perceptual optimizations.
+This work combines computer systems and architecture techniques on optimizing visual computing systems with vision and graphics research on extracting meaningful information from 2D visual media.
+The visual computing systems operate on images and video at various stages of the visual computing pipeline: during the \emph{capture}, \emph{processing}, or \emph{storage} phases, or some combination therein.
+In this dissertation, the algorithms used for generating understanding from visual media produce perceptual cues of \emph{structure}, \emph{semantics}, and \emph{saliency}.
 
-In visual computing systems, the impact of any system optimization is evaluated based on the resulting visual quality, frame rate, or resolution of the visual output.
-My work takes these quality tradeoffs for visual computing a step further, by specializing computation to take into account specific perceptual cues about the visual media being ingested to optimize the compute and storage.
-
-\subsection{Thesis Overview}
-In this thesis, I posit that \emph{codesigning video-focused systems with perceptual information} improves performance and energy efficiency while maintaining application quality of service.
-While hardware-software codesign alone can improve performance in the domains of computational video capture, processing, and storage (Chapter~\ref{ch:related}), using perceptual cues expands the design space to identify new accelerator designs with improved performance benefits.
+\section{Thesis Overview}
+This thesis posits that \emph{codesigning video-focused systems with perceptual information} improves performance and energy efficiency while maintaining application quality of service.
+In existing work, hardware-software codesign alone has been shown to improve performance in the domains of computational video capture, processing, and storage (Chapter~\ref{ch:related}).
+My thesis builds upon this prior work to show how the use of perceptual cues can expand the design space and help identify new accelerator designs with improved performance benefits.
 
 This dissertation argues that perceptual optimizations can improve the performance of constrained video processing systems while maintaining high quality of experience.
 To support this, I employ techniques from the domains of hardware-software codesign and machine learning for systems optimization.
 The resulting systems demonstrate how to use perceptual cues to improve the power efficiency, latency, and storage capacity of video management systems, highlighting how treating visual media at a richer granularity than matrix arrays of pixels uncovers new opportunities for optimizing system performance.
 
-In this thesis, I consider three classes of perceptual cues: structure, semantics, and saliency. To explore these perceptual cues, I use hardware-software codesign to optimize computer systems at different points in the visual media pipeline: during camera capture (Chapter~\ref{ch:near-sensor}), camera processing (Chapter~\ref{ch:hfbs}), cloud video streaming and storage (Chapter~\ref{ch:vignette}), as well as mobile video playback (Chapter~\ref{ch:tvarch}).
+\section{Leveraging Perceptual Cues}
+In this thesis, I define \textit{perceptual optimizations} as a class of optimizations that improve system performance by targeting a quality metric or perceptual measure corresponding to higher-level meaning in the image or video, as opposed to per-pixel quality.
+This dissertation considers three classes of perceptual optimizations: \textit{structure}, \textit{semantics}, and \textit{saliency}. To explore these perceptual cues, I use hardware-software codesign to optimize computer systems at different points in the video processing pipeline.
 
-\begin{itemize}
-\item \textbf{Structure.} I use structural information about color and depth in captured video to design an algorithm for fast, accurate 3D-\threesixty video generation (Chapter~\ref{ch:hfbs}).
+\subsection{Structure}
+Structural percptual cues encode detailed information about the structure of the  scene in the visual frame.
+For instance, simple convoutional kernels can be used to extract \emph{edges} from the scene, an elementary form of structure to draw boundaries~\cite{FFLS2008}.
+More complex computational photography algorithms can generate \emph{motion}, \emph{depth}, and \emph{lighting} from a series of images or video~\cite{optical-flow, googlejump, Barron2015A}.
+Making use of these perceptual cues allows for applications to generate new viewpoints or lighting conditions or understand the distance between pixels in 3D space.
+Structural perceptual cues can be captured from complex sensors like depth or IR sensors, or synthetically generated through image processing or more complex computational photography and machine learning algorithms.
+
+Chapter~\ref{ch:hfbs} makes use of structural cues to rapidly process virtual reality video from a complex camera rig.
+In that work, I use structural information about color and depth in captured video to design an algorithm for fast, accurate 3D-\threesixty video generation (Chapter~\ref{ch:hfbs}).
 In particular, I formulate a new data structure for processing video captured from VR camera rigs into visually pleasing 3D-\threesixty video, and design a hardware accelerator around this data structure for real-time VR video generation.
+I propose a new algorithm, the hardware-friendly bilateral solver, that enables faster runtimes than existing algorithms of similar quality.
+I also design an FPGA-based hardware accelerator that utilizes reduced-precision computation and the parallelism inherent in our algorithm to achieve further speedups over our CPU and GPU implementations while consuming an order of magnitude less power.
+The FPGA design's power efficiency enables practical real-time VR video processing at the camera rig or in the cloud.
 
-\item \textbf{Semantics.} I evaluate the use of \emph{semantic information} in the design of hardware ASICs for an energy-harvesting camera system (\ref{ch:near-sensor}).
-In this project, I compose two accelerators---a simple machine learning algorithm and a more computationally intense one---to conduct semantic filtering for improved energy efficiency.
+\subsection{Semantics}
+Semantic perceptual cues generate information about the \emph{meaning} of the scene encoded in the visual frame.
+For example, the number of objects detected by an object detection algorithm~\cite{vj_journal} is a semantic cue.
+A more expressive semantic cue would use an object recognition algorithm to identify each object and map the label to a bounding box or location~\cite{redmon2017yolo}.
+These semantic cues provide value because they give insight into what the user perceives in the frame, beyond the colors at each pixel location.
+Semantic perceptual cues can be generated by crowdsourced user labelling, or, as in more recent systems for machine learning works, generated by use of computer vision algorithms on large batches of visual media~\cite{poms2018scanner}.
 
-\item \textbf{Saliency.} I use human visual saliency to optimize video compression, and show the design of a storage system built codesigned with an understanding of this perceptual cue (Chapter~\ref{ch:vignette}).
-I also leverage fovated saliency to design new mobile video decode hardware with increased energy efficiency (Chapter~\ref{ch:tvarch}).
-These works demonstrate using automatically-generated saliency information from machine learning algorithms to optimize large-scale video processing pipelines and energy-efficient mobile hardware.
-\end{itemize}
+In Chapter~\ref{ch:near-sensor}, I evaluate the use of semantic information in the design of hardware ASICs for an energy-harvesting camera system (\ref{ch:near-sensor}).
+The chapter considers not only the use of semantic cues, but also how to balance computational complexity with the accuracy and specificity of algorithms generating semantic information.
+I compose two accelerators---a simple machine learning algorithm and a more computationally intense one---to conduct semantic filtering for improved energy efficiency.
+I propose an organization of the hardware designs where one specialized accelerator first filters for one granularity of semantic information and then offloads processing to a more complex neural network to generate more detailed semantic data.
+I employ several energy savings techniques such as reduced-precision functional units, low-voltage logic and memory, hardware specialization, and take full advantage of the accuracy $\times$ resource usage trade-off offered by the ML algorithms.
+Our results show \textasciitilde100$\times$ improvement in performance and energy efficiency, enabling applications that would not be possible with a general purpose microprocessor.
 
+\subsection{Saliency}
+The perceptual cue of saliency encodes a spatial measure of visual importance.
+Within a single frame of video or an image, an algorithm could generate per-pixel saliency data to capture another dimension of information about the frame.
+Compared to semantic cues, which capture information about \emph{what} a space of pixels means, saliency cues only encode the extent to which the space of pixels is relevant or important.
 
-This thesis follows the following structure:
-Chapter~\ref{ch:related} contextualizes my work within the areas of specialized computer architectures and visual computing systems, and highlights prior work using the perceptual cues I consider.
-Chapter~\ref{ch:near-sensor} describes my work codesigning computer vision hardware for energy-harvesting cameras, balancing tradeoffs of accuracy and energy efficiency through the use of semantic perceptual information.
-Chapter~\ref{ch:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
-In Chapter~\ref{ch:vignette}, I describe a new storage system, designed to support applying human visual saliency information to traditional video compression, to improve storage and streaming bandwidth.
-Chapter~\ref{ch:tvarch} describes how new mobile device hardware can adapt for a future of these perceptually-optimized videos to improve performance and energy consumption.
+Traditionally, saliency in computer applications referred to human visual saliency, or what humans visually perceived to be salient~\cite{itti1998model}.
+Human visual saliency data can be collected using user trials with eye trackers or mouse movements, or generated automatically using computer vision algorithms.
+More recently, machine learning interpretation scholars have worked to understand saliency for detection and recognition algorithms~\cite{bylinskii2016saliency}.
+I briefly discuss this emerging perceptual cue in Chapter~\ref{sec:vignette-eval}, but I do not consider it in this dissertation's treatment of saliency.
 
-\subsection{Previously Published Material}
+In this dissertation, I use saliency to explore the design of cloud video processing systems and mobile video playback hardware.
+In Chapter~\ref{ch:vignette}, I use human visual saliency to optimize video compression and show the design of a storage system built codesigned with an understanding of this perceptual cue.
+The compression technique uses a neural network to predict saliency information used during transcoding, and the storage manager integrates perceptual information into the video storage system with little overhead.
+The results demonstrate the benefit of embedding information about the human visual system into the architecture of cloud video storage systems.
+
+In Chapter~\ref{ch:tvarch}, I leverage saliency cues in the form of foveated video content to design new mobile video decode hardware with increased energy efficiency.
+By observing that VR video combines small, high-resolution regions with large, low-resolution areas, I devised a new parallel, energy-efficient decode architecture.
+This architecture schedules work across parallel heterogeneous video decode cores in order to balance the ecompression of both high- and low-resolution video content.
+The accompanying profiling tool I designed helps VR developers explore and characterize the energy-consumption of video workloads under various perceptual compression schemes.
+These works demonstrate using automatically-generated saliency information from machine learning algorithms to optimize large-scale video processing pipelines and power-constrained mobile video playback hardware.
+
+\section{Organization}
+This chapter serves as the introductory framing for the remainder of the thesis.
+In the following chapter, I more deeply contextualize my work within the areas of specialized computer architectures and visual computing systems, and highlight prior work using the perceptual cues I consider.
+
+Chapter~\ref{ch:near-sensor} describes my work codesigning computer vision hardware for energy-harvesting cameras, balancing tradeoffs of accuracy and energy efficiency through the use of semantic perceptual information. Chapter~\ref{ch:hfbs} highlights another hardware-software codesign solution, applied to a 16-camera virtual reality video pipeline, using perceptual optimizations based on the structural content of distance and depth to improve the algorithm's accuracy and speed.
+
+Chapters~\ref{ch:vignette} and~\ref{ch:tvarch} describe saliency-optimized systems. Chapter~\ref{ch:vignette} presents Vignette, a storage system and compression algorithm designed to support applying human visual saliency information to traditional video compression for improved storage and streaming bandwidth.
+Chapter~\ref{ch:tvarch} describes how new mobile device hardware can adapt for a future of saliency-optimized videos to improve performance and energy consumption.
+
+Finally, Chapter~\ref{ch:concl} concludes with notes for future perceptually-optimized visual computing systems.
+
+\section{Previously Published Material}
 
 This dissertation includes work published as conference papers:
 
 \begin{itemize}
-  \item Chapter~\ref{ch:near-sensor}: \bibentry{amazumdar_iiswc17}
-  \item Chapter~\ref{ch:hfbs}: \bibentry{amazumdar_hpg17}
-  \item Chapter~\ref{ch:vignette}: \bibentry{vignette}
+  \item Chapter~\ref{ch:near-sensor}: \fullcite{amazumdar_iiswc17}
+  \item Chapter~\ref{ch:hfbs}: \fullcite{amazumdar_hpg17}
+  \item Chapter~\ref{ch:vignette}: \fullcite{vignette}
 \end{itemize}
 
 
